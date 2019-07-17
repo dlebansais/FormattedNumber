@@ -1,6 +1,7 @@
 ﻿namespace FormattedNumber
 {
     using System.Diagnostics;
+    using PeterO.Numbers;
 
     /// <summary>
     /// Interface to manipulate integer or real numbers of any size.
@@ -283,5 +284,7 @@
             return CanonicRepresentation;
         }
         #endregion
+
+        private EFloat eFloat;
     }
 }
