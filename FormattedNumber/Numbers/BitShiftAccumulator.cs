@@ -5,10 +5,11 @@ http://creativecommons.org/publicdomain/zero/1.0/
 If you like this, you should donate to Peter O.
 at: http://peteroupc.github.io/
  */
-using System;
+namespace PeterO.Numbers
+{
+    using System;
 
-namespace PeterO.Numbers {
-  internal sealed class BitShiftAccumulator : IShiftAccumulator
+    internal sealed class BitShiftAccumulator : IShiftAccumulator
   {
     private const int SmallBitLength = 32;
     private int bitLeftmost;

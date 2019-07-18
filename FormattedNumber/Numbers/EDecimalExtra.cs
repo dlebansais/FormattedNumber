@@ -130,8 +130,6 @@ namespace PeterO.Numbers {
     /// number.</summary>
     /// <returns>The given arbitrary-precision decimal number plus
     /// one.</returns>
-    /// <exception cref='System.ArgumentNullException'>The parameter
-    /// <paramref name='bthis'/> is null.</exception>
     public EDecimal Increment() {
   return this + (EDecimal)1;
 }
@@ -153,8 +151,6 @@ namespace PeterO.Numbers {
     /// number.</summary>
     /// <returns>The given arbitrary-precision decimal number minus
     /// one.</returns>
-    /// <exception cref='System.ArgumentNullException'>The parameter
-    /// <paramref name='bthis'/> is null.</exception>
     public EDecimal Decrement() {
   return this.Subtract(1);
 }

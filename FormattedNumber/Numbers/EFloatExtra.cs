@@ -88,8 +88,6 @@ namespace PeterO.Numbers {
     /// number.</summary>
     /// <returns>The given arbitrary-precision binary floating-point number
     /// plus one.</returns>
-    /// <exception cref='System.ArgumentNullException'>The parameter
-    /// <paramref name='bthis'/> is null.</exception>
     public EFloat Increment() {
   return this + (EFloat)1;
 }
@@ -112,8 +110,6 @@ namespace PeterO.Numbers {
     /// floating-point number.</summary>
     /// <returns>The given arbitrary-precision binary floating-point number
     /// minus one.</returns>
-    /// <exception cref='System.ArgumentNullException'>The parameter
-    /// <paramref name='bthis'/> is null.</exception>
     public EFloat Decrement() {
   return this.Subtract(1);
 }

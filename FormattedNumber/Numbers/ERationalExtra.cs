@@ -118,8 +118,6 @@ namespace PeterO.Numbers {
     /// number.</summary>
     /// <returns>The given arbitrary-precision rational number plus
     /// one.</returns>
-    /// <exception cref='System.ArgumentNullException'>The parameter
-    /// <paramref name='bthis'/> is null.</exception>
     public ERational Increment() {
   return this + (ERational)1;
 }
@@ -141,8 +139,6 @@ namespace PeterO.Numbers {
     /// number.</summary>
     /// <returns>The given arbitrary-precision rational number minus
     /// one.</returns>
-    /// <exception cref='System.ArgumentNullException'>The parameter
-    /// <paramref name='bthis'/> is null.</exception>
     public ERational Decrement() {
   return this.Subtract(1);
 }

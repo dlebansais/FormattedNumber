@@ -285,6 +285,6 @@
         }
         #endregion
 
-        private EFloat eFloat;
+        // private EFloat eFloat;
     }
 }
