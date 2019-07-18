@@ -35,3 +35,5 @@ For example, `0C4A9EF2:H` is parsed as `1` leading zero, significand `C4A9EF2`, 
 ## Arbitrary precision
 
 The precision at which operations are performed is not infinite, but is arbitrary, and can be tuned using the `Arithmetic` class.
+
+This is done using a fork of [Peter Occil](https://github.com/peteroupc)'s [Numbers](https://github.com/peteroupc/Numbers) project. If you like this software, considered donating at the link provided in the main page of that project.
