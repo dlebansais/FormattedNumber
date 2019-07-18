@@ -18,7 +18,7 @@
         /// <param name="invalidText">The trailing invalid text, if any.</param>
         /// <param name="canonical">The canonical form of the number.</param>
         public RealNumber(string integerText, string fractionalText, ExplicitExponents explicitExponent, string exponentText, string invalidText, ICanonicalNumber canonical)
-            : base(invalidText, canonical)
+            : base(0, invalidText, canonical)
         {
             IntegerText = integerText;
             FractionalText = fractionalText;

@@ -10,6 +10,11 @@
     public interface IFormattedNumber
     {
         /// <summary>
+        /// Gets the number of leading zeroes.
+        /// </summary>
+        int LeadingZeroesCount { get; }
+
+        /// <summary>
         /// Gets the significand part of the formatted number. Can be empty.
         /// </summary>
         string SignificandString { get; }
@@ -55,22 +60,14 @@
             if (text == null)
                 throw new NullReferenceException(nameof(text));
 
-            if (isLeadingZeroSupported)
-            {
-                // Eliminate leading zeroes.
-                while (text.Length > 1 && text[0] == '0')
-                    text = text.Substring(1);
-            }
-
-            IFormattedNumber Result = null;
-            bool Success = false;
+            bool Success = TryParseAsIntegerWithBase(text, isLeadingZeroSupported, IntegerBase.Decimal, out IFormattedNumber Result);
 
             if (!Success)
-                Success = TryParseAsIntegerWithBase(text, IntegerBase.Hexadecimal, out Result);
+                Success = TryParseAsIntegerWithBase(text, isLeadingZeroSupported, IntegerBase.Hexadecimal, out Result);
             if (!Success)
-                Success = TryParseAsIntegerWithBase(text, IntegerBase.Octal, out Result);
+                Success = TryParseAsIntegerWithBase(text, isLeadingZeroSupported, IntegerBase.Octal, out Result);
             if (!Success)
-                Success = TryParseAsIntegerWithBase(text, IntegerBase.Binary, out Result);
+                Success = TryParseAsIntegerWithBase(text, isLeadingZeroSupported, IntegerBase.Binary, out Result);
             if (!Success)
                 Result = ParseAsNumber(text);
 
@@ -81,17 +78,24 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="FormattedNumber"/> class.
         /// </summary>
+        /// <param name="leadingZeroesCount">The number of leading zeroes.</param>
         /// <param name="invalidText">The trailing invalid text, if any.</param>
         /// <param name="canonical">The canonical form of the number.</param>
         /// <exception cref="NullReferenceException"><paramref name="invalidText"/> or <paramref name="canonical"/> is null.</exception>
-        public FormattedNumber(string invalidText, ICanonicalNumber canonical)
+        public FormattedNumber(int leadingZeroesCount, string invalidText, ICanonicalNumber canonical)
         {
+            LeadingZeroesCount = leadingZeroesCount;
             InvalidText = invalidText ?? throw new NullReferenceException(nameof(invalidText));
             Canonical = canonical ?? throw new NullReferenceException(nameof(canonical));
         }
         #endregion
 
         #region Properties
+        /// <summary>
+        /// Gets the number of leading zeroes.
+        /// </summary>
+        public int LeadingZeroesCount { get; }
+
         /// <summary>
         /// Gets the significand part of the formatted number. Can be empty.
         /// </summary>
@@ -118,11 +122,12 @@
         /// Tries to parse a string as an integer of the given base.
         /// </summary>
         /// <param name="text">The string to parse.</param>
+        /// <param name="isLeadingZeroSupported">True if <paramref name="text"/> might have leading zeroes.</param>
         /// <param name="integerBase">The integer base.</param>
         /// <param name="number">The parsed number upon return, null on failure.</param>
         /// <returns>True if the string was parsed successfully; Otherwise, false.</returns>
         /// <exception cref="NullReferenceException"><paramref name="text"/> or <paramref name="integerBase"/> is null.</exception>
-        private protected static bool TryParseAsIntegerWithBase(string text, IIntegerBase integerBase, out IFormattedNumber number)
+        private protected static bool TryParseAsIntegerWithBase(string text, bool isLeadingZeroSupported, IIntegerBase integerBase, out IFormattedNumber number)
         {
             if (text == null)
                 throw new NullReferenceException(nameof(text));
@@ -134,7 +139,7 @@
 
             if (integerBase.Suffix != null && text.EndsWith(integerBase.Suffix))
             {
-                ParseAsIntegerWithBase(text, integerBase, out number);
+                ParseAsIntegerWithBase(text, isLeadingZeroSupported, integerBase, out number);
                 IsParsed = true;
             }
 
@@ -145,12 +150,18 @@
         /// Parse a string as an integer of the given base.
         /// </summary>
         /// <param name="text">The string to parse. It must end with the suffix of <paramref name="integerBase"/>.</param>
+        /// <param name="isLeadingZeroSupported">True if <paramref name="text"/> might have leading zeroes.</param>
         /// <param name="integerBase">The integer base.</param>
         /// <param name="number">The parsed number upon return, null on failure.</param>
-        private protected static void ParseAsIntegerWithBase(string text, IIntegerBase integerBase, out IFormattedNumber number)
+        private protected static void ParseAsIntegerWithBase(string text, bool isLeadingZeroSupported, IIntegerBase integerBase, out IFormattedNumber number)
         {
             Debug.Assert(text != null);
             Debug.Assert(integerBase != null);
+
+            int LeadingZeroesCount = 0;
+
+            if (isLeadingZeroSupported)
+                text = LeadingZeroesRemoved(text, out LeadingZeroesCount);
 
             string Suffix = integerBase.Suffix;
 
@@ -190,7 +201,7 @@
 
             ICanonicalNumber Canonical = new CanonicalNumber(false, DecimalSignificand, false, DecimalExponent);
 
-            number = new IntegerNumberWithBase(ValidText, InvalidText, Canonical, integerBase);
+            number = new IntegerNumberWithBase(LeadingZeroesCount, ValidText, InvalidText, Canonical, integerBase);
         }
 
         /// <summary>
@@ -228,7 +239,7 @@
                 else
                 {
                     Debug.Assert(DigitStart == 0);
-                    return new IntegerNumber(IntegerBase.Zero, text.Substring(DigitStart + 1), CanonicalNumber.Zero);
+                    return new IntegerNumber(0, IntegerBase.Zero, text.Substring(DigitStart + 1), CanonicalNumber.Zero);
                 }
 
             string ValidText;
@@ -245,13 +256,15 @@
             string IntegerText = text.Substring(DigitStart, n - DigitStart);
             Debug.Assert(IntegerText.Length > 0 && IntegerText[0] != '0');
 
+            int TrailingZeroesCount;
+
             // If the number is a simple decimal number or continues with an invalid character, return now.
             if (n >= text.Length || text[n] != '.')
             {
                 InvalidText = text.Substring(n);
                 DecimalExponent = (n - 1).ToString();
-                Canonical = new CanonicalNumber(IsNegative, TrailingZeroesRemoved(IntegerText), false, DecimalExponent);
-                return new IntegerNumber(IntegerText, InvalidText, Canonical);
+                Canonical = new CanonicalNumber(IsNegative, TrailingZeroesRemoved(IntegerText, out TrailingZeroesCount), false, DecimalExponent);
+                return new IntegerNumber(0, IntegerText, InvalidText, Canonical);
             }
 
             n++;
@@ -269,8 +282,8 @@
                 ValidText = IntegerText;
                 InvalidText = text.Substring(DigitStart + ValidText.Length);
                 DecimalExponent = (IntegerText.Length - 1).ToString();
-                Canonical = new CanonicalNumber(IsNegative, TrailingZeroesRemoved(ValidText), false, DecimalExponent);
-                return new IntegerNumber(ValidText, InvalidText, Canonical);
+                Canonical = new CanonicalNumber(IsNegative, TrailingZeroesRemoved(ValidText, out TrailingZeroesCount), false, DecimalExponent);
+                return new IntegerNumber(0, ValidText, InvalidText, Canonical);
             }
 
             // If the fractional part is not followed by an exponent, return the corresponding real number that has no exponent.
@@ -294,7 +307,7 @@
                 return new RealNumber(ValidText, string.Empty, ExplicitExponents.None, string.Empty, InvalidText, new CanonicalNumber(IsNegative, ValidText, false, IntegerBase.Zero));
             }
 
-            SignificandText = TrailingZeroesRemoved(IntegerText + FractionalText);
+            SignificandText = TrailingZeroesRemoved(IntegerText + FractionalText, out TrailingZeroesCount);
 
             int MantissaEnd = n;
             n++;
@@ -346,16 +359,43 @@
         }
 
         /// <summary>
-        /// Remove all zeroes at the end of a string. If the string is just made of zeroes, leave the last one untouched.
+        /// Remove all zeroes at the begining of a string. If the string is just made of zeroes, leave the last one untouched.
         /// </summary>
         /// <param name="text">The string to clean up.</param>
+        /// <param name="leadingZeroesCount">The number of zeroes removed upon return.</param>
         /// <returns>The string with zeroes removed.</returns>
-        private protected static string TrailingZeroesRemoved(string text)
+        private protected static string LeadingZeroesRemoved(string text, out int leadingZeroesCount)
         {
             Debug.Assert(text != null);
 
+            leadingZeroesCount = 0;
+
+            while (text.Length > 1 && text[0] == '0')
+            {
+                text = text.Substring(1);
+                leadingZeroesCount++;
+            }
+
+            return text;
+        }
+
+        /// <summary>
+        /// Remove all zeroes at the end of a string. If the string is just made of zeroes, leave the last one untouched.
+        /// </summary>
+        /// <param name="text">The string to clean up.</param>
+        /// <param name="trailingZeroesCount">The number of zeroes removed upon return.</param>
+        /// <returns>The string with zeroes removed.</returns>
+        private protected static string TrailingZeroesRemoved(string text, out int trailingZeroesCount)
+        {
+            Debug.Assert(text != null);
+
+            trailingZeroesCount = 0;
+
             while (text.Length > 1 && text[text.Length - 1] == '0')
+            {
                 text = text.Substring(0, text.Length - 1);
+                trailingZeroesCount++;
+            }
 
             return text;
         }

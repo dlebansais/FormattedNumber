@@ -9,12 +9,13 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="IntegerNumberWithBase"/> class.
         /// </summary>
+        /// <param name="leadingZeroesCount">The number of leading zeroes.</param>
         /// <param name="integerText">The integer text.</param>
         /// <param name="invalidText">The trailing invalid text, if any.</param>
         /// <param name="canonical">The canonical form of the number.</param>
         /// <param name="integerBase">The base.</param>
-        public IntegerNumberWithBase(string integerText, string invalidText, ICanonicalNumber canonical, IIntegerBase integerBase)
-            : base(integerText, invalidText, canonical)
+        public IntegerNumberWithBase(int leadingZeroesCount, string integerText, string invalidText, ICanonicalNumber canonical, IIntegerBase integerBase)
+            : base(leadingZeroesCount, integerText, invalidText, canonical)
         {
             IntegerBase = integerBase;
         }

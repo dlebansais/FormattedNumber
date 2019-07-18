@@ -11,7 +11,7 @@
         /// </summary>
         /// <param name="invalidText">The invalid text.</param>
         public InvalidNumber(string invalidText)
-            : base(invalidText, CanonicalNumber.Zero)
+            : base(0, invalidText, CanonicalNumber.Zero)
         {
         }
         #endregion
