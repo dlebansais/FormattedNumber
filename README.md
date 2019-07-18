@@ -14,7 +14,7 @@ This project can be used for the following purposes:
 
 For example, the string `3.141592653589793462643383279502884197169399375105e0X` is parsed as `3.141592653589793462643383279502884197169399375105e`, `0` and `X`. The parsed result can be used to calculate π/2 with a precision of more than 40 digits.
 
-Since a string can always be parsed, and at worse will give two empty strings for the signficand and the exponent, with the invalid part being the string itself, it can be used in an editor or a text viewer that highlight these part.
+Since a string can always be parsed, and at worse will give two empty strings for the significand and the exponent, with the invalid part being the string itself, it can be used in editors or text viewers that highlight these parts.
 
 For example, the [Easly controller](https://github.com/dlebansais/Easly-Controller) displays the significand with a normal font and color, the exponent with subscript font and normal color, and the invalid part with normal font but red color.
 
@@ -28,7 +28,7 @@ Programming languages have various ways to deal with numbers expressed in a base
 
 ## Leading zeroes
 
-Sometimes having zeroes at the begining of a number is acceptable. Typically, in fixed-length numbers such as hash keys, unicode key code, and so on. The `FormattedNumber` class handles them with a separate property.
+Sometimes having zeroes at the begining of a number is acceptable. Typically, in fixed-length numbers such as hash keys, checksums, unicode key code, and so on. The `FormattedNumber` class handles them with a separate property.
 
 For example, `0C4A9EF2:H` is parsed as one leading zero, significand `C4A9EF2`, empty exponent and empty invalid part.
 
