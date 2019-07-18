@@ -10,6 +10,7 @@ This project can be used for the following purposes:
 	* The significand, all characters before the exponent.
 	* The exponent, starting after the letter `e`.
 	* The invalid end of the string that could not be parsed after the exponent.
++ Perform operation on numbers with arbitrary precision.
 
 For example, the string `-3.1415e0X` is parsed as `-3.1415e`, `0` and `X`.
 
@@ -29,4 +30,8 @@ Programming languages have various ways to deal with number expressed in base di
 
 Sometimes having zeroes at the begining of a number is acceptable. Typically, in fixed-length numbers such as hash keys, unicode key code, and so on. The FormattedNumber class handles them as a separate property.
 
-For example, `0C4A9EF2:H` is parsed as `1` leading zero, significand `C4A9EF2`, empty exponent and empty invalid part.  
+For example, `0C4A9EF2:H` is parsed as `1` leading zero, significand `C4A9EF2`, empty exponent and empty invalid part.
+
+## Arbitrary precision
+
+The precision at which operations are performed is not infinite, but is arbitrary, and can be tuned using the `Arithmetic` class.
