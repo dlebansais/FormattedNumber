@@ -6,21 +6,21 @@ Handle numbers obtained from any string, and arbitrary precision arithmetic.
 
 This project can be used for the following purposes:
 
-+ Parse any string that could be a number, and extract the relevant parts to obtain 3 strings
++ Parse any string that could be a number, and extract the relevant parts to obtain 3 substrings:
 	* The significand, all characters before the exponent.
 	* The exponent, starting after the letter `e`.
 	* The invalid end of the string that could not be parsed after the exponent.
-+ Perform operation on numbers with arbitrary precision.
++ Perform operations on these parsed numbers with arbitrary precision.
 
-For example, the string `-3.1415e0X` is parsed as `-3.1415e`, `0` and `X`.
+For example, the string `3.141592653589793462643383279502884197169399375105e0X` is parsed as `3.141592653589793462643383279502884197169399375105e`, `0` and `X`. The parsed result can be used to calculate π/2 with a precision of more than 40 digits.
 
 Since a string can always be parsed, and at worse will give two empty strings for the signficand and the exponent, with the invalid part being the string itself, it can be used in an editor or a text viewer that highlight these part.
 
-For example, the Easly editor displays the significand with a normal font and color, the exponent as subscript font and normal color, and the invalid part with normal font but red color.
+For example, the [Easly controller](https://github.com/dlebansais/Easly-Controller) displays the significand with a normal font and color, the exponent with subscript font and normal color, and the invalid part with normal font but red color.
 
 ## Non-decimal integers
 
-Programming languages have various ways to deal with number expressed in base different then the usual decimal base. For example, C and C++ use the `0x` prefix to represent hexadecimal number. The `FormattedNumber` class uses suffixes:
+Programming languages have various ways to deal with numbers expressed in a base different then the usual decimal base. For example, C and C++ use the `0x` prefix to represent hexadecimal numbers. The `FormattedNumber` class uses a suffix:
 
 + `:H` for hexadecimal,
 + `:O` for octal,
@@ -28,9 +28,9 @@ Programming languages have various ways to deal with number expressed in base di
 
 ## Leading zeroes
 
-Sometimes having zeroes at the begining of a number is acceptable. Typically, in fixed-length numbers such as hash keys, unicode key code, and so on. The FormattedNumber class handles them as a separate property.
+Sometimes having zeroes at the begining of a number is acceptable. Typically, in fixed-length numbers such as hash keys, unicode key code, and so on. The `FormattedNumber` class handles them with a separate property.
 
-For example, `0C4A9EF2:H` is parsed as `1` leading zero, significand `C4A9EF2`, empty exponent and empty invalid part.
+For example, `0C4A9EF2:H` is parsed as one leading zero, significand `C4A9EF2`, empty exponent and empty invalid part.
 
 ## Arbitrary precision
 
