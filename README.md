@@ -1,6 +1,6 @@
 # FormattedNumber
 
-Handle numbers obtained from any string, and arbitrary precision arithmetic.
+Handle numbers obtained from any string, and combine them with arbitrary precision arithmetic.
 
 [![Build Status](https://travis-ci.com/dlebansais/FormattedNumber.svg?branch=master)](https://travis-ci.com/dlebansais/FormattedNumber) [![CodeFactor](https://www.codefactor.io/repository/github/dlebansais/formattednumber/badge)](https://www.codefactor.io/repository/github/dlebansais/formattednumber) [![codecov](https://codecov.io/gh/dlebansais/FormattedNumber/branch/master/graph/badge.svg)](https://codecov.io/gh/dlebansais/FormattedNumber)
 
@@ -30,7 +30,7 @@ Programming languages have various ways to deal with numbers expressed in a base
 
 Sometimes having zeroes at the begining of a number is acceptable. Typically, in fixed-length numbers such as hash keys, checksums, unicode key code, and so on. The `FormattedNumber` class handles them with a separate property.
 
-For example, `0C4A9EF2:H` is parsed as one leading zero, significand `C4A9EF2`, empty exponent and empty invalid part.
+For example, `0C4A9EF2:H` is parsed as one leading zero, `IntegerNumber` with significand `C4A9EF2` in hexadecimal base, empty exponent and empty invalid part.
 
 ## Arbitrary precision
 
@@ -57,26 +57,30 @@ When allowing leading zeroes, they are all removed unless the string is just `0`
 Once the leading zeroes are handled, the number is parsed as follow:
 
 1. The string `0` gives an instance of `IntegerNumber` with the value 0.
-+ A valid significand can start with an optional + or -, and is either an integer or a real number.
++ A valid significand can start with an optional `+` or `-`, and is either an integer or a real number.
 	* The string is parsed as a decimal integer.
 	* If not a valid decimal integer, and the string ends with a base suffix, it is parsed as an integer in that base.
 	* If parsing as an integer failed, the string is parsed as a real number.
-+ A real number begins with at least one decimal digit, and is followed by the decimal separator as specified by the current culture. A dot is also always accepted as decimal separator.
++ A real number begins with (at least one) decimal digits, and is followed by the decimal separator as specified by the current culture. A dot is also always accepted as decimal separator.
 + If there is no decimal separator, digits are parsed to obtain an instance of an `IntegerNumber`, followed by an invalid part.
-+ If there is a decimal separator, and digits are not followed by the e or E characters, they are parsed to obtain an instance of a `RealNumber`, with exponent 0, followed by an invalid part.
-+ If the exponent character is found, it can optionally be followed by either + or -, and decimal digits (the first digit is not allowed to be 0). Unless this first digit exists, the exponent is not valid and treated as the case above.
++ If there is a decimal separator, and digits are not followed by the `e` or `E` characters, they are parsed to obtain an instance of a `RealNumber`, followed by an invalid part.
++ If the exponent character is found, it can optionally be followed by either `+` or `-`, and decimal digits (the first digit is not allowed to be 0). Unless this first digit exists, the exponent is not valid and treated as the case above.
 + If found, the exponent is parsed to the last digit. The number is then an instance of `RealNumber` with this exponent, and whatever follows is the invalid string part.
 
 ### Reconstructing the string
 
-From an FormattedNumber object, one can reconstruct the original string:
+From an `FormattedNumber` object, one can reconstruct the original string:
 
 + Leading zeroes are generated.
-+ Each type of Number object generate it's own specific text:
-    * An instance of InvalidNumber adds the invalid part directly.
-    * An instance of IntegerNumber adds digits, then the base suffix if any.
-    * An instance of RealNumber adds:
-        * The integer part of the significand,
-        * The decimal separator,
-        * The fractional part of the significand,
-        * 
++ Each type of `Number` object generate it's own specific text:
+    * An instance of `InvalidNumber` adds the invalid part directly.
+    * An instance of `IntegerNumber` adds digits, then the base suffix if any.
+    * An instance of `RealNumber` adds:
+        * The integer part of the significand.
+        * The decimal separator.
+        * The fractional part of the significand.
+        * If the number has an exponent:
+            * The exponent character.
+            * The optional exponent sign if any.
+            * The exponent text.
+            * And finally the invalid part, if any.

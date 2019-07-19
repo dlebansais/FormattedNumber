@@ -242,12 +242,12 @@
 
             // Reject numbers that don't start with a digit.
             int DigitValue;
-            if (!IntegerBase.Decimal.IsValidDigit(text[DigitStart], out DigitValue))
+            if (text.Length <= DigitStart || !IntegerBase.Decimal.IsValidDigit(text[DigitStart], out DigitValue))
                 return new InvalidNumber(text);
 
             // If the first digit is 0, only accept the number zero.
             if (DigitValue == 0)
-                if (SignificandSign == OptionalSign.Negative)
+                if (SignificandSign != OptionalSign.None)
                     return new InvalidNumber(text);
                 else
                 {
@@ -373,7 +373,7 @@
             }
 
             // A number with a valid mantissa and explicit exponent.
-            ValidText = text.Substring(DigitStart, ExponentEnd);
+            ValidText = text.Substring(DigitStart, ExponentEnd - DigitStart);
             InvalidText = text.Substring(DigitStart + ValidText.Length);
             return new RealNumber(IntegerText, SeparatorCharacter, FractionalText, ExponentCharacter, ExponentSign, ExponentText, InvalidText, new CanonicalNumber(SignificandSign, SignificandText, ExponentSign, ExponentText));
         }
