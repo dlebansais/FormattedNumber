@@ -199,7 +199,7 @@
 
             string DecimalExponent = (BaseExponent + DecimalSignificand.Length - 1).ToString();
 
-            ICanonicalNumber Canonical = new CanonicalNumber(false, DecimalSignificand, false, DecimalExponent);
+            ICanonicalNumber Canonical = new CanonicalNumber(OptionalSign.None, DecimalSignificand, OptionalSign.None, DecimalExponent);
 
             number = new IntegerNumberWithBase(LeadingZeroesCount, ValidText, InvalidText, Canonical, integerBase);
         }
@@ -224,8 +224,24 @@
             // Assume '.' as the decimal separator in what follows. This means '.' is ALWAYS a valid separator.
             text = text.Replace(DecimalSeparator, ".");
 
-            bool IsNegative = text[0] == '-';
-            int DigitStart = IsNegative ? 1 : 0;
+            OptionalSign SignificandSign;
+            int DigitStart;
+
+            if (text[0] == '-')
+            {
+                SignificandSign = OptionalSign.Negative;
+                DigitStart = 1;
+            }
+            else if (text[0] == '+')
+            {
+                SignificandSign = OptionalSign.Positive;
+                DigitStart = 1;
+            }
+            else
+            {
+                SignificandSign = OptionalSign.None;
+                DigitStart = 0;
+            }
 
             // Reject numbers that don't start with a digit.
             int DigitValue;
@@ -234,7 +250,7 @@
 
             // If the first digit is 0, only accept the number zero.
             if (DigitValue == 0)
-                if (IsNegative)
+                if (SignificandSign == OptionalSign.Negative)
                     return new InvalidNumber(text);
                 else
                 {
@@ -263,7 +279,7 @@
             {
                 InvalidText = text.Substring(n);
                 DecimalExponent = (n - 1).ToString();
-                Canonical = new CanonicalNumber(IsNegative, TrailingZeroesRemoved(IntegerText, out TrailingZeroesCount), false, DecimalExponent);
+                Canonical = new CanonicalNumber(SignificandSign, TrailingZeroesRemoved(IntegerText, out TrailingZeroesCount), OptionalSign.None, DecimalExponent);
                 return new IntegerNumber(0, IntegerText, InvalidText, Canonical);
             }
 
@@ -282,7 +298,7 @@
                 ValidText = IntegerText;
                 InvalidText = text.Substring(DigitStart + ValidText.Length);
                 DecimalExponent = (IntegerText.Length - 1).ToString();
-                Canonical = new CanonicalNumber(IsNegative, TrailingZeroesRemoved(ValidText, out TrailingZeroesCount), false, DecimalExponent);
+                Canonical = new CanonicalNumber(SignificandSign, TrailingZeroesRemoved(ValidText, out TrailingZeroesCount), OptionalSign.None, DecimalExponent);
                 return new IntegerNumber(0, ValidText, InvalidText, Canonical);
             }
 
@@ -292,19 +308,22 @@
                 InvalidText = text.Substring(n);
                 SignificandText = IntegerText + FractionalText;
                 DecimalExponent = (IntegerText.Length - 1).ToString();
-                return new RealNumber(IntegerText, FractionalText, ExplicitExponents.None, string.Empty, InvalidText, new CanonicalNumber(IsNegative, SignificandText, false, DecimalExponent));
+                return new RealNumber(IntegerText, FractionalText, 'e', OptionalSign.None, string.Empty, InvalidText, new CanonicalNumber(SignificandSign, SignificandText, OptionalSign.None, DecimalExponent));
             }
 
             Debug.Assert(FractionalText.Length > 0);
             Debug.Assert(FractionalText == IntegerBase.Zero || FractionalText[FractionalText.Length - 1] != '0');
-            Debug.Assert(n < text.Length && (text[n] == 'e' || text[n] == 'E'));
+            Debug.Assert(n < text.Length);
+
+            char ExponentCharacter = text[n];
+            Debug.Assert(text[n] == 'e' || text[n] == 'E');
 
             // When an expontent is present, the mantissa part must have exactly one digit on the left side. We already know it's not zero.
             if (IntegerText.Length != 1)
             {
                 ValidText = text.Substring(DigitStart, 1);
                 InvalidText = text.Substring(DigitStart + ValidText.Length);
-                return new RealNumber(ValidText, string.Empty, ExplicitExponents.None, string.Empty, InvalidText, new CanonicalNumber(IsNegative, ValidText, false, IntegerBase.Zero));
+                return new RealNumber(ValidText, string.Empty, ExponentCharacter, OptionalSign.None, string.Empty, InvalidText, new CanonicalNumber(SignificandSign, ValidText, OptionalSign.None, IntegerBase.Zero));
             }
 
             SignificandText = TrailingZeroesRemoved(IntegerText + FractionalText, out TrailingZeroesCount);
@@ -312,28 +331,28 @@
             int MantissaEnd = n;
             n++;
 
-            ExplicitExponents ExplicitExponent;
+            OptionalSign ExponentSign;
 
             // Allow exponent sign.
             if (n + 1 < text.Length)
             {
                 if (text[n] == '-')
                 {
-                    ExplicitExponent = ExplicitExponents.Negative;
+                    ExponentSign = OptionalSign.Negative;
                     n++;
                 }
 
                 else if (text[n] == '+')
                 {
-                    ExplicitExponent = ExplicitExponents.Positive;
+                    ExponentSign = OptionalSign.Positive;
                     n++;
                 }
 
                 else
-                    ExplicitExponent = ExplicitExponents.None;
+                    ExponentSign = OptionalSign.None;
             }
             else
-                ExplicitExponent = ExplicitExponents.None;
+                ExponentSign = OptionalSign.None;
 
             // Get the exponent.
             int ExponentBegin = n;
@@ -349,13 +368,13 @@
                 ValidText = text.Substring(DigitStart, MantissaEnd);
                 InvalidText = text.Substring(DigitStart + ValidText.Length);
                 DecimalExponent = (IntegerText.Length - 1).ToString();
-                return new RealNumber(IntegerText, FractionalText, ExplicitExponents.None, string.Empty, InvalidText, new CanonicalNumber(IsNegative, SignificandText, false, DecimalExponent));
+                return new RealNumber(IntegerText, FractionalText, ExponentCharacter, OptionalSign.None, string.Empty, InvalidText, new CanonicalNumber(SignificandSign, SignificandText, OptionalSign.None, DecimalExponent));
             }
 
             // A number with a valid mantissa and explicit exponent.
             ValidText = text.Substring(DigitStart, ExponentEnd);
             InvalidText = text.Substring(DigitStart + ValidText.Length);
-            return new RealNumber(IntegerText, FractionalText, ExplicitExponent, ExponentText, InvalidText, new CanonicalNumber(IsNegative, SignificandText, ExplicitExponent == ExplicitExponents.Negative, ExponentText));
+            return new RealNumber(IntegerText, FractionalText, ExponentCharacter, ExponentSign, ExponentText, InvalidText, new CanonicalNumber(SignificandSign, SignificandText, ExponentSign, ExponentText));
         }
 
         /// <summary>

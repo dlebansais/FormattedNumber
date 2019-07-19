@@ -37,3 +37,42 @@ For example, `0C4A9EF2:H` is parsed as one leading zero, significand `C4A9EF2`, 
 The precision at which operations are performed is not infinite, but is arbitrary, and can be tuned using the `Arithmetic` class.
 
 This is done using a fork of [Peter Occil](https://github.com/peteroupc)'s [Numbers](https://github.com/peteroupc/Numbers) project. If you like this software, considered donating at the link provided in the main page of that project.
+
+## Detailed interface
+
+A formatted number can be created in two ways:
+
++ Parsing a string and extracting the number of leading zeroes, a `Number` object, and the invalid string that follows.
++ Initializing the formatted number directly with:
+    * The number of leading zeroes,
+    * The `Number` object,
+    * The invalid string.
+
+The second method is not terribly interesting, and in what follows we will just focus on parsing.
+
+### Valid numbers
+
+When allowing leading zeroes, they are all removed unless the string is just `0`. If they are not allowed, and the string to parse begins with a zero, and is not `0` itself, it is considered totally invalid. In this case, the returned `Number` object is an instance of `InvalidNumber`.
+
+Once the leading zeroes are handled, the number is parsed as follow:
+
+1. The string `0` gives an instance of `IntegerNumber` with the value 0.
++ A valid significand can start with an optional + or -, and is either an integer or a real number.
+	* The string is parsed as a decimal integer.
+	* If not a valid decimal integer, and the string ends with a base suffix, it is parsed as an integer in that base.
+	* If parsing as an integer failed, the string is parsed as a real number.
++ A real number begins with at least one decimal digit, and is followed by the decimal separator as specified by the current culture. A dot is also always accepted as decimal separator.
++ If there is no decimal separator, digits are parsed to obtain an instance of an `IntegerNumber`, followed by an invalid part.
++ If there is a decimal separator, and digits are not followed by the e or E characters, they are parsed to obtain an instance of a `RealNumber`, with exponent 0, followed by an invalid part.
++ If the exponent character is found, it can optionally be followed by either + or -, and decimal digits (the first digit is not allowed to be 0). Unless this first digit exists, the exponent is not valid and treated as the case above.
++ If found, the exponent is parsed to the last digit. The number is then an instance of `RealNumber` with this exponent, and whatever follows is the invalid string part.
+
+### Reconstructing the string
+
+From an FormattedNumber object, one can reconstruct the original string:
+
++ Leading zeroes are generated.
++ Each type of Number object generate it's own specific text:
+    * An instance of InvalidNumber adds the invalid part directly.
+    * An instance of IntegerNumber adds digits, then the (optional) base suffix.
+    * An instance of RealNumber adds the significand and exponent parts, then the invalid part.

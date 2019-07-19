@@ -13,16 +13,18 @@
         /// </summary>
         /// <param name="integerText">The integer part of the the mantissa (before the dot).</param>
         /// <param name="fractionalText">The fractional part of the the mantissa (after the dot).</param>
-        /// <param name="explicitExponent">The exponent, if any.</param>
+        /// <param name="exponentCharacter">The exponent character.</param>
+        /// <param name="exponentSign">The exponent sign.</param>
         /// <param name="exponentText">The exponent text.</param>
         /// <param name="invalidText">The trailing invalid text, if any.</param>
         /// <param name="canonical">The canonical form of the number.</param>
-        public RealNumber(string integerText, string fractionalText, ExplicitExponents explicitExponent, string exponentText, string invalidText, ICanonicalNumber canonical)
+        public RealNumber(string integerText, string fractionalText, char exponentCharacter, OptionalSign exponentSign, string exponentText, string invalidText, ICanonicalNumber canonical)
             : base(0, invalidText, canonical)
         {
             IntegerText = integerText;
             FractionalText = fractionalText;
-            ExplicitExponent = explicitExponent;
+            ExponentCharacter = exponentCharacter;
+            ExponentSign = exponentSign;
             ExponentText = exponentText;
         }
         #endregion
@@ -39,12 +41,17 @@
         public string FractionalText { get; private set; }
 
         /// <summary>
-        /// The exponent, if any.
+        /// The exponent character.
         /// </summary>
-        public ExplicitExponents ExplicitExponent { get; private set; }
+        public char ExponentCharacter { get; private set; }
 
         /// <summary>
-        /// The exponent text, if <see cref="ExplicitExponent"/> is not <see cref="ExplicitExponents.None"/>.
+        /// The exponent, if any.
+        /// </summary>
+        public OptionalSign ExponentSign { get; private set; }
+
+        /// <summary>
+        /// The exponent text, if <see cref="ExponentSign"/> is not <see cref="OptionalSign.None"/>.
         /// </summary>
         public string ExponentText { get; private set; }
 
@@ -64,19 +71,20 @@
 
                 if (ExponentText.Length > 0)
                 {
+                    Result += ExponentCharacter;
+
                     bool IsHandled = false;
-                    switch (ExplicitExponent)
+                    switch (ExponentSign)
                     {
-                        case ExplicitExponents.None:
-                            Result += "e";
+                        case OptionalSign.None:
                             IsHandled = true;
                             break;
-                        case ExplicitExponents.Negative:
-                            Result += "e-";
+                        case OptionalSign.Negative:
+                            Result += "-";
                             IsHandled = true;
                             break;
-                        case ExplicitExponents.Positive:
-                            Result += "e+";
+                        case OptionalSign.Positive:
+                            Result += "+";
                             IsHandled = true;
                             break;
                     }
@@ -96,8 +104,8 @@
         /// </summary>
         public override string ToString()
         {
-            string Exp = ExplicitExponent == ExplicitExponents.None ? "E" : (ExplicitExponent == ExplicitExponents.Negative ? "E-" : "E+");
-            return $"{IntegerText}.{FractionalText}{Exp}{ExponentText}{base.ToString()}";
+            string Exp = ExponentSign == OptionalSign.None ? string.Empty : (ExponentSign == OptionalSign.Negative ? "-" : "+");
+            return $"{IntegerText}.{FractionalText}{ExponentCharacter}{Exp}{ExponentText}{base.ToString()}";
         }
         #endregion
     }

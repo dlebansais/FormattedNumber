@@ -9,9 +9,9 @@
     public interface ICanonicalNumber
     {
         /// <summary>
-        /// True if the number is negative.
+        /// The sign of the significand.
         /// </summary>
-        bool IsNegative { get; }
+        OptionalSign SignificandSign { get; }
 
         /// <summary>
         /// The significand.
@@ -19,9 +19,9 @@
         string SignificandText { get; }
 
         /// <summary>
-        /// True if the exponent is negative.
+        /// The sign of the exponent.
         /// </summary>
-        bool IsExponentNegative { get; }
+        OptionalSign ExponentSign { get; }
 
         /// <summary>
         /// The exponent.
@@ -65,26 +65,26 @@
         /// <summary>
         /// The canonical number for zero.
         /// </summary>
-        public static readonly CanonicalNumber Zero = new CanonicalNumber(false, IntegerBase.Zero, false, IntegerBase.Zero);
+        public static readonly CanonicalNumber Zero = new CanonicalNumber(OptionalSign.None, IntegerBase.Zero, OptionalSign.None, IntegerBase.Zero);
         #endregion
 
         #region Init
         /// <summary>
         /// Initializes a new instance of the <see cref="CanonicalNumber"/> class.
         /// </summary>
-        /// <param name="isNegative">True if the number is negative.</param>
+        /// <param name="significandSign">The sign of the significand.</param>
         /// <param name="significandText">The significand.</param>
-        /// <param name="isExponentNegative">True if the exponent is negative.</param>
+        /// <param name="exponentSign">The sign of the exponent.</param>
         /// <param name="exponentText">The exponent.</param>
-        public CanonicalNumber(bool isNegative, string significandText, bool isExponentNegative, string exponentText)
+        public CanonicalNumber(OptionalSign significandSign, string significandText, OptionalSign exponentSign, string exponentText)
         {
             Debug.Assert(IntegerBase.Decimal.IsValidSignificand(significandText));
             Debug.Assert(IntegerBase.Decimal.IsValidNumber(exponentText, supportLeadingZeroes: false));
-            Debug.Assert(significandText != IntegerBase.Zero || (!isNegative && !isExponentNegative && exponentText == IntegerBase.Zero));
+            Debug.Assert(significandText != IntegerBase.Zero || (significandSign != OptionalSign.Negative && exponentSign != OptionalSign.Negative && exponentText == IntegerBase.Zero));
 
-            IsNegative = isNegative;
+            SignificandSign = significandSign;
             SignificandText = significandText;
-            IsExponentNegative = isExponentNegative;
+            ExponentSign = exponentSign;
             ExponentText = exponentText;
 
             FormatCanonicString();
@@ -99,14 +99,14 @@
             if (n < 0)
             {
                 n = -n;
-                IsNegative = true;
+                SignificandSign = OptionalSign.Negative;
             }
             else
-                IsNegative = false;
+                SignificandSign = OptionalSign.None;
 
             string s = n.ToString();
 
-            IsExponentNegative = false;
+            ExponentSign = OptionalSign.None;
             ExponentText = (s.Length - 1).ToString();
 
             while (s.Length > 1 && s[s.Length - 1] == '0')
@@ -120,9 +120,9 @@
 
         #region Properties
         /// <summary>
-        /// True if the number is negative.
+        /// The sign of the significand.
         /// </summary>
-        public bool IsNegative { get; private set; }
+        public OptionalSign SignificandSign { get; private set; }
 
         /// <summary>
         /// The significand.
@@ -130,9 +130,9 @@
         public string SignificandText { get; private set; }
 
         /// <summary>
-        /// True if the exponent is negative.
+        /// The sign of the exponent.
         /// </summary>
-        public bool IsExponentNegative { get; private set; }
+        public OptionalSign ExponentSign { get; private set; }
 
         /// <summary>
         /// The exponent.
@@ -152,7 +152,7 @@
         /// <param name="other">The other instance.</param>
         public virtual bool IsEqual(ICanonicalNumber other)
         {
-            return IsNegative == other.IsNegative && SignificandText == other.SignificandText && IsExponentNegative == other.IsExponentNegative && ExponentText == other.ExponentText;
+            return SignificandSign == other.SignificandSign && SignificandText == other.SignificandText && ExponentSign == other.ExponentSign && ExponentText == other.ExponentText;
         }
 
         /// <summary>
@@ -160,7 +160,7 @@
         /// </summary>
         public virtual ICanonicalNumber OppositeOf()
         {
-            return new CanonicalNumber(!IsNegative, SignificandText, IsExponentNegative, ExponentText);
+            return new CanonicalNumber(SignificandSign == OptionalSign.Negative ? OptionalSign.None : OptionalSign.Negative, SignificandText, ExponentSign, ExponentText);
         }
 
         /// <summary>
@@ -179,7 +179,7 @@
         {
             value = 0;
 
-            if (IsExponentNegative)
+            if (ExponentSign == OptionalSign.Negative)
                 return false;
 
             if (SignificandText.Length > 10 || ExponentText.Length > 1)
@@ -199,6 +199,9 @@
             while (RemainingDigits-- > 0)
                 value *= 10;
 
+            if (SignificandSign == OptionalSign.Negative)
+                value = -value;
+
             return true;
         }
 
@@ -209,16 +212,22 @@
         /// <param name="number2">The second number.</param>
         public static bool operator <(CanonicalNumber number1, CanonicalNumber number2)
         {
+            bool IsNegative1 = number1.SignificandSign == OptionalSign.Negative;
+            bool IsNegative2 = number2.SignificandSign == OptionalSign.Negative;
+
             // Compare positive and negative numbers.
-            if (number1.IsNegative != number2.IsNegative)
-                return number1.IsNegative;
+            if (IsNegative1 != IsNegative2)
+                return IsNegative1;
+
+            bool IsExponentNegative1 = number1.ExponentSign == OptionalSign.Negative;
+            bool IsExponentNegative2 = number2.ExponentSign == OptionalSign.Negative;
 
             // If both positive or negative, compare positive and negative exponents.
-            if (number1.IsExponentNegative && !number2.IsExponentNegative)
-                return !number1.IsNegative;
+            if (IsExponentNegative1 && !IsExponentNegative2)
+                return !IsNegative1;
 
-            else if (!number1.IsExponentNegative && number2.IsExponentNegative)
-                return number1.IsNegative;
+            else if (!IsExponentNegative1 && IsExponentNegative2)
+                return IsNegative1;
 
             // If signs of significands and signs of exponents are identical.
             else
@@ -226,9 +235,9 @@
                 int ComparedExponent = string.Compare(number1.ExponentText, number2.ExponentText);
 
                 if (ComparedExponent < 0)
-                    return number1.IsNegative == number1.IsExponentNegative;
+                    return IsNegative1 == IsExponentNegative1;
                 else if (ComparedExponent > 0)
-                    return number1.IsNegative != number1.IsExponentNegative;
+                    return IsNegative1 != IsExponentNegative1;
 
                 // If exponents are identical, compare significands.
                 else
@@ -239,7 +248,7 @@
                     if (ComparedSignificand == 0)
                         return false;
                     else
-                        return (ComparedSignificand < 0) == number1.IsNegative;
+                        return (ComparedSignificand < 0) == IsNegative1;
                 }
             }
         }
@@ -264,12 +273,12 @@
             else
             {
                 if (SignificandText.Length == 1)
-                    CanonicRepresentation = SignificandText[0] + ".0e" + (IsExponentNegative ? "-" : "+") + ExponentText;
+                    CanonicRepresentation = SignificandText[0] + ".0e" + (ExponentSign == OptionalSign.Negative ? "-" : "+") + ExponentText;
 
                 else
-                    CanonicRepresentation = SignificandText[0] + "." + SignificandText.Substring(1) + "e" + (IsExponentNegative ? "-" : "+") + ExponentText;
+                    CanonicRepresentation = SignificandText[0] + "." + SignificandText.Substring(1) + "e" + (ExponentSign == OptionalSign.Negative ? "-" : "+") + ExponentText;
 
-                if (IsNegative)
+                if (SignificandSign == OptionalSign.Negative)
                     CanonicRepresentation = '-' + CanonicRepresentation;
             }
         }
