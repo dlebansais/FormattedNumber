@@ -221,9 +221,6 @@
             if (text.Length == 0)
                 return new InvalidNumber(text);
 
-            // Assume '.' as the decimal separator in what follows. This means '.' is ALWAYS a valid separator.
-            text = text.Replace(DecimalSeparator, ".");
-
             OptionalSign SignificandSign;
             int DigitStart;
 
@@ -273,15 +270,19 @@
             Debug.Assert(IntegerText.Length > 0 && IntegerText[0] != '0');
 
             int TrailingZeroesCount;
+            char SeparatorCharacter = DecimalSeparator[0];
 
             // If the number is a simple decimal number or continues with an invalid character, return now.
-            if (n >= text.Length || text[n] != '.')
+            // '.' is ALWAYS a valid separator.
+            if (n >= text.Length || (text[n] != '.' && text[n] != SeparatorCharacter))
             {
                 InvalidText = text.Substring(n);
                 DecimalExponent = (n - 1).ToString();
                 Canonical = new CanonicalNumber(SignificandSign, TrailingZeroesRemoved(IntegerText, out TrailingZeroesCount), OptionalSign.None, DecimalExponent);
                 return new IntegerNumber(0, IntegerText, InvalidText, Canonical);
             }
+
+            SeparatorCharacter = text[n];
 
             n++;
 
@@ -308,7 +309,7 @@
                 InvalidText = text.Substring(n);
                 SignificandText = IntegerText + FractionalText;
                 DecimalExponent = (IntegerText.Length - 1).ToString();
-                return new RealNumber(IntegerText, FractionalText, 'e', OptionalSign.None, string.Empty, InvalidText, new CanonicalNumber(SignificandSign, SignificandText, OptionalSign.None, DecimalExponent));
+                return new RealNumber(IntegerText, SeparatorCharacter, FractionalText, 'e', OptionalSign.None, string.Empty, InvalidText, new CanonicalNumber(SignificandSign, SignificandText, OptionalSign.None, DecimalExponent));
             }
 
             Debug.Assert(FractionalText.Length > 0);
@@ -323,7 +324,7 @@
             {
                 ValidText = text.Substring(DigitStart, 1);
                 InvalidText = text.Substring(DigitStart + ValidText.Length);
-                return new RealNumber(ValidText, string.Empty, ExponentCharacter, OptionalSign.None, string.Empty, InvalidText, new CanonicalNumber(SignificandSign, ValidText, OptionalSign.None, IntegerBase.Zero));
+                return new RealNumber(ValidText, SeparatorCharacter, string.Empty, ExponentCharacter, OptionalSign.None, string.Empty, InvalidText, new CanonicalNumber(SignificandSign, ValidText, OptionalSign.None, IntegerBase.Zero));
             }
 
             SignificandText = TrailingZeroesRemoved(IntegerText + FractionalText, out TrailingZeroesCount);
@@ -368,13 +369,13 @@
                 ValidText = text.Substring(DigitStart, MantissaEnd);
                 InvalidText = text.Substring(DigitStart + ValidText.Length);
                 DecimalExponent = (IntegerText.Length - 1).ToString();
-                return new RealNumber(IntegerText, FractionalText, ExponentCharacter, OptionalSign.None, string.Empty, InvalidText, new CanonicalNumber(SignificandSign, SignificandText, OptionalSign.None, DecimalExponent));
+                return new RealNumber(IntegerText, SeparatorCharacter, FractionalText, ExponentCharacter, OptionalSign.None, string.Empty, InvalidText, new CanonicalNumber(SignificandSign, SignificandText, OptionalSign.None, DecimalExponent));
             }
 
             // A number with a valid mantissa and explicit exponent.
             ValidText = text.Substring(DigitStart, ExponentEnd);
             InvalidText = text.Substring(DigitStart + ValidText.Length);
-            return new RealNumber(IntegerText, FractionalText, ExponentCharacter, ExponentSign, ExponentText, InvalidText, new CanonicalNumber(SignificandSign, SignificandText, ExponentSign, ExponentText));
+            return new RealNumber(IntegerText, SeparatorCharacter, FractionalText, ExponentCharacter, ExponentSign, ExponentText, InvalidText, new CanonicalNumber(SignificandSign, SignificandText, ExponentSign, ExponentText));
         }
 
         /// <summary>

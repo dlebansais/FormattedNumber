@@ -74,5 +74,9 @@ From an FormattedNumber object, one can reconstruct the original string:
 + Leading zeroes are generated.
 + Each type of Number object generate it's own specific text:
     * An instance of InvalidNumber adds the invalid part directly.
-    * An instance of IntegerNumber adds digits, then the (optional) base suffix.
-    * An instance of RealNumber adds the significand and exponent parts, then the invalid part.
+    * An instance of IntegerNumber adds digits, then the base suffix if any.
+    * An instance of RealNumber adds:
+        * The integer part of the significand,
+        * The decimal separator,
+        * The fractional part of the significand,
+        * 
