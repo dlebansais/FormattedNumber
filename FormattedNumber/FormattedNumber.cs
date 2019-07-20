@@ -3,6 +3,7 @@
     using System;
     using System.Diagnostics;
     using System.Globalization;
+    using PeterO.Numbers;
 
     /// <summary>
     /// Base interface for a number format that can parse any string.
@@ -78,11 +79,44 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="FormattedNumber"/> class.
         /// </summary>
+        /// <param name="canonical">The canonical form of the number.</param>
+        /// <exception cref="NullReferenceException"><paramref name="canonical"/> is null.</exception>
+        public static IFormattedNumber FromCanonical(ICanonicalNumber canonical)
+        {
+            return FromCanonical(0, string.Empty, canonical);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FormattedNumber"/> class.
+        /// </summary>
         /// <param name="leadingZeroesCount">The number of leading zeroes.</param>
         /// <param name="invalidText">The trailing invalid text, if any.</param>
         /// <param name="canonical">The canonical form of the number.</param>
         /// <exception cref="NullReferenceException"><paramref name="invalidText"/> or <paramref name="canonical"/> is null.</exception>
-        public FormattedNumber(int leadingZeroesCount, string invalidText, ICanonicalNumber canonical)
+        public static IFormattedNumber FromCanonical(int leadingZeroesCount, string invalidText, ICanonicalNumber canonical)
+        {
+            EFloat NumberFloat = canonical.NumberFloat;
+
+            EInteger Mantissa = NumberFloat.Mantissa;
+            string MantissaText = Mantissa.ToRadixString(IntegerBase.DecimalRadix);
+
+            EInteger Exponent = NumberFloat.Exponent;
+            string ExponentText = Exponent.ToRadixString(IntegerBase.DecimalRadix);
+            OptionalSign ExponentSign = ExponentText[0] == '-' ? OptionalSign.Negative : OptionalSign.None;
+            if (ExponentText[0] == '-')
+                ExponentText = ExponentText.Substring(1);
+
+            return new RealNumber(MantissaText, '.', "0", 'e', ExponentSign, ExponentText, string.Empty, canonical);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FormattedNumber"/> class.
+        /// </summary>
+        /// <param name="leadingZeroesCount">The number of leading zeroes.</param>
+        /// <param name="invalidText">The trailing invalid text, if any.</param>
+        /// <param name="canonical">The canonical form of the number.</param>
+        /// <exception cref="NullReferenceException"><paramref name="invalidText"/> or <paramref name="canonical"/> is null.</exception>
+        protected FormattedNumber(int leadingZeroesCount, string invalidText, ICanonicalNumber canonical)
         {
             LeadingZeroesCount = leadingZeroesCount;
             InvalidText = invalidText ?? throw new NullReferenceException(nameof(invalidText));

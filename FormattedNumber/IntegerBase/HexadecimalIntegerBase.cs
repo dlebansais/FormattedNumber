@@ -20,7 +20,7 @@
         /// <summary>
         /// The suffix for hexadecimal integers.
         /// </summary>
-        public override string Suffix { get { return ":H"; } }
+        public override string Suffix { get { return HexadecimalSuffix; } }
 
         /// <summary>
         /// The number of digits for hexadecimal integers.

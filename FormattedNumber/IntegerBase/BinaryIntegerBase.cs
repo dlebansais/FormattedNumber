@@ -20,7 +20,7 @@
         /// <summary>
         /// The suffix for binary integers.
         /// </summary>
-        public override string Suffix { get { return ":B"; } }
+        public override string Suffix { get { return BinarySuffix; } }
 
         /// <summary>
         /// The number of digits for binary integers.

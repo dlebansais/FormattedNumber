@@ -101,6 +101,21 @@
         public static readonly string Zero = "0";
 
         /// <summary>
+        /// The suffix for hexadecimal integers.
+        /// </summary>
+        public static readonly string HexadecimalSuffix = ":H";
+
+        /// <summary>
+        /// The suffix for octal integers.
+        /// </summary>
+        public static readonly string OctalSuffix = ":O";
+
+        /// <summary>
+        /// The suffix for binary integers.
+        /// </summary>
+        public static readonly string BinarySuffix = ":B";
+
+        /// <summary>
         /// The hexadecimal base.
         /// </summary>
         public static readonly IIntegerBase Hexadecimal = new HexadecimalIntegerBase();

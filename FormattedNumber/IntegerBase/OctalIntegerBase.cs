@@ -20,7 +20,7 @@
         /// <summary>
         /// The suffix for octal integers.
         /// </summary>
-        public override string Suffix { get { return ":O"; } }
+        public override string Suffix { get { return OctalSuffix; } }
 
         /// <summary>
         /// The number of digits for octal integers.

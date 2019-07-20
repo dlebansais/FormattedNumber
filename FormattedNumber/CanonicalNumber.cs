@@ -34,6 +34,11 @@
         string CanonicRepresentation { get; }
 
         /// <summary>
+        /// The float.
+        /// </summary>
+        EFloat NumberFloat { get; }
+
+        /// <summary>
         /// Checks if two numbers are equal.
         /// </summary>
         /// <param name="other">The other instance.</param>
@@ -89,7 +94,7 @@
 
             FormatCanonicString();
 
-            eFloat = CreateEFloat();
+            NumberFloat = CreateEFloat();
         }
 
         private EFloat CreateEFloat()
@@ -131,6 +136,43 @@
 
             FormatCanonicString();
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CanonicalNumber"/> class.
+        /// </summary>
+        /// <param name="f">An EFloat.</param>
+        public CanonicalNumber(EFloat f)
+        {
+            string MantissaText = f.Mantissa.ToRadixString(IntegerBase.DecimalRadix);
+            Debug.Assert(MantissaText.Length > 0 && (MantissaText[0] != '-' || MantissaText.Length > 1));
+            if (MantissaText[0] == '-')
+            {
+                SignificandSign = OptionalSign.Negative;
+                SignificandText = MantissaText.Substring(1);
+            }
+            else
+            {
+                SignificandSign = OptionalSign.None;
+                SignificandText = MantissaText;
+            }
+
+            string FloatExponentText = f.Exponent.ToRadixString(IntegerBase.DecimalRadix);
+            Debug.Assert(FloatExponentText.Length > 0 && (FloatExponentText[0] != '-' || FloatExponentText.Length > 1));
+            if (FloatExponentText[0] == '-')
+            {
+                ExponentSign = OptionalSign.Negative;
+                ExponentText = FloatExponentText.Substring(1);
+            }
+            else
+            {
+                ExponentSign = OptionalSign.None;
+                ExponentText = FloatExponentText;
+            }
+
+            FormatCanonicString();
+
+            NumberFloat = f;
+        }
         #endregion
 
         #region Properties
@@ -158,6 +200,11 @@
         /// The canonic representation.
         /// </summary>
         public string CanonicRepresentation { get; private set; }
+
+        /// <summary>
+        /// The float.
+        /// </summary>
+        public EFloat NumberFloat { get; private set; }
         #endregion
 
         #region Client Interface
@@ -279,6 +326,21 @@
         }
         #endregion
 
+        #region Arithmetic
+        /// <summary>
+        /// Returns the sum of two numbers.
+        /// </summary>
+        /// <param name="n1">The first number.</param>
+        /// <param name="n2">The second number.</param>
+        public static CanonicalNumber operator +(CanonicalNumber n1, CanonicalNumber n2)
+        {
+            EContext ctx = new EContext(20, ERounding.HalfEven, -128, +128, true);
+            EFloat Result = n1.NumberFloat.Add(n2.NumberFloat, ctx);
+
+            return new CanonicalNumber(Result);
+        }
+        #endregion
+
         #region Implementation
         private void FormatCanonicString()
         {
@@ -308,7 +370,5 @@
             return CanonicRepresentation;
         }
         #endregion
-
-        private EFloat eFloat;
     }
 }
