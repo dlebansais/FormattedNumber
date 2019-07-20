@@ -68,7 +68,7 @@
     <Compile Include="IntegerBase\HexadecimalIntegerBase.cs" />
     <Compile Include="IntegerBase\IntegerBase.cs" />
     <Compile Include="IntegerBase\OctalIntegerBase.cs" />
-    <Compile Include="InvalidNumber.cs" />
+    <Compile Include="FormattedNumber\FormattedInvalid.cs" />
     <Compile Include="Numbers\BigNumberFlags.cs" />
     <Compile Include="Numbers\BitShiftAccumulator.cs" />
     <Compile Include="Numbers\DigitShiftAccumulator.cs" />

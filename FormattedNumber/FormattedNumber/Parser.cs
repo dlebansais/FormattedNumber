@@ -40,7 +40,7 @@
         /// </summary>
         /// <param name="text">The string to parse.</param>
         /// <returns>
-        /// An instance of <see cref="InvalidNumber"/> if <paramref name="text"/> cannot be parsed as a number.
+        /// An instance of <see cref="FormattedInvalid"/> if <paramref name="text"/> cannot be parsed as a number.
         /// An instance of <see cref="FormattedInteger"/> if the valid part of the parsed number is an integer.
         /// An instance of <see cref="FormattedReal"/> if <paramref name="text"/> can be parsed, but not as an integer.
         /// </returns>
@@ -54,7 +54,7 @@
 
             // If empty, assume invalid.
             if (text.Length == 0)
-                return new InvalidNumber(text);
+                return new FormattedInvalid(text);
 
             // Parse the optional sign.
             OptionalSign NumberSign;
@@ -83,7 +83,7 @@
         {
             // If only a sign, assume invalid.
             if (text.Length <= digitStart)
-                return new InvalidNumber(text);
+                return new FormattedInvalid(text);
 
             int LeadingZeroesCount;
             string ValidText;
@@ -115,7 +115,7 @@
             {
                 // Reject numbers that don't start with a digit.
                 if (!IntegerBase.Decimal.IsValidDigit(text[digitStart], out DigitValue))
-                    return new InvalidNumber(text);
+                    return new FormattedInvalid(text);
 
                 int IntegerStart = digitStart;
 

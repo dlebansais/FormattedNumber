@@ -1,8 +1,8 @@
 ﻿namespace FormattedNumber
 {
-    using PeterO.Numbers;
     using System;
     using System.Diagnostics;
+    using PeterO.Numbers;
 
     /// <summary>
     /// Base interface for a number format that can parse any string.
