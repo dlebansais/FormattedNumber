@@ -25,7 +25,7 @@
         /// <summary>
         /// The number of digits for hexadecimal integers.
         /// </summary>
-        public override int Radix { get { return 16; } }
+        public override int Radix { get { return HexadecimalRadix; } }
         #endregion
 
         #region Client Interface

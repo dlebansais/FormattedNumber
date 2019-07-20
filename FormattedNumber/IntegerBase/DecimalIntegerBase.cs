@@ -25,7 +25,7 @@
         /// <summary>
         /// The number of digits for decimal integers.
         /// </summary>
-        public override int Radix { get { return 10; } }
+        public override int Radix { get { return DecimalRadix; } }
         #endregion
 
         #region Client Interface

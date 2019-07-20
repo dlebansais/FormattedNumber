@@ -25,7 +25,7 @@
         /// <summary>
         /// The number of digits for octal integers.
         /// </summary>
-        public override int Radix { get { return 8; } }
+        public override int Radix { get { return OctalRadix; } }
         #endregion
 
         #region Client Interface

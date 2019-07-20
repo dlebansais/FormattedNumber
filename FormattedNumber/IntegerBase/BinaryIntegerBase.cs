@@ -25,7 +25,7 @@
         /// <summary>
         /// The number of digits for binary integers.
         /// </summary>
-        public override int Radix { get { return 2; } }
+        public override int Radix { get { return BinaryRadix; } }
         #endregion
 
         #region Client Interface

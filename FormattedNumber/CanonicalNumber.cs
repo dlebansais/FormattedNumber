@@ -88,6 +88,21 @@
             ExponentText = exponentText;
 
             FormatCanonicString();
+
+            eFloat = CreateEFloat();
+        }
+
+        private EFloat CreateEFloat()
+        {
+            EInteger Mantissa = CreateEInteger(SignificandSign, SignificandText);
+            EInteger Exponent = CreateEInteger(ExponentSign, ExponentText);
+            return EFloat.Create(Exponent, Mantissa);
+        }
+
+        private EInteger CreateEInteger(OptionalSign sign, string text)
+        {
+            string SignedText = sign == OptionalSign.Negative ? "-" + text : text;
+            return EInteger.FromRadixString(SignedText, IntegerBase.DecimalRadix);
         }
 
         /// <summary>
@@ -294,6 +309,6 @@
         }
         #endregion
 
-        // private EFloat eFloat;
+        private EFloat eFloat;
     }
 }

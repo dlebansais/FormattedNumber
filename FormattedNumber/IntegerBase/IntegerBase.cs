@@ -76,6 +76,26 @@
     {
         #region Constants
         /// <summary>
+        /// The number of digits for hexadecimal integers.
+        /// </summary>
+        public const int HexadecimalRadix = 16;
+
+        /// <summary>
+        /// The number of digits for decimal integers.
+        /// </summary>
+        public const int DecimalRadix = 10;
+
+        /// <summary>
+        /// The number of digits for octal integers.
+        /// </summary>
+        public const int OctalRadix = 8;
+
+        /// <summary>
+        /// The number of digits for binary integers.
+        /// </summary>
+        public const int BinaryRadix = 2;
+
+        /// <summary>
         /// The zero.
         /// </summary>
         public static readonly string Zero = "0";
