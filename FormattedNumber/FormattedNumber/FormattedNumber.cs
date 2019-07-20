@@ -33,21 +33,27 @@
         /// <exception cref="NullReferenceException"><paramref name="canonical"/> is null.</exception>
         public static IFormattedNumber FromCanonical(ICanonicalNumber canonical)
         {
-            EFloat NumberFloat = canonical.NumberFloat;
+            string SignificandText = canonical.SignificandText;
 
-            EInteger Mantissa = NumberFloat.Mantissa;
-            string MantissaText = Mantissa.ToRadixString(IntegerBase.DecimalRadix);
-            OptionalSign Sign = MantissaText[0] == '-' ? OptionalSign.Negative : OptionalSign.None;
-            if (MantissaText[0] == '-')
-                MantissaText = MantissaText.Substring(1);
+            int SeparatorOffset = SignificandText.IndexOf(Parser.NeutralDecimalSeparator);
+            string IntegerText;
+            char SeparatorCharacter;
+            string FractionalText;
 
-            EInteger Exponent = NumberFloat.Exponent;
-            string ExponentText = Exponent.ToRadixString(IntegerBase.DecimalRadix);
-            OptionalSign ExponentSign = ExponentText[0] == '-' ? OptionalSign.Negative : OptionalSign.None;
-            if (ExponentText[0] == '-')
-                ExponentText = ExponentText.Substring(1);
+            if (SeparatorOffset > 0)
+            {
+                IntegerText = SignificandText.Substring(0, SeparatorOffset);
+                SeparatorCharacter = Parser.NeutralDecimalSeparator;
+                FractionalText = SignificandText.Substring(SeparatorOffset + 1);
+            }
+            else
+            {
+                IntegerText = SignificandText;
+                SeparatorCharacter = Parser.NoSeparator;
+                FractionalText = string.Empty;
+            }
 
-            return new FormattedReal(Sign, 0, MantissaText, '.', "0", 'e', ExponentSign, ExponentText, string.Empty, canonical);
+            return new FormattedReal(canonical.SignificandSign, 0, IntegerText, SeparatorCharacter, FractionalText, 'e', canonical.ExponentSign, canonical.ExponentText, string.Empty, canonical);
         }
 
         /// <summary>
@@ -107,7 +113,7 @@
             string Result = string.Empty;
 
             for (int i = 0; i < leadingZeroesCount; i++)
-                Result += "0";
+                Result += IntegerBase.Zero;
 
             return Result;
         }

@@ -78,12 +78,30 @@
         /// Initializes a new instance of the <see cref="CanonicalNumber"/> class.
         /// </summary>
         /// <param name="significandSign">The sign of the significand.</param>
+        /// <param name="integerText">The integer significand.</param>
+        public CanonicalNumber(OptionalSign significandSign, string integerText)
+        {
+            Debug.Assert(integerText != IntegerBase.Zero);
+
+            SignificandSign = significandSign;
+            SignificandText = integerText + Parser.NeutralDecimalSeparator + IntegerBase.Zero;
+            ExponentSign = OptionalSign.None;
+            ExponentText = IntegerBase.Zero;
+
+            FormatCanonicString();
+
+            NumberFloat = CreateEFloat();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CanonicalNumber"/> class.
+        /// </summary>
+        /// <param name="significandSign">The sign of the significand.</param>
         /// <param name="significandText">The significand.</param>
         /// <param name="exponentSign">The sign of the exponent.</param>
         /// <param name="exponentText">The exponent.</param>
         public CanonicalNumber(OptionalSign significandSign, string significandText, OptionalSign exponentSign, string exponentText)
         {
-            Debug.Assert(IntegerBase.Decimal.IsValidSignificand(significandText));
             Debug.Assert(IntegerBase.Decimal.IsValidNumber(exponentText, supportLeadingZeroes: false));
             Debug.Assert(significandText != IntegerBase.Zero || (significandSign != OptionalSign.Negative && exponentSign != OptionalSign.Negative && exponentText == IntegerBase.Zero));
 
@@ -95,20 +113,11 @@
             FormatCanonicString();
 
             NumberFloat = CreateEFloat();
-            string s = NumberFloat.ToString();
         }
 
         private EFloat CreateEFloat()
         {
-            EInteger Mantissa = CreateEInteger(SignificandSign, SignificandText);
-            EInteger Exponent = CreateEInteger(ExponentSign, ExponentText);
-            return EFloat.Create(Mantissa, Exponent);
-        }
-
-        private EInteger CreateEInteger(OptionalSign sign, string text)
-        {
-            string SignedText = sign == OptionalSign.Negative ? "-" + text : text;
-            return EInteger.FromRadixString(SignedText, IntegerBase.DecimalRadix);
+            return EFloat.FromString(CanonicRepresentation);
         }
 
         /// <summary>
@@ -125,17 +134,13 @@
             else
                 SignificandSign = OptionalSign.None;
 
-            string s = n.ToString();
-
+            SignificandText = n.ToString() + Parser.NeutralDecimalSeparator + IntegerBase.Zero;
             ExponentSign = OptionalSign.None;
-            ExponentText = (s.Length - 1).ToString();
-
-            while (s.Length > 1 && s[s.Length - 1] == '0')
-                s = s.Substring(0, s.Length - 1);
-
-            SignificandText = s;
+            ExponentText = IntegerBase.Zero;
 
             FormatCanonicString();
+
+            NumberFloat = CreateEFloat();
         }
 
         /// <summary>
@@ -144,7 +149,8 @@
         /// <param name="f">An EFloat.</param>
         public CanonicalNumber(EFloat f)
         {
-            string MantissaText = f.Mantissa.ToRadixString(IntegerBase.DecimalRadix);
+            string MantissaText = f.ToString();
+
             Debug.Assert(MantissaText.Length > 0 && (MantissaText[0] != '-' || MantissaText.Length > 1));
             if (MantissaText[0] == '-')
             {
@@ -157,22 +163,13 @@
                 SignificandText = MantissaText;
             }
 
-            string FloatExponentText = f.Exponent.ToRadixString(IntegerBase.DecimalRadix);
-            Debug.Assert(FloatExponentText.Length > 0 && (FloatExponentText[0] != '-' || FloatExponentText.Length > 1));
-            if (FloatExponentText[0] == '-')
-            {
-                ExponentSign = OptionalSign.Negative;
-                ExponentText = FloatExponentText.Substring(1);
-            }
-            else
-            {
-                ExponentSign = OptionalSign.None;
-                ExponentText = FloatExponentText;
-            }
+            ExponentSign = OptionalSign.None;
+            ExponentText = IntegerBase.Zero;
 
             FormatCanonicString();
 
-            NumberFloat = f;
+            NumberFloat = CreateEFloat();
+            Debug.Assert(f.EqualsInternal(f));
         }
         #endregion
 
@@ -349,13 +346,20 @@
                 CanonicRepresentation = IntegerBase.Zero;
             else
             {
-                if (SignificandText.Length == 1)
-                    CanonicRepresentation = SignificandText[0] + ".0e" + (ExponentSign == OptionalSign.Negative ? "-" : "+") + ExponentText;
-                else
-                    CanonicRepresentation = SignificandText[0] + "." + SignificandText.Substring(1) + "e" + (ExponentSign == OptionalSign.Negative ? "-" : "+") + ExponentText;
+                string Mantissa;
+                string Exponent;
 
                 if (SignificandSign == OptionalSign.Negative)
-                    CanonicRepresentation = '-' + CanonicRepresentation;
+                    Mantissa = "-" + SignificandText;
+                else
+                    Mantissa = SignificandText;
+
+                if (ExponentSign == OptionalSign.Negative)
+                    Exponent = "-" + ExponentText;
+                else
+                    Exponent = ExponentText;
+
+                CanonicRepresentation = Mantissa + "e" + Exponent;
             }
         }
         #endregion

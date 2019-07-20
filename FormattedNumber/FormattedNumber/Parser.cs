@@ -90,13 +90,13 @@
             string InvalidText;
             char SeparatorCharacter;
             char NonDigitCharacter;
-            string DecimalExponent;
             string SignificandText;
             ICanonicalNumber Canonical;
             int DigitValue;
             int n;
             OptionalSign ExponentSign;
             string IntegerText;
+            string ExponentText;
 
             // Check the first digit.
             char FirstDigit = text[digitStart];
@@ -155,16 +155,15 @@
                 {
                     Debug.Assert(IntegerText.Length > 0);
                     Debug.Assert(n > digitStart);
-                    DecimalExponent = (n - digitStart + 1).ToString();
 
-                    Canonical = new CanonicalNumber(numberSign, IntegerText, OptionalSign.None, DecimalExponent);
+                    Canonical = new CanonicalNumber(numberSign, IntegerText);
                     return new FormattedInteger(IntegerBase.Decimal, numberSign, LeadingZeroesCount, IntegerText, string.Empty, Canonical);
                 }
 
                 // Handle the case of 0 followed by a non-decimal digit.
                 if (IntegerText.Length == 0 && LeadingZeroesCount > 0)
                 {
-                    IntegerText = "0";
+                    IntegerText = IntegerBase.Zero;
                     LeadingZeroesCount--;
                 }
 
@@ -177,40 +176,17 @@
                 if ((NonDigitCharacter >= 'a' && NonDigitCharacter <= 'f') || (NonDigitCharacter >= 'A' && NonDigitCharacter <= 'F'))
                     return ParseHexadecimal(text, numberSign, digitStart);
 
-                string HexadecimalSuffix = IntegerBase.HexadecimalSuffix;
-                string OctalSuffix = IntegerBase.OctalSuffix;
-                string BinarySuffix = IntegerBase.BinarySuffix;
+                IFormattedNumber NumberWithSuffix;
 
                 // If the number is an hexadecimal integer, with its suffix but just decimal digits.
-                if (n + HexadecimalSuffix.Length <= text.Length && text.Substring(n, HexadecimalSuffix.Length) == HexadecimalSuffix)
-                {
-                    // Convert to decimal. The result can start or finish with a zero
-                    string DecimalSignificand = IntegerBase.Convert(IntegerText, IntegerBase.Hexadecimal, IntegerBase.Decimal);
-                    DecimalExponent = (DecimalSignificand.Length - 1).ToString();
-
-                    Canonical = new CanonicalNumber(numberSign, DecimalSignificand, OptionalSign.None, DecimalExponent);
-                    return new FormattedInteger(IntegerBase.Hexadecimal, numberSign, LeadingZeroesCount, IntegerText, string.Empty, Canonical);
-                }
+                if (ParseWithSuffix(text, numberSign, LeadingZeroesCount, n, IntegerText, IntegerBase.Hexadecimal, out NumberWithSuffix))
+                    return NumberWithSuffix;
                 // If the number is an octal integer.
-                else if (n + OctalSuffix.Length <= text.Length && text.Substring(n, OctalSuffix.Length) == OctalSuffix)
-                {
-                    // Convert to decimal. The result can start or finish with a zero
-                    string DecimalSignificand = IntegerBase.Convert(IntegerText, IntegerBase.Octal, IntegerBase.Decimal);
-                    DecimalExponent = (DecimalSignificand.Length - 1).ToString();
-
-                    Canonical = new CanonicalNumber(numberSign, DecimalSignificand, OptionalSign.None, DecimalExponent);
-                    return new FormattedInteger(IntegerBase.Octal, numberSign, LeadingZeroesCount, IntegerText, string.Empty, Canonical);
-                }
+                else if (ParseWithSuffix(text, numberSign, LeadingZeroesCount, n, IntegerText, IntegerBase.Octal, out NumberWithSuffix))
+                    return NumberWithSuffix;
                 // If the number is a binary integer.
-                else if (n + BinarySuffix.Length <= text.Length && text.Substring(n, BinarySuffix.Length) == BinarySuffix)
-                {
-                    // Convert to decimal. The result can start or finish with a zero
-                    string DecimalSignificand = IntegerBase.Convert(IntegerText, IntegerBase.Binary, IntegerBase.Decimal);
-                    DecimalExponent = (DecimalSignificand.Length - 1).ToString();
-
-                    Canonical = new CanonicalNumber(numberSign, DecimalSignificand, OptionalSign.None, DecimalExponent);
-                    return new FormattedInteger(IntegerBase.Binary, numberSign, LeadingZeroesCount, IntegerText, string.Empty, Canonical);
-                }
+                else if (ParseWithSuffix(text, numberSign, LeadingZeroesCount, n, IntegerText, IntegerBase.Binary, out NumberWithSuffix))
+                    return NumberWithSuffix;
             }
 
             string FractionalText;
@@ -239,26 +215,10 @@
             if (n == text.Length || (text[n] != 'e' && text[n] != 'E'))
             {
                 InvalidText = text.Substring(n);
-                SignificandText = IntegerText + FractionalText;
-                int Exponent = IntegerText.Length - 1;
-                while (SignificandText.Length > 1 && SignificandText[0] == '0')
-                {
-                    Exponent--;
-                    SignificandText = SignificandText.Substring(1);
-                }
+                SignificandText = IntegerText + NeutralDecimalSeparator + FractionalText;
 
-                if (Exponent < 0)
-                {
-                    ExponentSign = OptionalSign.Negative;
-                    Exponent = -Exponent;
-                }
-                else
-                    ExponentSign = OptionalSign.None;
-
-                DecimalExponent = Exponent.ToString();
-
-                Canonical = new CanonicalNumber(numberSign, SignificandText, ExponentSign, DecimalExponent);
-                return new FormattedReal(numberSign, LeadingZeroesCount, IntegerText, SeparatorCharacter, FractionalText, NoSeparator, ExponentSign, DecimalExponent, InvalidText, Canonical);
+                Canonical = new CanonicalNumber(numberSign, SignificandText, OptionalSign.None, IntegerBase.Zero);
+                return new FormattedReal(numberSign, LeadingZeroesCount, IntegerText, SeparatorCharacter, FractionalText, NoSeparator, OptionalSign.None, string.Empty, InvalidText, Canonical);
             }
 
             Debug.Assert(n < text.Length);
@@ -266,7 +226,7 @@
             char ExponentCharacter = text[n];
             Debug.Assert(ExponentCharacter == 'e' || ExponentCharacter == 'E');
 
-            SignificandText = IntegerText + FractionalText;
+            SignificandText = IntegerText + NeutralDecimalSeparator + FractionalText;
 
             int MantissaEnd = n;
             n++;
@@ -295,15 +255,15 @@
                 n++;
             int ExponentEnd = n;
 
-            string ExponentText = text.Substring(ExponentBegin, ExponentEnd - ExponentBegin);
+            ExponentText = text.Substring(ExponentBegin, ExponentEnd - ExponentBegin);
 
             // The exponent cannot be empty, and must not start with zero. In that case, the valid part ends at the exponent character.
             if (ExponentText.Length == 0 || ExponentText[0] == '0')
             {
                 ValidText = text.Substring(digitStart, MantissaEnd);
                 InvalidText = text.Substring(digitStart + ValidText.Length);
-                DecimalExponent = (IntegerText.Length - 1).ToString();
-                Canonical = new CanonicalNumber(numberSign, SignificandText, OptionalSign.None, DecimalExponent);
+
+                Canonical = new CanonicalNumber(numberSign, SignificandText, OptionalSign.None, IntegerBase.Zero);
                 return new FormattedReal(numberSign, LeadingZeroesCount, IntegerText, SeparatorCharacter, FractionalText, ExponentCharacter, OptionalSign.None, string.Empty, InvalidText, Canonical);
             }
 
@@ -359,9 +319,8 @@
             {
                 // Convert to decimal. The result can start or finish with a zero
                 string DecimalSignificand = IntegerBase.Convert(IntegerText, IntegerBase.Hexadecimal, IntegerBase.Decimal);
-                string DecimalExponent = (DecimalSignificand.Length - 1).ToString();
 
-                ICanonicalNumber Canonical = new CanonicalNumber(numberSign, DecimalSignificand, OptionalSign.None, DecimalExponent);
+                ICanonicalNumber Canonical = new CanonicalNumber(numberSign, DecimalSignificand);
                 return new FormattedInteger(IntegerBase.Hexadecimal, numberSign, LeadingZeroesCount, IntegerText, string.Empty, Canonical);
             }
             else
@@ -369,10 +328,36 @@
                 // If not valid, the number is the best decimal integer we can get.
                 IntegerText = text.Substring(digitStart, LastDecimalDigitOffset - digitStart);
                 string InvalidText = text.Substring(LastDecimalDigitOffset);
-                string DecimalExponent = (IntegerText.Length - 1).ToString();
 
-                ICanonicalNumber Canonical = new CanonicalNumber(numberSign, IntegerText, OptionalSign.None, DecimalExponent);
+                ICanonicalNumber Canonical = new CanonicalNumber(numberSign, IntegerText);
                 return new FormattedInteger(IntegerBase.Hexadecimal, numberSign, LeadingZeroesCount, IntegerText, string.Empty, Canonical);
+            }
+        }
+
+        private static bool ParseWithSuffix(string text, OptionalSign numberSign, int leadingZeroesCount, int index, string integerText, IIntegerBase integerBase, out IFormattedNumber number)
+        {
+            string Suffix = integerBase.Suffix;
+            ICanonicalNumber Canonical;
+
+            // If the number is an hexadecimal integer, with its suffix but just decimal digits.
+            if (index + Suffix.Length <= text.Length && text.Substring(index, Suffix.Length) == Suffix)
+            {
+                if (integerText == IntegerBase.Zero)
+                    Canonical = CanonicalNumber.Zero;
+                else
+                {
+                    // Convert to decimal. The result can start or finish with a zero
+                    string DecimalSignificand = IntegerBase.Convert(integerText, integerBase, IntegerBase.Decimal);
+                    Canonical = new CanonicalNumber(numberSign, DecimalSignificand);
+                }
+
+                number = new FormattedInteger(integerBase, numberSign, leadingZeroesCount, integerText, string.Empty, Canonical);
+                return true;
+            }
+            else
+            {
+                number = null;
+                return false;
             }
         }
         #endregion
