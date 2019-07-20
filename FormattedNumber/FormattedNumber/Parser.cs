@@ -95,6 +95,7 @@
             ICanonicalNumber Canonical;
             int DigitValue;
             int n;
+            OptionalSign ExponentSign;
             string IntegerText;
 
             // Check the first digit.
@@ -153,14 +154,21 @@
                 if (n == text.Length)
                 {
                     Debug.Assert(IntegerText.Length > 0);
-                    Debug.Assert(n > digitStart + 1);
-                    DecimalExponent = (n - (digitStart + 1)).ToString();
+                    Debug.Assert(n > digitStart);
+                    DecimalExponent = (n - digitStart + 1).ToString();
 
                     Canonical = new CanonicalNumber(numberSign, IntegerText, OptionalSign.None, DecimalExponent);
                     return new FormattedInteger(IntegerBase.Decimal, numberSign, LeadingZeroesCount, IntegerText, string.Empty, Canonical);
                 }
 
-                Debug.Assert(IntegerText.Length > 0 && IntegerText[0] != '0');
+                // Handle the case of 0 followed by a non-decimal digit.
+                if (IntegerText.Length == 0 && LeadingZeroesCount > 0)
+                {
+                    IntegerText = "0";
+                    LeadingZeroesCount--;
+                }
+
+                Debug.Assert(IntegerText.Length > 0);
                 Debug.Assert(n < text.Length);
 
                 NonDigitCharacter = text[n];
@@ -232,9 +240,25 @@
             {
                 InvalidText = text.Substring(n);
                 SignificandText = IntegerText + FractionalText;
-                DecimalExponent = (IntegerText.Length - 1).ToString();
-                Canonical = new CanonicalNumber(numberSign, SignificandText, OptionalSign.None, DecimalExponent);
-                return new FormattedReal(numberSign, LeadingZeroesCount, IntegerText, SeparatorCharacter, FractionalText, 'e', OptionalSign.None, string.Empty, InvalidText, Canonical);
+                int Exponent = IntegerText.Length - 1;
+                while (SignificandText.Length > 1 && SignificandText[0] == '0')
+                {
+                    Exponent--;
+                    SignificandText = SignificandText.Substring(1);
+                }
+
+                if (Exponent < 0)
+                {
+                    ExponentSign = OptionalSign.Negative;
+                    Exponent = -Exponent;
+                }
+                else
+                    ExponentSign = OptionalSign.None;
+
+                DecimalExponent = Exponent.ToString();
+
+                Canonical = new CanonicalNumber(numberSign, SignificandText, ExponentSign, DecimalExponent);
+                return new FormattedReal(numberSign, LeadingZeroesCount, IntegerText, SeparatorCharacter, FractionalText, NoSeparator, ExponentSign, DecimalExponent, InvalidText, Canonical);
             }
 
             Debug.Assert(n < text.Length);
@@ -247,7 +271,7 @@
             int MantissaEnd = n;
             n++;
 
-            OptionalSign ExponentSign = OptionalSign.None;
+            ExponentSign = OptionalSign.None;
 
             // Allow exponent sign.
             if (n < text.Length)
@@ -319,6 +343,9 @@
             if (LastDecimalDigitOffset < 0)
                 LastDecimalDigitOffset = n;
 
+            if (LeadingZeroesCount < 0)
+                LeadingZeroesCount = 0;
+
             Debug.Assert(n > digitStart);
             string IntegerText = text.Substring(digitStart, n - digitStart);
 
@@ -340,8 +367,9 @@
             else
             {
                 // If not valid, the number is the best decimal integer we can get.
+                IntegerText = text.Substring(digitStart, LastDecimalDigitOffset - digitStart);
                 string InvalidText = text.Substring(LastDecimalDigitOffset);
-                string DecimalExponent = (LastDecimalDigitOffset - (digitStart + 1)).ToString();
+                string DecimalExponent = (IntegerText.Length - 1).ToString();
 
                 ICanonicalNumber Canonical = new CanonicalNumber(numberSign, IntegerText, OptionalSign.None, DecimalExponent);
                 return new FormattedInteger(IntegerBase.Hexadecimal, numberSign, LeadingZeroesCount, IntegerText, string.Empty, Canonical);

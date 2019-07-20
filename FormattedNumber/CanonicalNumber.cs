@@ -95,13 +95,14 @@
             FormatCanonicString();
 
             NumberFloat = CreateEFloat();
+            string s = NumberFloat.ToString();
         }
 
         private EFloat CreateEFloat()
         {
             EInteger Mantissa = CreateEInteger(SignificandSign, SignificandText);
             EInteger Exponent = CreateEInteger(ExponentSign, ExponentText);
-            return EFloat.Create(Exponent, Mantissa);
+            return EFloat.Create(Mantissa, Exponent);
         }
 
         private EInteger CreateEInteger(OptionalSign sign, string text)
@@ -346,12 +347,10 @@
         {
             if (SignificandText == IntegerBase.Zero)
                 CanonicRepresentation = IntegerBase.Zero;
-
             else
             {
                 if (SignificandText.Length == 1)
                     CanonicRepresentation = SignificandText[0] + ".0e" + (ExponentSign == OptionalSign.Negative ? "-" : "+") + ExponentText;
-
                 else
                     CanonicRepresentation = SignificandText[0] + "." + SignificandText.Substring(1) + "e" + (ExponentSign == OptionalSign.Negative ? "-" : "+") + ExponentText;
 
