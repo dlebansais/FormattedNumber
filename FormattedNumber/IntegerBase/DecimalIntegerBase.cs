@@ -20,7 +20,7 @@
         /// <summary>
         /// The suffix for decimal integers.
         /// </summary>
-        public override string Suffix { get { return null; } }
+        public override string Suffix { get { return string.Empty; } }
 
         /// <summary>
         /// The number of digits for decimal integers.

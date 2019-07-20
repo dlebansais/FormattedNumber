@@ -19,6 +19,11 @@
         /// The dot (unicode U+002E) is always considered a valid separator.
         /// </summary>
         public static readonly char NeutralDecimalSeparator = '.';
+
+        /// <summary>
+        /// The character to use when a number doesn't contain the decimal separator.
+        /// </summary>
+        public static readonly char NoSeparator = '\0';
         #endregion
 
         #region Init
@@ -80,6 +85,7 @@
             if (text.Length <= digitStart)
                 return new InvalidNumber(text);
 
+            int LeadingZeroesCount;
             string ValidText;
             string InvalidText;
             char SeparatorCharacter;
@@ -100,6 +106,7 @@
 
             if (FirstDigit == NeutralDecimalSeparator || FirstDigit == DecimalSeparator)
             {
+                LeadingZeroesCount = 0;
                 NonDigitCharacter = FirstDigit;
                 n = digitStart;
                 IntegerText = string.Empty;
@@ -119,7 +126,7 @@
                         IntegerStart++;
                 }
 
-                int LeadingZeroesCount = IntegerStart - digitStart;
+                LeadingZeroesCount = IntegerStart - digitStart;
 
                 // If the number only contains zeroes, parse it as the value 0.
                 if (text.Length == IntegerStart)
@@ -129,7 +136,7 @@
                     // The last zero is not a leading zero if there is nothing else after.
                     LeadingZeroesCount--;
 
-                    return new IntegerNumber(LeadingZeroesCount, IntegerBase.Zero, text.Substring(digitStart + 1), CanonicalNumber.Zero);
+                    return new FormattedDecimalInteger(numberSign, LeadingZeroesCount, IntegerBase.Zero, text.Substring(digitStart + 1), CanonicalNumber.Zero);
                 }
 
                 // At this point, we have covered 0, 0000, +0, -0, +0000, -0000 etc.
@@ -150,7 +157,7 @@
                     DecimalExponent = (n - (digitStart + 1)).ToString();
 
                     Canonical = new CanonicalNumber(numberSign, IntegerText, OptionalSign.None, DecimalExponent);
-                    return new IntegerNumber(LeadingZeroesCount, IntegerText, string.Empty, Canonical);
+                    return new FormattedDecimalInteger(numberSign, LeadingZeroesCount, IntegerText, string.Empty, Canonical);
                 }
 
                 Debug.Assert(IntegerText.Length > 0 && IntegerText[0] != '0');
@@ -174,7 +181,7 @@
                     DecimalExponent = (DecimalSignificand.Length - 1).ToString();
 
                     Canonical = new CanonicalNumber(numberSign, DecimalSignificand, OptionalSign.None, DecimalExponent);
-                    return new IntegerNumber(LeadingZeroesCount, IntegerText, string.Empty, Canonical);
+                    return new FormattedHexadecimalInteger(numberSign, LeadingZeroesCount, IntegerText, string.Empty, Canonical);
                 }
                 // If the number is an octal integer.
                 else if (n + OctalSuffix.Length <= text.Length && text.Substring(n, OctalSuffix.Length) == OctalSuffix)
@@ -184,7 +191,7 @@
                     DecimalExponent = (DecimalSignificand.Length - 1).ToString();
 
                     Canonical = new CanonicalNumber(numberSign, DecimalSignificand, OptionalSign.None, DecimalExponent);
-                    return new IntegerNumber(LeadingZeroesCount, IntegerText, string.Empty, Canonical);
+                    return new FormattedOctalInteger(numberSign, LeadingZeroesCount, IntegerText, string.Empty, Canonical);
                 }
                 // If the number is a binary integer.
                 else if (n + BinarySuffix.Length <= text.Length && text.Substring(n, BinarySuffix.Length) == BinarySuffix)
@@ -194,7 +201,7 @@
                     DecimalExponent = (DecimalSignificand.Length - 1).ToString();
 
                     Canonical = new CanonicalNumber(numberSign, DecimalSignificand, OptionalSign.None, DecimalExponent);
-                    return new IntegerNumber(LeadingZeroesCount, IntegerText, string.Empty, Canonical);
+                    return new FormattedBinaryInteger(numberSign, LeadingZeroesCount, IntegerText, string.Empty, Canonical);
                 }
             }
 
@@ -216,7 +223,7 @@
             }
             else
             {
-                SeparatorCharacter = '\0';
+                SeparatorCharacter = NoSeparator;
                 FractionalText = string.Empty;
             }
 
@@ -226,7 +233,8 @@
                 InvalidText = text.Substring(n);
                 SignificandText = IntegerText + FractionalText;
                 DecimalExponent = (IntegerText.Length - 1).ToString();
-                return new RealNumber(IntegerText, SeparatorCharacter, FractionalText, 'e', OptionalSign.None, string.Empty, InvalidText, new CanonicalNumber(numberSign, SignificandText, OptionalSign.None, DecimalExponent));
+                Canonical = new CanonicalNumber(numberSign, SignificandText, OptionalSign.None, DecimalExponent);
+                return new FormattedReal(numberSign, LeadingZeroesCount, IntegerText, SeparatorCharacter, FractionalText, 'e', OptionalSign.None, string.Empty, InvalidText, Canonical);
             }
 
             Debug.Assert(n < text.Length);
@@ -271,13 +279,15 @@
                 ValidText = text.Substring(digitStart, MantissaEnd);
                 InvalidText = text.Substring(digitStart + ValidText.Length);
                 DecimalExponent = (IntegerText.Length - 1).ToString();
-                return new RealNumber(IntegerText, SeparatorCharacter, FractionalText, ExponentCharacter, OptionalSign.None, string.Empty, InvalidText, new CanonicalNumber(numberSign, SignificandText, OptionalSign.None, DecimalExponent));
+                Canonical = new CanonicalNumber(numberSign, SignificandText, OptionalSign.None, DecimalExponent);
+                return new FormattedReal(numberSign, LeadingZeroesCount, IntegerText, SeparatorCharacter, FractionalText, ExponentCharacter, OptionalSign.None, string.Empty, InvalidText, Canonical);
             }
 
             // A number with a valid mantissa and explicit exponent.
             ValidText = text.Substring(digitStart, ExponentEnd - digitStart);
             InvalidText = text.Substring(digitStart + ValidText.Length);
-            return new RealNumber(IntegerText, SeparatorCharacter, FractionalText, ExponentCharacter, ExponentSign, ExponentText, InvalidText, new CanonicalNumber(numberSign, SignificandText, ExponentSign, ExponentText));
+            Canonical = new CanonicalNumber(numberSign, SignificandText, ExponentSign, ExponentText);
+            return new FormattedReal(numberSign, LeadingZeroesCount, IntegerText, SeparatorCharacter, FractionalText, ExponentCharacter, ExponentSign, ExponentText, InvalidText, Canonical);
         }
 
         private static IFormattedNumber ParseHexadecimal(string text, OptionalSign numberSign, int digitStart)
@@ -325,7 +335,7 @@
                 string DecimalExponent = (DecimalSignificand.Length - 1).ToString();
 
                 ICanonicalNumber Canonical = new CanonicalNumber(numberSign, DecimalSignificand, OptionalSign.None, DecimalExponent);
-                return new IntegerNumber(LeadingZeroesCount, IntegerText, string.Empty, Canonical);
+                return new FormattedHexadecimalInteger(numberSign, LeadingZeroesCount, IntegerText, string.Empty, Canonical);
             }
             else
             {
@@ -334,7 +344,7 @@
                 string DecimalExponent = (LastDecimalDigitOffset - (digitStart + 1)).ToString();
 
                 ICanonicalNumber Canonical = new CanonicalNumber(numberSign, IntegerText, OptionalSign.None, DecimalExponent);
-                return new IntegerNumber(LeadingZeroesCount, IntegerText, string.Empty, Canonical);
+                return new FormattedHexadecimalInteger(numberSign, LeadingZeroesCount, IntegerText, string.Empty, Canonical);
             }
         }
         #endregion
