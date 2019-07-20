@@ -47,7 +47,7 @@
             if (ExponentText[0] == '-')
                 ExponentText = ExponentText.Substring(1);
 
-            return new FormattedRealNumber(Sign, 0, MantissaText, '.', "0", 'e', ExponentSign, ExponentText, string.Empty, canonical);
+            return new FormattedReal(Sign, 0, MantissaText, '.', "0", 'e', ExponentSign, ExponentText, string.Empty, canonical);
         }
 
         /// <summary>

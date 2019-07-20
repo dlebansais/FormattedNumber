@@ -58,10 +58,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CanonicalNumber.cs" />
-    <Compile Include="FormattedNumber\FormattedDecimalInteger.cs" />
-    <Compile Include="FormattedNumber\FormattedBinaryInteger.cs" />
-    <Compile Include="FormattedNumber\FormattedOctalInteger.cs" />
-    <Compile Include="FormattedNumber\FormattedHexadecimalInteger.cs" />
     <Compile Include="FormattedNumber\FormattedNumber.cs" />
     <Compile Include="FormattedNumber\FormattedInteger.cs" />
     <Compile Include="FormattedNumber\FormattedReal.cs" />
@@ -72,8 +68,6 @@
     <Compile Include="IntegerBase\HexadecimalIntegerBase.cs" />
     <Compile Include="IntegerBase\IntegerBase.cs" />
     <Compile Include="IntegerBase\OctalIntegerBase.cs" />
-    <Compile Include="IntegerNumber.cs" />
-    <Compile Include="IntegerNumberWithBase.cs" />
     <Compile Include="InvalidNumber.cs" />
     <Compile Include="Numbers\BigNumberFlags.cs" />
     <Compile Include="Numbers\BitShiftAccumulator.cs" />
@@ -104,7 +98,6 @@
     <Compile Include="Numbers\TrappableRadixMath.cs" />
     <Compile Include="OptionalSign.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RealNumber.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
