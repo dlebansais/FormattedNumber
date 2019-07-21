@@ -11,7 +11,17 @@
         /// </summary>
         /// <param name="invalidText">The invalid text.</param>
         public FormattedInvalid(string invalidText)
-            : base(invalidText, CanonicalNumber.Zero)
+            : base(invalidText, CanonicalNumber.NaN)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FormattedInvalid"/> class.
+        /// </summary>
+        /// <param name="invalidText">The invalid text.</param>
+        /// <param name="canonical">The canonical form of the number.</param>
+        public FormattedInvalid(string invalidText, CanonicalNumber canonical)
+            : base(invalidText, canonical)
         {
         }
         #endregion

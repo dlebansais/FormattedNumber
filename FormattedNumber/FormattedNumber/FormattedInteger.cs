@@ -5,33 +5,7 @@
     /// <summary>
     /// A real number and its components.
     /// </summary>
-    public interface IFormattedInteger : IFormattedNumber
-    {
-        /// <summary>
-        /// Gets the optional sign.
-        /// </summary>
-        OptionalSign Sign { get; }
-
-        /// <summary>
-        /// Gets the number of leading zeroes.
-        /// </summary>
-        int LeadingZeroesCount { get; }
-
-        /// <summary>
-        /// Gets the integer text.
-        /// </summary>
-        string IntegerText { get; }
-
-        /// <summary>
-        /// The base.
-        /// </summary>
-        IIntegerBase IntegerBase { get; }
-    }
-
-    /// <summary>
-    /// A real number and its components.
-    /// </summary>
-    public class FormattedInteger : FormattedNumber, IFormattedInteger
+    public class FormattedInteger : FormattedNumber
     {
         #region Init
         /// <summary>
@@ -44,7 +18,7 @@
         /// <param name="invalidText">The trailing invalid text, if any.</param>
         /// <param name="canonical">The canonical form of the number.</param>
         /// <exception cref="NullReferenceException"><paramref name="invalidText"/> or <paramref name="canonical"/> is null.</exception>
-        public FormattedInteger(IIntegerBase integerBase, OptionalSign sign, int leadingZeroesCount, string integerText, string invalidText, ICanonicalNumber canonical)
+        public FormattedInteger(IIntegerBase integerBase, OptionalSign sign, int leadingZeroesCount, string integerText, string invalidText, CanonicalNumber canonical)
             : base(invalidText, canonical)
         {
             Sign = sign;

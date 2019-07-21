@@ -5,34 +5,44 @@
     using PeterO.Numbers;
 
     /// <summary>
-    /// Base interface for a number format that can parse any string.
-    /// </summary>
-    public interface IFormattedNumber
-    {
-        /// <summary>
-        /// The trailing invalid text, if any.
-        /// </summary>
-        string InvalidText { get; }
-
-        /// <summary>
-        /// The canonical form of the parsed number.
-        /// </summary>
-        ICanonicalNumber Canonical { get; }
-    }
-
-    /// <summary>
     /// Base class for a number format that can parse any string.
     /// </summary>
-    public abstract class FormattedNumber : IFormattedNumber
+    public abstract class FormattedNumber
     {
+        #region Constants
+        /// <summary>
+        /// The formatted number for NaN.
+        /// </summary>
+        public static readonly FormattedNumber NaN = new FormattedInvalid(string.Empty, CanonicalNumber.NaN);
+
+        /// <summary>
+        /// The canonical number for positive infinity.
+        /// </summary>
+        public static readonly FormattedNumber PositiveInfinity = new FormattedInvalid(string.Empty, CanonicalNumber.PositiveInfinity);
+
+        /// <summary>
+        /// The canonical number for negative infinity.
+        /// </summary>
+        public static readonly FormattedNumber NegativeInfinity = new FormattedInvalid(string.Empty, CanonicalNumber.NegativeInfinity);
+        #endregion
+
         #region Init
         /// <summary>
         /// Initializes a new instance of the <see cref="FormattedNumber"/> class.
         /// </summary>
         /// <param name="canonical">The canonical form of the number.</param>
         /// <exception cref="NullReferenceException"><paramref name="canonical"/> is null.</exception>
-        public static IFormattedNumber FromCanonical(ICanonicalNumber canonical)
+        public static FormattedNumber FromCanonical(CanonicalNumber canonical)
         {
+            if (canonical == CanonicalNumber.NaN)
+                return NaN;
+
+            if (canonical == CanonicalNumber.PositiveInfinity)
+                return PositiveInfinity;
+
+            if (canonical == CanonicalNumber.NegativeInfinity)
+                return NegativeInfinity;
+
             string SignificandText = canonical.SignificandText;
 
             int SeparatorOffset = SignificandText.IndexOf(Parser.NeutralDecimalSeparator);
@@ -62,7 +72,7 @@
         /// <param name="invalidText">The trailing invalid text, if any.</param>
         /// <param name="canonical">The canonical form of the number.</param>
         /// <exception cref="NullReferenceException"><paramref name="invalidText"/> or <paramref name="canonical"/> is null.</exception>
-        protected FormattedNumber(string invalidText, ICanonicalNumber canonical)
+        protected FormattedNumber(string invalidText, CanonicalNumber canonical)
         {
             InvalidText = invalidText ?? throw new NullReferenceException(nameof(invalidText));
             Canonical = canonical ?? throw new NullReferenceException(nameof(canonical));
@@ -78,7 +88,7 @@
         /// <summary>
         /// The canonical form of the parsed number.
         /// </summary>
-        public ICanonicalNumber Canonical { get; }
+        public CanonicalNumber Canonical { get; }
         #endregion
 
         #region Implementation
@@ -115,6 +125,34 @@
             for (int i = 0; i < leadingZeroesCount; i++)
                 Result += IntegerBase.Zero;
 
+            return Result;
+        }
+        #endregion
+
+        #region Arithmetic
+        /// <summary>
+        /// Returns the sum of two numbers: x + y.
+        /// </summary>
+        /// <param name="x">The first number.</param>
+        /// <param name="y">The second number.</param>
+        public static FormattedNumber operator +(FormattedNumber x, FormattedNumber y)
+        {
+            CanonicalNumber OperationResult = x.Canonical + y.Canonical;
+
+            FormattedNumber Result = FromCanonical(OperationResult);
+            return Result;
+        }
+
+        /// <summary>
+        /// Returns the ratio of two numbers: x / y.
+        /// </summary>
+        /// <param name="x">The first number.</param>
+        /// <param name="y">The second number.</param>
+        public static FormattedNumber operator /(FormattedNumber x, FormattedNumber y)
+        {
+            CanonicalNumber OperationResult = x.Canonical / y.Canonical;
+
+            FormattedNumber Result = FromCanonical(OperationResult);
             return Result;
         }
         #endregion

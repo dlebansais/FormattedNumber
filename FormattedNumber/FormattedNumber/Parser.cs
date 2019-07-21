@@ -45,7 +45,7 @@
         /// An instance of <see cref="FormattedReal"/> if <paramref name="text"/> can be parsed, but not as an integer.
         /// </returns>
         /// <exception cref="NullReferenceException"><paramref name="text"/> is null.</exception>
-        public static IFormattedNumber Parse(string text)
+        public static FormattedNumber Parse(string text)
         {
             if (text == null)
                 throw new NullReferenceException(nameof(text));
@@ -79,7 +79,7 @@
             return ParseWithSign(text, NumberSign, DigitStart);
         }
 
-        private static IFormattedNumber ParseWithSign(string text, OptionalSign numberSign, int digitStart)
+        private static FormattedNumber ParseWithSign(string text, OptionalSign numberSign, int digitStart)
         {
             // If only a sign, assume invalid.
             if (text.Length <= digitStart)
@@ -91,7 +91,7 @@
             char SeparatorCharacter;
             char NonDigitCharacter;
             string SignificandText;
-            ICanonicalNumber Canonical;
+            CanonicalNumber Canonical;
             int DigitValue;
             int n;
             OptionalSign ExponentSign;
@@ -176,7 +176,7 @@
                 if ((NonDigitCharacter >= 'a' && NonDigitCharacter <= 'f') || (NonDigitCharacter >= 'A' && NonDigitCharacter <= 'F'))
                     return ParseHexadecimal(text, numberSign, digitStart);
 
-                IFormattedNumber NumberWithSuffix;
+                FormattedNumber NumberWithSuffix;
 
                 // If the number is an hexadecimal integer, with its suffix but just decimal digits.
                 if (ParseWithSuffix(text, numberSign, LeadingZeroesCount, n, IntegerText, IntegerBase.Hexadecimal, out NumberWithSuffix))
@@ -274,7 +274,7 @@
             return new FormattedReal(numberSign, LeadingZeroesCount, IntegerText, SeparatorCharacter, FractionalText, ExponentCharacter, ExponentSign, ExponentText, InvalidText, Canonical);
         }
 
-        private static IFormattedNumber ParseHexadecimal(string text, OptionalSign numberSign, int digitStart)
+        private static FormattedNumber ParseHexadecimal(string text, OptionalSign numberSign, int digitStart)
         {
             // We're here because we know the number has a chance to be an hexadecimal integer.
             Debug.Assert(text.Length > digitStart + 1);
@@ -320,7 +320,7 @@
                 // Convert to decimal. The result can start or finish with a zero
                 string DecimalSignificand = IntegerBase.Convert(IntegerText, IntegerBase.Hexadecimal, IntegerBase.Decimal);
 
-                ICanonicalNumber Canonical = new CanonicalNumber(numberSign, DecimalSignificand);
+                CanonicalNumber Canonical = new CanonicalNumber(numberSign, DecimalSignificand);
                 return new FormattedInteger(IntegerBase.Hexadecimal, numberSign, LeadingZeroesCount, IntegerText, string.Empty, Canonical);
             }
             else
@@ -329,15 +329,15 @@
                 IntegerText = text.Substring(digitStart, LastDecimalDigitOffset - digitStart);
                 string InvalidText = text.Substring(LastDecimalDigitOffset);
 
-                ICanonicalNumber Canonical = new CanonicalNumber(numberSign, IntegerText);
+                CanonicalNumber Canonical = new CanonicalNumber(numberSign, IntegerText);
                 return new FormattedInteger(IntegerBase.Hexadecimal, numberSign, LeadingZeroesCount, IntegerText, string.Empty, Canonical);
             }
         }
 
-        private static bool ParseWithSuffix(string text, OptionalSign numberSign, int leadingZeroesCount, int index, string integerText, IIntegerBase integerBase, out IFormattedNumber number)
+        private static bool ParseWithSuffix(string text, OptionalSign numberSign, int leadingZeroesCount, int index, string integerText, IIntegerBase integerBase, out FormattedNumber number)
         {
             string Suffix = integerBase.Suffix;
-            ICanonicalNumber Canonical;
+            CanonicalNumber Canonical;
 
             // If the number is an hexadecimal integer, with its suffix but just decimal digits.
             if (index + Suffix.Length <= text.Length && text.Substring(index, Suffix.Length) == Suffix)

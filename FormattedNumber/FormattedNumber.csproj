@@ -57,7 +57,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Arithmetic.cs" />
+    <Compile Include="CanonicalNumberInternal.cs" />
     <Compile Include="CanonicalNumber.cs" />
+    <Compile Include="Flags.cs" />
     <Compile Include="FormattedNumber\FormattedNumber.cs" />
     <Compile Include="FormattedNumber\FormattedInteger.cs" />
     <Compile Include="FormattedNumber\FormattedReal.cs" />

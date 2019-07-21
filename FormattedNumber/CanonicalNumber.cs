@@ -6,71 +6,28 @@
     /// <summary>
     /// Interface to manipulate integer or real numbers of any size.
     /// </summary>
-    public interface ICanonicalNumber
-    {
-        /// <summary>
-        /// The sign of the significand.
-        /// </summary>
-        OptionalSign SignificandSign { get; }
-
-        /// <summary>
-        /// The significand.
-        /// </summary>
-        string SignificandText { get; }
-
-        /// <summary>
-        /// The sign of the exponent.
-        /// </summary>
-        OptionalSign ExponentSign { get; }
-
-        /// <summary>
-        /// The exponent.
-        /// </summary>
-        string ExponentText { get; }
-
-        /// <summary>
-        /// The canonic representation.
-        /// </summary>
-        string CanonicRepresentation { get; }
-
-        /// <summary>
-        /// The float.
-        /// </summary>
-        EFloat NumberFloat { get; }
-
-        /// <summary>
-        /// Checks if two numbers are equal.
-        /// </summary>
-        /// <param name="other">The other instance.</param>
-        bool IsEqual(ICanonicalNumber other);
-
-        /// <summary>
-        /// Returns the opposite number.
-        /// </summary>
-        ICanonicalNumber OppositeOf();
-
-        /// <summary>
-        /// Checks if this instance is greater than another constant.
-        /// </summary>
-        bool IsGreater(ICanonicalNumber other);
-
-        /// <summary>
-        /// Gets the value if it can be represented with a <see cref="int"/>.
-        /// </summary>
-        /// <param name="value">The value upon return.</param>
-        bool TryParseInt(out int value);
-    }
-
-    /// <summary>
-    /// Interface to manipulate integer or real numbers of any size.
-    /// </summary>
-    public class CanonicalNumber : ICanonicalNumber
+    public class CanonicalNumber : CanonicalNumberInternal
     {
         #region Constants
         /// <summary>
         /// The canonical number for zero.
         /// </summary>
         public static readonly CanonicalNumber Zero = new CanonicalNumber(OptionalSign.None, IntegerBase.Zero, OptionalSign.None, IntegerBase.Zero);
+
+        /// <summary>
+        /// The canonical number for NaN.
+        /// </summary>
+        public static readonly CanonicalNumber NaN = new CanonicalNumber(EFloat.NaN);
+
+        /// <summary>
+        /// The canonical number for positive infinity.
+        /// </summary>
+        public static readonly CanonicalNumber PositiveInfinity = new CanonicalNumber(EFloat.PositiveInfinity);
+
+        /// <summary>
+        /// The canonical number for negative infinity.
+        /// </summary>
+        public static readonly CanonicalNumber NegativeInfinity = new CanonicalNumber(EFloat.NegativeInfinity);
         #endregion
 
         #region Init
@@ -147,8 +104,24 @@
         /// Initializes a new instance of the <see cref="CanonicalNumber"/> class.
         /// </summary>
         /// <param name="f">An EFloat.</param>
-        public CanonicalNumber(EFloat f)
+        public static CanonicalNumber FromEFloat(EFloat f)
         {
+            if (f.IsNaN())
+                return NaN;
+
+            if (f.IsPositiveInfinity())
+                return PositiveInfinity;
+
+            if (f.IsNegativeInfinity())
+                return NegativeInfinity;
+
+            Debug.Assert(f.IsFinite);
+
+            OptionalSign SignificandSign;
+            string SignificandText;
+            OptionalSign ExponentSign;
+            string ExponentText;
+
             string MantissaText = f.ToString();
 
             Debug.Assert(MantissaText.Length > 0 && (MantissaText[0] != '-' || MantissaText.Length > 1));
@@ -166,10 +139,26 @@
             ExponentSign = OptionalSign.None;
             ExponentText = IntegerBase.Zero;
 
-            FormatCanonicString();
+            CanonicalNumber Result = new CanonicalNumber(SignificandSign, SignificandText, ExponentSign, ExponentText);
 
-            NumberFloat = CreateEFloat();
-            Debug.Assert(f.EqualsInternal(f));
+            return Result;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CanonicalNumber"/> class.
+        /// </summary>
+        /// <param name="f">An EFloat.</param>
+        private CanonicalNumber(EFloat f)
+        {
+            Debug.Assert(f.IsNaN() || f.IsInfinity());
+
+            SignificandSign = OptionalSign.None;
+            SignificandText = null;
+            ExponentSign = OptionalSign.None;
+            ExponentText = null;
+
+            NumberFloat = f;
+            CanonicRepresentation = f.ToString();
         }
         #endregion
 
@@ -210,7 +199,7 @@
         /// Checks if two numbers are equal.
         /// </summary>
         /// <param name="other">The other instance.</param>
-        public virtual bool IsEqual(ICanonicalNumber other)
+        public virtual bool IsEqual(CanonicalNumber other)
         {
             return SignificandSign == other.SignificandSign && SignificandText == other.SignificandText && ExponentSign == other.ExponentSign && ExponentText == other.ExponentText;
         }
@@ -218,7 +207,7 @@
         /// <summary>
         /// Returns the opposite number.
         /// </summary>
-        public virtual ICanonicalNumber OppositeOf()
+        public virtual CanonicalNumber OppositeOf()
         {
             return new CanonicalNumber(SignificandSign == OptionalSign.Negative ? OptionalSign.None : OptionalSign.Negative, SignificandText, ExponentSign, ExponentText);
         }
@@ -226,7 +215,7 @@
         /// <summary>
         /// Checks if this instance is greater than another constant.
         /// </summary>
-        public virtual bool IsGreater(ICanonicalNumber other)
+        public virtual bool IsGreater(CanonicalNumber other)
         {
             return this > (CanonicalNumber)other;
         }
@@ -326,16 +315,31 @@
 
         #region Arithmetic
         /// <summary>
-        /// Returns the sum of two numbers.
+        /// Returns the sum of two numbers: x + y.
         /// </summary>
-        /// <param name="n1">The first number.</param>
-        /// <param name="n2">The second number.</param>
-        public static CanonicalNumber operator +(CanonicalNumber n1, CanonicalNumber n2)
+        /// <param name="x">The first number.</param>
+        /// <param name="y">The second number.</param>
+        public static CanonicalNumber operator +(CanonicalNumber x, CanonicalNumber y)
         {
-            EContext ctx = new EContext(20, ERounding.HalfEven, -128, +128, true);
-            EFloat Result = n1.NumberFloat.Add(n2.NumberFloat, ctx);
+            EFloat OperationResult = x.NumberFloat.Add(y.NumberFloat, LastContext);
+            UpdateFlags();
 
-            return new CanonicalNumber(Result);
+            CanonicalNumber Result = FromEFloat(OperationResult);
+            return Result;
+        }
+
+        /// <summary>
+        /// Returns the ratio of two numbers: x / y.
+        /// </summary>
+        /// <param name="x">The first number.</param>
+        /// <param name="y">The second number.</param>
+        public static CanonicalNumber operator /(CanonicalNumber x, CanonicalNumber y)
+        {
+            EFloat OperationResult = x.NumberFloat.Divide(y.NumberFloat, LastContext);
+            UpdateFlags();
+
+            CanonicalNumber Result = FromEFloat(OperationResult);
+            return Result;
         }
         #endregion
 
