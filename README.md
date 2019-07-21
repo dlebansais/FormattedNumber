@@ -31,7 +31,7 @@ For example, `0C4A9EF2:H` is parsed as one leading zero, significand `C4A9EF2` i
 
 ## Arbitrary precision
 
-The precision at which operations are performed is not infinite, but is arbitrary, and can be tuned using the `Arithmetic` class (see the [Arithmetic doc](https://github.com/dlebansais/FormattedNumber/Doc/Arithmetic.doc)).
+The precision at which operations are performed is not infinite, but is arbitrary, and can be tuned using the `Arithmetic` class (see the [Arithmetic doc](https://github.com/dlebansais/FormattedNumber/blob/master/Doc/Arithmetic.md)).
 
 This is done using a fork of [Peter Occil](https://github.com/peteroupc)'s [Numbers](https://github.com/peteroupc/Numbers) project. If you like this software, considered donating at the link provided in the main page of that project.
 
@@ -50,25 +50,25 @@ We first read the optional sign.
 
 Then we extract leading zeroes. They are all removed from the significand unless the last zero is followed by a separator, an integer suffix, the exponent character or plain invalid text.
 
-Once the leading zeroes are handled, the number is parsed as follow:
+Once leading zeroes are handled, the number is parsed as follow:
 
 1. The string `0` gives an instance of `FormattedInteger` with the value 0.
-+ A valid significand can start with an optional `+` or `-`, and is either an integer or a real number.
++ A valid significand is either an integer or a real number.
 	* The string is parsed as a decimal integer.
 	* If not a valid decimal integer, and the string ends with a base suffix, it is parsed as an integer in that base.
 	* If parsing as an integer failed, the string is parsed as a real number.
-+ A real number begins with (at least one) decimal digits, and is followed by the decimal separator as specified by the current culture. A dot is also always accepted as decimal separator.
-+ If there is no decimal separator, digits are parsed to obtain an instance of an `FormattedInteger`, followed by an invalid part.
-+ If there is a decimal separator, and digits are not followed by the `e` or `E` characters, they are parsed to obtain an instance of a `FormattedReal`, followed by an invalid part.
++ A real number begins with (at least one) decimal digits, and is followed by the decimal separator as specified by the current culture (a dot is also always accepted as decimal separator), or an exponent.
++ If there is no decimal separator and exponent, digits are parsed to obtain an instance of an `FormattedInteger`, followed by an invalid part.
++ If there is a decimal separator, and digits are not followed by the `e` or `E` character, they are parsed to obtain an instance of a `FormattedReal`, followed by an invalid part.
 + If the exponent character is found, it can optionally be followed by either `+` or `-`, and decimal digits (the first digit is not allowed to be 0). Unless this first digit exists, the exponent is not valid and treated as the case above.
 + If found, the exponent is parsed to the last digit. The number is then an instance of `FormattedReal` with this exponent, and whatever follows is the invalid string part.
 
 ### Reconstructing the string
 
-From an `FormattedNumber` object, one can reconstruct the original string. Each type of formatted number concatenates its own relevant information:
+From a `FormattedNumber` object, one can reconstruct the original string. Each type of formatted number concatenates its own relevant information:
 
 + `FormattedInvalid`
-    * The NaN, ∞ or -∞ string, depending on the type of the invalid number.
+    * The `NaN`, `∞` or `-∞` string, depending on the type of invalid number.
     * The invalid part, if any.
 + `FormattedInteger`
     * The sign, if any.
