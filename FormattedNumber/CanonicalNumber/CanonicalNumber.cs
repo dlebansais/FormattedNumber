@@ -328,7 +328,62 @@
         /// <param name="y">The second number.</param>
         public static CanonicalNumber operator +(CanonicalNumber x, CanonicalNumber y)
         {
-            EFloat OperationResult = x.NumberFloat.Add(y.NumberFloat, LastContext);
+            return x.Add(y);
+        }
+
+        /// <summary>
+        /// Returns the sum of this number and another.
+        /// </summary>
+        /// <param name="other">The other number.</param>
+        public CanonicalNumber Add(CanonicalNumber other)
+        {
+            EFloat OperationResult = NumberFloat.Add(other.NumberFloat, LastContext);
+            UpdateFlags();
+
+            CanonicalNumber Result = FromEFloat(OperationResult);
+            return Result;
+        }
+
+        /// <summary>
+        /// Returns the difference between two numbers: x - y.
+        /// </summary>
+        /// <param name="x">The first number.</param>
+        /// <param name="y">The second number.</param>
+        public static CanonicalNumber operator -(CanonicalNumber x, CanonicalNumber y)
+        {
+            return x.Subtract(y);
+        }
+
+        /// <summary>
+        /// Returns the difference between this number and another.
+        /// </summary>
+        /// <param name="other">The other number.</param>
+        public CanonicalNumber Subtract(CanonicalNumber other)
+        {
+            EFloat OperationResult = NumberFloat.Subtract(other.NumberFloat, LastContext);
+            UpdateFlags();
+
+            CanonicalNumber Result = FromEFloat(OperationResult);
+            return Result;
+        }
+
+        /// <summary>
+        /// Returns the product of two numbers: x * y.
+        /// </summary>
+        /// <param name="x">The first number.</param>
+        /// <param name="y">The second number.</param>
+        public static CanonicalNumber operator *(CanonicalNumber x, CanonicalNumber y)
+        {
+            return x.Multiply(y);
+        }
+
+        /// <summary>
+        /// Returns the product of this number and another.
+        /// </summary>
+        /// <param name="other">The other number.</param>
+        public CanonicalNumber Multiply(CanonicalNumber other)
+        {
+            EFloat OperationResult = NumberFloat.Multiply(other.NumberFloat, LastContext);
             UpdateFlags();
 
             CanonicalNumber Result = FromEFloat(OperationResult);
@@ -342,7 +397,16 @@
         /// <param name="y">The second number.</param>
         public static CanonicalNumber operator /(CanonicalNumber x, CanonicalNumber y)
         {
-            EFloat OperationResult = x.NumberFloat.Divide(y.NumberFloat, LastContext);
+            return x.Divide(y);
+        }
+
+        /// <summary>
+        /// Returns the ratio of this number and another.
+        /// </summary>
+        /// <param name="other">The other number.</param>
+        public CanonicalNumber Divide(CanonicalNumber other)
+        {
+            EFloat OperationResult = NumberFloat.Divide(other.NumberFloat, LastContext);
             UpdateFlags();
 
             CanonicalNumber Result = FromEFloat(OperationResult);

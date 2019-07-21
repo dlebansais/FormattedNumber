@@ -98,6 +98,12 @@
         public string InvalidText { get; }
 
         /// <summary>
+        /// True if the number is valid.
+        /// A valid number is finite in the sense of arithmetic (not NaN, not infinite), and has no trailing invalid text.
+        /// </summary>
+        public abstract bool IsValid { get; }
+
+        /// <summary>
         /// The canonical form of the parsed number.
         /// </summary>
         public CanonicalNumber Canonical { get; }
