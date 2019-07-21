@@ -107,7 +107,6 @@
             {
                 string SignText = GetSignText(Sign);
                 string LeadingZeroesText = GetLeadingZeroesText(LeadingZeroesCount);
-                string ExponentSignText = GetSignText(ExponentSign);
 
                 string SignificandText;
                 if (SeparatorCharacter != Parser.NoSeparator)
@@ -141,6 +140,21 @@
         /// A valid number is finite in the sense of arithmetic (not NaN, not infinite), and has no trailing invalid text.
         /// </summary>
         public override bool IsValid { get { return InvalidText.Length == 0; } }
+
+        /// <summary>
+        /// A diagnostic string for debug purpose.
+        /// </summary>
+        public override string Diagnostic
+        {
+            get
+            {
+                string SignText = GetSignText(Sign);
+                string LeadingZeroesText = GetLeadingZeroesText(LeadingZeroesCount);
+                string ExponentSignText = GetSignText(ExponentSign);
+
+                return $"{SignText}/{LeadingZeroesText}/{IntegerText}/{(int)SeparatorCharacter}/{FractionalText}/{(int)ExponentCharacter}/{ExponentSignText}/{ExponentText}/{InvalidText}";
+            }
+        }
         #endregion
 
         #region Client Interface

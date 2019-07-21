@@ -107,6 +107,11 @@
         /// The canonical form of the parsed number.
         /// </summary>
         public CanonicalNumber Canonical { get; }
+
+        /// <summary>
+        /// A diagnostic string for debug purpose.
+        /// </summary>
+        public abstract string Diagnostic { get; }
         #endregion
 
         #region Implementation

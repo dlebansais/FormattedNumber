@@ -102,7 +102,7 @@
             char FirstDigit = text[digitStart];
 
             // We parse hexadecimal if it's detected at the first digit, and we tolerate real starting directly with the fractional part.
-            if ((FirstDigit >= 'a' && FirstDigit <= 'f') || (FirstDigit >= 'A' && FirstDigit <= 'F'))
+            if (((FirstDigit >= 'a' && FirstDigit <= 'f') || (FirstDigit >= 'A' && FirstDigit <= 'F')) && text.Contains(IntegerBase.HexadecimalSuffix))
                 return ParseHexadecimal(text, numberSign, digitStart);
 
             if (FirstDigit == NeutralDecimalSeparator || FirstDigit == DecimalSeparator)
@@ -173,7 +173,7 @@
                 NonDigitCharacter = text[n];
 
                 // We parse hexadecimal if it's detected at any digit.
-                if ((NonDigitCharacter >= 'a' && NonDigitCharacter <= 'f') || (NonDigitCharacter >= 'A' && NonDigitCharacter <= 'F'))
+                if (((NonDigitCharacter >= 'a' && NonDigitCharacter <= 'f') || (NonDigitCharacter >= 'A' && NonDigitCharacter <= 'F')) && text.Contains(IntegerBase.HexadecimalSuffix))
                     return ParseHexadecimal(text, numberSign, digitStart);
 
                 FormattedNumber NumberWithSuffix;
@@ -215,10 +215,16 @@
             if (n == text.Length || (text[n] != 'e' && text[n] != 'E'))
             {
                 InvalidText = text.Substring(n);
-                SignificandText = IntegerText + NeutralDecimalSeparator + FractionalText;
 
-                Canonical = new CanonicalNumber(numberSign, SignificandText, OptionalSign.None, IntegerBase.Zero);
-                return new FormattedReal(numberSign, LeadingZeroesCount, IntegerText, SeparatorCharacter, FractionalText, NoSeparator, OptionalSign.None, string.Empty, InvalidText, Canonical);
+                if (IntegerText.Length > 0 || FractionalText.Length > 0)
+                {
+                    SignificandText = IntegerText + NeutralDecimalSeparator + FractionalText;
+
+                    Canonical = new CanonicalNumber(numberSign, SignificandText, OptionalSign.None, IntegerBase.Zero);
+                    return new FormattedReal(numberSign, LeadingZeroesCount, IntegerText, SeparatorCharacter, FractionalText, NoSeparator, OptionalSign.None, string.Empty, InvalidText, Canonical);
+                }
+                else
+                    return new FormattedInvalid(text);
             }
 
             Debug.Assert(n < text.Length);
@@ -226,7 +232,10 @@
             char ExponentCharacter = text[n];
             Debug.Assert(ExponentCharacter == 'e' || ExponentCharacter == 'E');
 
-            SignificandText = IntegerText + NeutralDecimalSeparator + FractionalText;
+            if (SeparatorCharacter == NoSeparator)
+                SignificandText = IntegerText + FractionalText;
+            else
+                SignificandText = IntegerText + NeutralDecimalSeparator + FractionalText;
 
             int MantissaEnd = n;
             n++;
@@ -260,24 +269,40 @@
             // The exponent cannot be empty, and must not start with zero. In that case, the valid part ends at the exponent character.
             if (ExponentText.Length == 0 || ExponentText[0] == '0')
             {
-                ValidText = text.Substring(digitStart, MantissaEnd);
+                ValidText = text.Substring(digitStart, MantissaEnd - digitStart);
                 InvalidText = text.Substring(digitStart + ValidText.Length);
 
-                Canonical = new CanonicalNumber(numberSign, SignificandText, OptionalSign.None, IntegerBase.Zero);
-                return new FormattedReal(numberSign, LeadingZeroesCount, IntegerText, SeparatorCharacter, FractionalText, ExponentCharacter, OptionalSign.None, string.Empty, InvalidText, Canonical);
+                if (IntegerText.Length > 0 || FractionalText.Length > 0)
+                {
+                    if (SignificandText == IntegerBase.Zero)
+                        Canonical = CanonicalNumber.Zero;
+                    else
+                        Canonical = new CanonicalNumber(numberSign, SignificandText, OptionalSign.None, IntegerBase.Zero);
+
+                    return new FormattedReal(numberSign, LeadingZeroesCount, IntegerText, SeparatorCharacter, FractionalText, NoSeparator, OptionalSign.None, string.Empty, InvalidText, Canonical);
+                }
+                else
+                    return new FormattedInvalid(text);
             }
+
+            // If the significand is 0, the exponent doesn't matter.
+            if (SignificandText == IntegerBase.Zero)
+                Canonical = CanonicalNumber.Zero;
+            else if (IntegerText.Length == 0 && FractionalText.Length == 0)
+                return new FormattedInvalid(text);
+            else
+                Canonical = new CanonicalNumber(numberSign, SignificandText, ExponentSign, ExponentText);
 
             // A number with a valid mantissa and explicit exponent.
             ValidText = text.Substring(digitStart, ExponentEnd - digitStart);
             InvalidText = text.Substring(digitStart + ValidText.Length);
-            Canonical = new CanonicalNumber(numberSign, SignificandText, ExponentSign, ExponentText);
             return new FormattedReal(numberSign, LeadingZeroesCount, IntegerText, SeparatorCharacter, FractionalText, ExponentCharacter, ExponentSign, ExponentText, InvalidText, Canonical);
         }
 
         private static FormattedNumber ParseHexadecimal(string text, OptionalSign numberSign, int digitStart)
         {
             // We're here because we know the number has a chance to be an hexadecimal integer.
-            Debug.Assert(text.Length > digitStart + 1);
+            Debug.Assert(text.Length >= digitStart + 1);
 
             int LastDecimalDigitOffset = -1;
             int LeadingZeroesCount = -1;
@@ -317,21 +342,30 @@
             // To be valid, the hexadecimal integer must be followed by the corresponding suffix.
             if (n + HexadecimalSuffix.Length <= text.Length && text.Substring(n, HexadecimalSuffix.Length) == HexadecimalSuffix)
             {
+                string InvalidText = text.Substring(n + HexadecimalSuffix.Length);
+
                 // Convert to decimal. The result can start or finish with a zero
                 string DecimalSignificand = IntegerBase.Convert(IntegerText, IntegerBase.Hexadecimal, IntegerBase.Decimal);
 
                 CanonicalNumber Canonical = new CanonicalNumber(numberSign, DecimalSignificand);
-                return new FormattedInteger(IntegerBase.Hexadecimal, numberSign, LeadingZeroesCount, IntegerText, string.Empty, Canonical);
+                return new FormattedInteger(IntegerBase.Hexadecimal, numberSign, LeadingZeroesCount, IntegerText, InvalidText, Canonical);
             }
-            else
+            else if (LastDecimalDigitOffset > digitStart)
             {
                 // If not valid, the number is the best decimal integer we can get.
                 IntegerText = text.Substring(digitStart, LastDecimalDigitOffset - digitStart);
                 string InvalidText = text.Substring(LastDecimalDigitOffset);
 
-                CanonicalNumber Canonical = new CanonicalNumber(numberSign, IntegerText);
-                return new FormattedInteger(IntegerBase.Hexadecimal, numberSign, LeadingZeroesCount, IntegerText, string.Empty, Canonical);
+                CanonicalNumber Canonical;
+                if (IntegerText != IntegerBase.Zero)
+                    Canonical = new CanonicalNumber(numberSign, IntegerText);
+                else
+                    Canonical = CanonicalNumber.Zero;
+
+                return new FormattedInteger(IntegerBase.Decimal, numberSign, LeadingZeroesCount, IntegerText, InvalidText, Canonical);
             }
+            else
+                return new FormattedInvalid(text);
         }
 
         private static bool ParseWithSuffix(string text, OptionalSign numberSign, int leadingZeroesCount, int index, string integerText, IIntegerBase integerBase, out FormattedNumber number)

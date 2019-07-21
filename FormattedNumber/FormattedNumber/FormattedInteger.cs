@@ -63,7 +63,7 @@
                 string SignText = GetSignText(Sign);
                 string LeadingZeroesText = GetLeadingZeroesText(LeadingZeroesCount);
 
-                return $"{SignText}{LeadingZeroesText}{IntegerText}{IntegerBase.Suffix}{InvalidText}";
+                return $"{SignText}{LeadingZeroesText}{IntegerText}{IntegerBase.Suffix}";
             }
         }
 
@@ -78,12 +78,26 @@
         /// A valid number is finite in the sense of arithmetic (not NaN, not infinite), and has no trailing invalid text.
         /// </summary>
         public override bool IsValid { get { return InvalidText.Length == 0; } }
+
+        /// <summary>
+        /// A diagnostic string for debug purpose.
+        /// </summary>
+        public override string Diagnostic
+        {
+            get
+            {
+                string SignText = GetSignText(Sign);
+                string LeadingZeroesText = GetLeadingZeroesText(LeadingZeroesCount);
+
+                return $"{SignText}/{LeadingZeroesText}/{IntegerText}/{IntegerBase.Suffix}/{InvalidText}";
+            }
+        }
         #endregion
 
         #region Client Interface
-        /// <summary>
-        /// Returns the formatted number as a string.
-        /// </summary>
+            /// <summary>
+            /// Returns the formatted number as a string.
+            /// </summary>
         public override string ToString()
         {
             return $"{SignificandPart}{InvalidText}";
