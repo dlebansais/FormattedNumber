@@ -96,6 +96,45 @@
         /// Gets the text after the exponent character. Can be empty.
         /// </summary>
         public string ExponentText { get; }
+
+        /// <summary>
+        /// The significand part. Can be empty.
+        /// This includes all characters up to and including the exponent character.
+        /// </summary>
+        public override string SignificandPart
+        {
+            get
+            {
+                string SignText = GetSignText(Sign);
+                string LeadingZeroesText = GetLeadingZeroesText(LeadingZeroesCount);
+                string ExponentSignText = GetSignText(ExponentSign);
+
+                string SignificandText;
+                if (SeparatorCharacter != Parser.NoSeparator)
+                    SignificandText = $"{SignText}{LeadingZeroesText}{IntegerText}{SeparatorCharacter}{FractionalText}";
+                else
+                    SignificandText = $"{SignText}{LeadingZeroesText}{IntegerText}";
+
+                if (ExponentCharacter != Parser.NoSeparator)
+                    return $"{SignificandText}{ExponentCharacter}";
+                else
+                    return SignificandText;
+            }
+        }
+
+        /// <summary>
+        /// The exponent part. Can be empty.
+        /// This includes all characters after the exponent character and before the invalid text.
+        /// </summary>
+        public override string ExponentPart
+        {
+            get
+            {
+                string ExponentSignText = GetSignText(ExponentSign);
+
+                return $"{ExponentSignText}{ExponentText}";
+            }
+        }
         #endregion
 
         #region Client Interface
@@ -104,14 +143,7 @@
         /// </summary>
         public override string ToString()
         {
-            string SignText = GetSignText(Sign);
-            string LeadingZeroesText = GetLeadingZeroesText(LeadingZeroesCount);
-            string ExponentSignText = GetSignText(ExponentSign);
-
-            if (SeparatorCharacter != Parser.NoSeparator)
-                return $"{SignText}{LeadingZeroesText}{IntegerText}{SeparatorCharacter}{FractionalText}{ExponentCharacter}{ExponentSignText}{ExponentText}{InvalidText}";
-            else
-                return $"{SignText}{LeadingZeroesText}{IntegerText}{ExponentCharacter}{ExponentSignText}{ExponentText}{InvalidText}";
+            return $"{SignificandPart}{ExponentPart}{InvalidText}";
         }
         #endregion
     }

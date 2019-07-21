@@ -81,6 +81,18 @@
 
         #region Properties
         /// <summary>
+        /// The significand part. Can be empty.
+        /// This includes all characters up to and including the exponent character.
+        /// </summary>
+        public abstract string SignificandPart { get; }
+
+        /// <summary>
+        /// The exponent part. Can be empty.
+        /// This includes all characters after the exponent character and before the invalid text.
+        /// </summary>
+        public abstract string ExponentPart { get; }
+
+        /// <summary>
         /// The trailing invalid text, if any.
         /// </summary>
         public string InvalidText { get; }

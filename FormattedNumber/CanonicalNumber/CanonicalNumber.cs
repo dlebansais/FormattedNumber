@@ -38,6 +38,7 @@
         /// <param name="integerText">The integer significand.</param>
         public CanonicalNumber(OptionalSign significandSign, string integerText)
         {
+            // For the value 0, use the CanonicalNumber.Zero constant.
             Debug.Assert(integerText != IntegerBase.Zero);
 
             SignificandSign = significandSign;
@@ -158,7 +159,13 @@
             ExponentText = null;
 
             NumberFloat = f;
-            CanonicRepresentation = f.ToString();
+
+            if (f.IsPositiveInfinity())
+                CanonicRepresentation = "∞";
+            else if (f.IsNegativeInfinity())
+                CanonicRepresentation = "-∞";
+            else
+                CanonicRepresentation = "NaN";
         }
         #endregion
 

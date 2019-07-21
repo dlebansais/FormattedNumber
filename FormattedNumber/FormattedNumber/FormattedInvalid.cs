@@ -25,5 +25,29 @@
         {
         }
         #endregion
+
+        #region Properties
+        /// <summary>
+        /// The significand part. Can be empty.
+        /// This includes all characters up to and including the exponent character.
+        /// </summary>
+        public override string SignificandPart { get { return Canonical.ToString(); } }
+
+        /// <summary>
+        /// The exponent part. Can be empty.
+        /// This includes all characters after the exponent character and before the invalid text.
+        /// </summary>
+        public override string ExponentPart { get { return string.Empty; } }
+        #endregion
+
+        #region Client Interface
+        /// <summary>
+        /// Returns the formatted number as a string.
+        /// </summary>
+        public override string ToString()
+        {
+            return $"{Canonical}{InvalidText}";
+        }
+        #endregion
     }
 }

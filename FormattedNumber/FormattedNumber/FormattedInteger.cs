@@ -21,6 +21,7 @@
         public FormattedInteger(IIntegerBase integerBase, OptionalSign sign, int leadingZeroesCount, string integerText, string invalidText, CanonicalNumber canonical)
             : base(invalidText, canonical)
         {
+            IntegerBase = integerBase;
             Sign = sign;
             LeadingZeroesCount = leadingZeroesCount;
             IntegerText = integerText ?? throw new NullReferenceException(nameof(integerText));
@@ -31,6 +32,11 @@
         #endregion
 
         #region Properties
+        /// <summary>
+        /// The base.
+        /// </summary>
+        public IIntegerBase IntegerBase { get; }
+
         /// <summary>
         /// Gets the optional sign.
         /// </summary>
@@ -47,9 +53,25 @@
         public string IntegerText { get; }
 
         /// <summary>
-        /// The base.
+        /// The significand part. Can be empty.
+        /// This includes all characters up to and including the exponent character.
         /// </summary>
-        public IIntegerBase IntegerBase { get; }
+        public override string SignificandPart
+        {
+            get
+            {
+                string SignText = GetSignText(Sign);
+                string LeadingZeroesText = GetLeadingZeroesText(LeadingZeroesCount);
+
+                return $"{SignText}{LeadingZeroesText}{IntegerText}{IntegerBase.Suffix}{InvalidText}";
+            }
+        }
+
+        /// <summary>
+        /// The exponent part. Can be empty.
+        /// This includes all characters after the exponent character and before the invalid text.
+        /// </summary>
+        public override string ExponentPart { get { return string.Empty; } }
         #endregion
 
         #region Client Interface
@@ -58,10 +80,7 @@
         /// </summary>
         public override string ToString()
         {
-            string SignText = GetSignText(Sign);
-            string LeadingZeroesText = GetLeadingZeroesText(LeadingZeroesCount);
-
-            return $"{SignText}{LeadingZeroesText}{IntegerText}{IntegerBase.Suffix}{InvalidText}";
+            return $"{SignificandPart}{InvalidText}";
         }
         #endregion
     }

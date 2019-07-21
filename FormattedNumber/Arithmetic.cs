@@ -25,7 +25,7 @@
             get { return ValidPrecision; }
             set
             {
-                if (value < 0)
+                if (value <= 0)
                     throw new ArgumentOutOfRangeException();
 
                 ValidPrecision = value;

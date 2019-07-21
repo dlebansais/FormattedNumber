@@ -21,6 +21,7 @@
                     EInteger BigExponentMin = EInteger.FromInt64(-128);
                     EInteger BigExponentMax = EInteger.FromInt64(+128);
                     Context = new EContext(BigPrecision, ERounding.HalfEven, BigExponentMin, BigExponentMax, true);
+                    Context = Context.WithBlankFlags();
                 }
 
                 return Context;
