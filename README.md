@@ -31,7 +31,7 @@ For example, `0C4A9EF2:H` is parsed as one leading zero, significand `C4A9EF2` i
 
 ## Arbitrary precision
 
-The precision at which operations are performed is not infinite, but is arbitrary, and can be tuned using the `Arithmetic` class (see the [Arithmetic doc](https://github.com/dlebansais/FormattedNumber/blob/master/Doc/Arithmetic.md)).
+The precision at which operations are performed is not infinite, but is arbitrary, and can be tuned using the `Arithmetic` class (see the [doc](https://github.com/dlebansais/FormattedNumber/blob/master/Doc/Arithmetic.md)).
 
 This is done using a fork of [Peter Occil](https://github.com/peteroupc)'s [Numbers](https://github.com/peteroupc/Numbers) project. If you like this software, considered donating at the link provided in the main page of that project.
 

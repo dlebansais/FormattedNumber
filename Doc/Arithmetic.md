@@ -6,7 +6,7 @@ This class controls how operations on `Number` objects are performed, and most n
 
 The `Precision` member of this class indicates the maximum number of digits in the significand for non-polynomial.
 
-The code currently doesn't support value `0` that indicates infinite precision.
+The code currently doesn't support the reserved value `0`. This will indicate infinite precision in the future.
 
 ## Flags
 
