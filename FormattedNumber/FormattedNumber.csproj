@@ -100,6 +100,13 @@
     <Compile Include="Numbers\SimpleRadixMath.cs" />
     <Compile Include="Numbers\TrappableRadixMath.cs" />
     <Compile Include="OptionalSign.cs" />
+    <Compile Include="Parser\BinaryIntegerParsingInfo.cs" />
+    <Compile Include="Parser\OctalIntegerParsingInfo.cs" />
+    <Compile Include="Parser\HexadecimalIntegerParsingInfo.cs" />
+    <Compile Include="Parser\IntegerWithBaseParsingInfo.cs" />
+    <Compile Include="Parser\InvalidParsingInfo.cs" />
+    <Compile Include="Parser\ParsingInfo.cs" />
+    <Compile Include="Parser\DecimalIntegerParsingInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
