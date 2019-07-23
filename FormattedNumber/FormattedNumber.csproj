@@ -101,6 +101,7 @@
     <Compile Include="Numbers\TrappableRadixMath.cs" />
     <Compile Include="OptionalSign.cs" />
     <Compile Include="Parser\BinaryIntegerParsingInfo.cs" />
+    <Compile Include="Parser\RealParsingInfo.cs" />
     <Compile Include="Parser\OctalIntegerParsingInfo.cs" />
     <Compile Include="Parser\HexadecimalIntegerParsingInfo.cs" />
     <Compile Include="Parser\IntegerWithBaseParsingInfo.cs" />

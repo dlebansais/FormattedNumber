@@ -20,6 +20,19 @@
         }
 
         /// <summary>
+        /// Checks if the current parser went further than others.
+        /// </summary>
+        /// <param name="parsing">The previous best parser.</param>
+        /// <param name="length">The length reached by <paramref name="parsing"/>.</param>
+        public override void UpdateBestParsing(ref ParsingInfo parsing, ref int length)
+        {
+            if (StillParsing && LengthSuccessful == 0 && (LeadingZeroCount > 0 || Length > 0))
+                LengthSuccessful = StartOffset + Length;
+
+            base.UpdateBestParsing(ref parsing, ref length);
+        }
+
+        /// <summary>
         /// Gets the formatted number that this parser is able to extract.
         /// </summary>
         /// <param name="text">The source string.</param>
@@ -32,6 +45,8 @@
                 Debug.Assert(LeadingZeroCount > 0);
                 LeadingZeroCount--;
             }
+
+            Debug.Assert(StartOffset + Length <= text.Length);
 
             string IntegerText = text.Substring(StartOffset + LeadingZeroCount, Length - LeadingZeroCount);
             string InvalidText = text.Substring(StartOffset + Length);

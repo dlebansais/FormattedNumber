@@ -26,7 +26,7 @@
             : base(invalidText, canonical)
         {
             Sign = sign;
-            LeadingZeroesCount = leadingZeroesCount;
+            LeadingZeroCount = leadingZeroesCount;
             IntegerText = integerText ?? throw new NullReferenceException(nameof(integerText));
             SeparatorCharacter = separatorCharacter;
             FractionalText = fractionalText ?? throw new NullReferenceException(nameof(fractionalText));
@@ -65,7 +65,7 @@
         /// <summary>
         /// Gets the number of leading zeroes. Can be 0.
         /// </summary>
-        public int LeadingZeroesCount { get; }
+        public int LeadingZeroCount { get; }
 
         /// <summary>
         /// Gets the text before the decimal separator character. Can be empty.
@@ -106,7 +106,7 @@
             get
             {
                 string SignText = GetSignText(Sign);
-                string LeadingZeroesText = GetLeadingZeroesText(LeadingZeroesCount);
+                string LeadingZeroesText = GetLeadingZeroesText(LeadingZeroCount);
 
                 string SignificandText;
                 if (SeparatorCharacter != Parser.NoSeparator)
@@ -149,7 +149,7 @@
             get
             {
                 string SignText = GetSignText(Sign);
-                string LeadingZeroesText = GetLeadingZeroesText(LeadingZeroesCount);
+                string LeadingZeroesText = GetLeadingZeroesText(LeadingZeroCount);
                 string ExponentSignText = GetSignText(ExponentSign);
 
                 return $"{SignText}/{LeadingZeroesText}/{IntegerText}/{(int)SeparatorCharacter}/{FractionalText}/{(int)ExponentCharacter}/{ExponentSignText}/{ExponentText}/{InvalidText}";

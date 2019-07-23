@@ -29,6 +29,19 @@
         protected abstract IIntegerBase Base { get; }
 
         /// <summary>
+        /// Checks if the current parser went further than others.
+        /// </summary>
+        /// <param name="parsing">The previous best parser.</param>
+        /// <param name="length">The length reached by <paramref name="parsing"/>.</param>
+        public override void UpdateBestParsing(ref ParsingInfo parsing, ref int length)
+        {
+            if (StillParsing && LengthSuccessful == 0 && SuffixOffset == Base.Suffix.Length)
+                LengthSuccessful = StartOffset + Length + SuffixOffset;
+
+            base.UpdateBestParsing(ref parsing, ref length);
+        }
+
+        /// <summary>
         /// Gets the formatted number that this parser is able to extract.
         /// </summary>
         /// <param name="text">The source string.</param>
@@ -42,8 +55,10 @@
                 LeadingZeroCount--;
             }
 
+            Debug.Assert(StartOffset + Length + Base.Suffix.Length <= text.Length);
+
             string IntegerText = text.Substring(StartOffset + LeadingZeroCount, Length - LeadingZeroCount);
-            string InvalidText = text.Substring(StartOffset + Length);
+            string InvalidText = text.Substring(StartOffset + Length + Base.Suffix.Length);
 
             CanonicalNumber Canonical;
 
@@ -116,15 +131,8 @@
 
         private void ParseSuffix(char c)
         {
-            if (SuffixOffset < Base.Suffix.Length)
-            {
-                if (c == Base.Suffix[SuffixOffset])
-                {
-                    SuffixOffset++;
-                    if (SuffixOffset == Base.Suffix.Length)
-                        LengthSuccessful = StartOffset + Length;
-                }
-            }
+            if (SuffixOffset < Base.Suffix.Length && c == Base.Suffix[SuffixOffset])
+                SuffixOffset++;
             else
                 StillParsing = false;
         }

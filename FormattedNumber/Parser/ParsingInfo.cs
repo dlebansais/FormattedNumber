@@ -36,7 +36,7 @@
         /// </summary>
         /// <param name="parsing">The previous best parser.</param>
         /// <param name="length">The length reached by <paramref name="parsing"/>.</param>
-        public void UpdateBestParsing(ref ParsingInfo parsing, ref int length)
+        public virtual void UpdateBestParsing(ref ParsingInfo parsing, ref int length)
         {
             if (length < LengthSuccessful)
             {

@@ -23,7 +23,7 @@
         {
             IntegerBase = integerBase;
             Sign = sign;
-            LeadingZeroesCount = leadingZeroesCount;
+            LeadingZeroCount = leadingZeroesCount;
             IntegerText = integerText ?? throw new NullReferenceException(nameof(integerText));
 
             if (leadingZeroesCount < 0)
@@ -45,7 +45,7 @@
         /// <summary>
         /// Gets the number of leading zeroes. Can be 0.
         /// </summary>
-        public int LeadingZeroesCount { get; }
+        public int LeadingZeroCount { get; }
 
         /// <summary>
         /// Gets the text before the decimal separator character. Can be empty.
@@ -61,7 +61,7 @@
             get
             {
                 string SignText = GetSignText(Sign);
-                string LeadingZeroesText = GetLeadingZeroesText(LeadingZeroesCount);
+                string LeadingZeroesText = GetLeadingZeroesText(LeadingZeroCount);
 
                 return $"{SignText}{LeadingZeroesText}{IntegerText}{IntegerBase.Suffix}";
             }
@@ -87,7 +87,7 @@
             get
             {
                 string SignText = GetSignText(Sign);
-                string LeadingZeroesText = GetLeadingZeroesText(LeadingZeroesCount);
+                string LeadingZeroesText = GetLeadingZeroesText(LeadingZeroCount);
 
                 return $"{SignText}/{LeadingZeroesText}/{IntegerText}/{IntegerBase.Suffix}/{InvalidText}";
             }
