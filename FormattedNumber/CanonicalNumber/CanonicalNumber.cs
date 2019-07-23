@@ -161,11 +161,11 @@
             NumberFloat = f;
 
             if (f.IsPositiveInfinity())
-                CanonicRepresentation = "∞";
+                CanonicRepresentation = double.PositiveInfinity.ToString();
             else if (f.IsNegativeInfinity())
-                CanonicRepresentation = "-∞";
+                CanonicRepresentation = double.NegativeInfinity.ToString();
             else
-                CanonicRepresentation = "NaN";
+                CanonicRepresentation = double.NaN.ToString();
         }
         #endregion
 

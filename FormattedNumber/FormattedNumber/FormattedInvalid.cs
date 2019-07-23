@@ -31,7 +31,7 @@
         /// The significand part. Can be empty.
         /// This includes all characters up to and including the exponent character.
         /// </summary>
-        public override string SignificandPart { get { return Canonical.ToString(); } }
+        public override string SignificandPart { get { return string.Empty; } }
 
         /// <summary>
         /// The exponent part. Can be empty.
@@ -57,7 +57,7 @@
         /// </summary>
         public override string ToString()
         {
-            return $"{Canonical}{InvalidText}";
+            return InvalidText;
         }
         #endregion
     }

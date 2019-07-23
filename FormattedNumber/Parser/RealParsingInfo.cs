@@ -9,29 +9,6 @@
     public class RealParsingInfo : ParsingInfo
     {
         /// <summary>
-        /// The decimal separator in numeric values.
-        /// </summary>
-        public static readonly char DecimalSeparator;
-
-        /// <summary>
-        /// The dot (unicode U+002E) is always considered a valid separator.
-        /// </summary>
-        public static readonly char NeutralDecimalSeparator = '.';
-
-        /// <summary>
-        /// The character to use when a number doesn't contain the decimal separator.
-        /// </summary>
-        public static readonly char NoSeparator = '\0';
-
-        static RealParsingInfo()
-        {
-            string CurrentCultureSeparator = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
-
-            Debug.Assert(CurrentCultureSeparator.Length == 1);
-            DecimalSeparator = CurrentCultureSeparator[0];
-        }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="RealParsingInfo"/> class.
         /// </summary>
         public RealParsingInfo()
@@ -40,9 +17,9 @@
             LeadingZeroCount = 0;
             StartOffset = 0;
             IntegerLength = 0;
-            SeparatorCharacter = NoSeparator;
+            SeparatorCharacter = Parser.NoSeparator;
             FractionalLength = 0;
-            ExponentCharacter = NoSeparator;
+            ExponentCharacter = Parser.NoSeparator;
             ExponentSign = OptionalSign.None;
             ExponentLength = 0;
             Handler = ParseStart;
@@ -55,9 +32,9 @@
         /// <param name="length">The length reached by <paramref name="parsing"/>.</param>
         public override void UpdateBestParsing(ref ParsingInfo parsing, ref int length)
         {
-            if (StillParsing && LengthSuccessful == 0 && (IntegerLength > 0 || FractionalLength > 0) && (SeparatorCharacter != NoSeparator || ExponentLength > 0))
+            if (StillParsing && LengthSuccessful == 0 && (IntegerLength > 0 || FractionalLength > 0) && (SeparatorCharacter != Parser.NoSeparator || ExponentLength > 0))
                 if (ExponentLength > 0)
-                    if (SeparatorCharacter != NoSeparator)
+                    if (SeparatorCharacter != Parser.NoSeparator)
                         LengthSuccessful = StartOffset + IntegerLength + 1 + FractionalLength + 1 + ExponentStartOffset + ExponentLength;
                     else
                         LengthSuccessful = StartOffset + IntegerLength + 1 + ExponentStartOffset + ExponentLength;
@@ -89,7 +66,7 @@
                 string InvalidText;
                 string SignificandText;
 
-                if (SeparatorCharacter != NoSeparator)
+                if (SeparatorCharacter != Parser.NoSeparator)
                 {
                     Debug.Assert(IntegerText.Length > 0 || FractionalText.Length > 0);
 
@@ -115,7 +92,7 @@
                 string InvalidText = text.Substring(StartOffset + IntegerLength + 1 + FractionalLength);
 
                 CanonicalNumber Canonical = GetCanonical(Sign, SignificandText, OptionalSign.None, IntegerBase.Zero);
-                return new FormattedReal(Sign, LeadingZeroCount, IntegerText, SeparatorCharacter, FractionalText, NoSeparator, OptionalSign.None, string.Empty, InvalidText, Canonical);
+                return new FormattedReal(Sign, LeadingZeroCount, IntegerText, SeparatorCharacter, FractionalText, Parser.NoSeparator, OptionalSign.None, string.Empty, InvalidText, Canonical);
             }
         }
 
@@ -129,16 +106,16 @@
                 if (fractionalText == IntegerBase.Zero)
                     SignificandText = IntegerBase.Zero;
                 else
-                    SignificandText = IntegerBase.Zero + NeutralDecimalSeparator + fractionalText;
+                    SignificandText = IntegerBase.Zero + Parser.NeutralDecimalSeparator + fractionalText;
             else if (fractionalText.Length == 0)
                 if (integerText == IntegerBase.Zero)
                     SignificandText = IntegerBase.Zero;
                 else
-                    SignificandText = integerText + NeutralDecimalSeparator + IntegerBase.Zero;
+                    SignificandText = integerText + Parser.NeutralDecimalSeparator + IntegerBase.Zero;
             else if (integerText == IntegerBase.Zero && fractionalText == IntegerBase.Zero)
                 SignificandText = IntegerBase.Zero;
             else
-                SignificandText = integerText + NeutralDecimalSeparator + fractionalText;
+                SignificandText = integerText + Parser.NeutralDecimalSeparator + fractionalText;
 
             return SignificandText;
         }
@@ -188,7 +165,7 @@
                     Handler(c);
                 }
             }
-            else if (c == NeutralDecimalSeparator || c == DecimalSeparator)
+            else if (c == Parser.NeutralDecimalSeparator || c == Parser.DecimalSeparator)
             {
                 SeparatorCharacter = c;
                 Handler = ParseFractionalDigits;
@@ -210,7 +187,7 @@
         {
             if (IntegerBase.Decimal.IsValidDigit(c, out int DigitValue))
                 IntegerLength++;
-            else if (c == NeutralDecimalSeparator || c == DecimalSeparator)
+            else if (c == Parser.NeutralDecimalSeparator || c == Parser.DecimalSeparator)
             {
                 SeparatorCharacter = c;
                 Handler = ParseFractionalDigits;
@@ -277,7 +254,7 @@
             }
             else
             {
-                if (SeparatorCharacter != NoSeparator && (IntegerLength > 0 || FractionalLength > 0))
+                if (SeparatorCharacter != Parser.NoSeparator && (IntegerLength > 0 || FractionalLength > 0))
                     LengthSuccessful = StartOffset + IntegerLength + 1 + FractionalLength;
 
                 StillParsing = false;
@@ -292,7 +269,7 @@
             {
                 Debug.Assert(ExponentLength > 0);
 
-                if (SeparatorCharacter != NoSeparator && (IntegerLength > 0 || FractionalLength > 0))
+                if (SeparatorCharacter != Parser.NoSeparator && (IntegerLength > 0 || FractionalLength > 0))
                     LengthSuccessful = StartOffset + IntegerLength + 1 + FractionalLength + 1 + ExponentStartOffset + ExponentLength;
                 else
                     LengthSuccessful = StartOffset + IntegerLength + 1 + ExponentStartOffset + ExponentLength;

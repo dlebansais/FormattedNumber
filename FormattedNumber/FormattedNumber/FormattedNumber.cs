@@ -13,17 +13,17 @@
         /// <summary>
         /// The formatted number for NaN.
         /// </summary>
-        public static readonly FormattedNumber NaN = new FormattedInvalid(string.Empty, CanonicalNumber.NaN);
+        public static readonly FormattedNumber NaN = new FormattedInvalid(double.NaN.ToString(), CanonicalNumber.NaN);
 
         /// <summary>
         /// The canonical number for positive infinity.
         /// </summary>
-        public static readonly FormattedNumber PositiveInfinity = new FormattedInvalid(string.Empty, CanonicalNumber.PositiveInfinity);
+        public static readonly FormattedNumber PositiveInfinity = new FormattedInvalid(double.PositiveInfinity.ToString(), CanonicalNumber.PositiveInfinity);
 
         /// <summary>
         /// The canonical number for negative infinity.
         /// </summary>
-        public static readonly FormattedNumber NegativeInfinity = new FormattedInvalid(string.Empty, CanonicalNumber.NegativeInfinity);
+        public static readonly FormattedNumber NegativeInfinity = new FormattedInvalid(double.NegativeInfinity.ToString(), CanonicalNumber.NegativeInfinity);
         #endregion
 
         #region Init
@@ -53,7 +53,7 @@
             if (SeparatorOffset > 0)
             {
                 IntegerText = SignificandText.Substring(0, SeparatorOffset);
-                SeparatorCharacter = Parser.NeutralDecimalSeparator;
+                SeparatorCharacter = Parser.DecimalSeparator;
                 FractionalText = SignificandText.Substring(SeparatorOffset + 1);
             }
             else
