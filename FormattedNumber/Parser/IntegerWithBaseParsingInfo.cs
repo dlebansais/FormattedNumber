@@ -56,11 +56,8 @@
         {
             Debug.Assert(LengthSuccessful > 0);
 
-            if (LeadingZeroCount == Length)
-            {
-                Debug.Assert(LeadingZeroCount > 0);
+            if (LeadingZeroCount == Length && LeadingZeroCount > 0)
                 LeadingZeroCount--;
-            }
 
             Debug.Assert(StartOffset + Length + Base.Suffix.Length <= text.Length);
 
@@ -127,13 +124,13 @@
         {
             if (Base.IsValidDigit(c, out int DigitValue))
                 Length++;
-            else if (Length > 0)
+            else
             {
+                Debug.Assert(Length > 0);
+
                 Handler = ParseSuffix;
                 Handler(c);
             }
-            else
-                StillParsing = false;
         }
 
         private void ParseSuffix(char c)
@@ -141,7 +138,12 @@
             if (SuffixOffset < Base.Suffix.Length && c == Base.Suffix[SuffixOffset])
                 SuffixOffset++;
             else
+            {
+                if (SuffixOffset == Base.Suffix.Length)
+                    LengthSuccessful = StartOffset + Length + SuffixOffset;
+
                 StillParsing = false;
+            }
         }
 
         private OptionalSign Sign;

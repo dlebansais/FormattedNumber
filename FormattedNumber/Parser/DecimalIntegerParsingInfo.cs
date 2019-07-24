@@ -47,11 +47,8 @@
         {
             Debug.Assert(LengthSuccessful > 0);
 
-            if (LeadingZeroCount == Length)
-            {
-                Debug.Assert(LeadingZeroCount > 0);
+            if (LeadingZeroCount == Length && LeadingZeroCount > 0)
                 LeadingZeroCount--;
-            }
 
             Debug.Assert(StartOffset + Length <= text.Length);
 
@@ -93,7 +90,6 @@
                 if (DigitValue == 0)
                 {
                     Length++;
-                    LengthSuccessful = StartOffset + Length;
                     LeadingZeroCount++;
                 }
                 else
@@ -103,18 +99,25 @@
                 }
             }
             else
+            {
+                if (LengthSuccessful == 0)
+                    LengthSuccessful = StartOffset + Length;
+
                 StillParsing = false;
+            }
         }
 
         private void ParseDigits(char c)
         {
             if (IntegerBase.Decimal.IsValidDigit(c, out int DigitValue))
-            {
                 Length++;
-                LengthSuccessful = StartOffset + Length;
-            }
             else
+            {
+                if (LengthSuccessful == 0)
+                    LengthSuccessful = StartOffset + Length;
+
                 StillParsing = false;
+            }
         }
 
         private OptionalSign Sign;
