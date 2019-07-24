@@ -200,12 +200,10 @@
             }
             else if (c == 'e' || c == 'E')
             {
-                ExponentCharacter = c;
+                Debug.Assert(IntegerLength > 0);
 
-                if (IntegerLength > 0)
-                    Handler = ParseExponent;
-                else
-                    StillParsing = false;
+                ExponentCharacter = c;
+                Handler = ParseExponent;
             }
             else
                 StillParsing = false;
