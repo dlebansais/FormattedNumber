@@ -167,6 +167,32 @@
         }
 
         /// <summary>
+        /// Returns the difference of two numbers: x - y.
+        /// </summary>
+        /// <param name="x">The first number.</param>
+        /// <param name="y">The second number.</param>
+        public static FormattedNumber operator -(FormattedNumber x, FormattedNumber y)
+        {
+            CanonicalNumber OperationResult = x.Canonical - y.Canonical;
+
+            FormattedNumber Result = FromCanonical(OperationResult);
+            return Result;
+        }
+
+        /// <summary>
+        /// Returns the product of two numbers: x * y.
+        /// </summary>
+        /// <param name="x">The first number.</param>
+        /// <param name="y">The second number.</param>
+        public static FormattedNumber operator *(FormattedNumber x, FormattedNumber y)
+        {
+            CanonicalNumber OperationResult = x.Canonical * y.Canonical;
+
+            FormattedNumber Result = FromCanonical(OperationResult);
+            return Result;
+        }
+
+        /// <summary>
         /// Returns the ratio of two numbers: x / y.
         /// </summary>
         /// <param name="x">The first number.</param>
