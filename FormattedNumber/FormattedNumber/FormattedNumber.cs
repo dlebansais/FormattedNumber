@@ -204,6 +204,18 @@
             FormattedNumber Result = FromCanonical(OperationResult);
             return Result;
         }
+
+        /// <summary>
+        /// Returns the negation of a number: -x.
+        /// </summary>
+        /// <param name="x">The number.</param>
+        public static FormattedNumber operator -(FormattedNumber x)
+        {
+            CanonicalNumber OperationResult = -x.Canonical;
+
+            FormattedNumber Result = FromCanonical(OperationResult);
+            return Result;
+        }
         #endregion
     }
 }

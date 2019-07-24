@@ -212,22 +212,6 @@
         }
 
         /// <summary>
-        /// Returns the opposite number.
-        /// </summary>
-        public virtual CanonicalNumber OppositeOf()
-        {
-            return new CanonicalNumber(SignificandSign == OptionalSign.Negative ? OptionalSign.None : OptionalSign.Negative, SignificandText, ExponentSign, ExponentText);
-        }
-
-        /// <summary>
-        /// Checks if this instance is greater than another constant.
-        /// </summary>
-        public virtual bool IsGreater(CanonicalNumber other)
-        {
-            return this > (CanonicalNumber)other;
-        }
-
-        /// <summary>
         /// Gets the value if it can be represented with a <see cref="int"/>.
         /// </summary>
         /// <param name="value">The value upon return.</param>
@@ -261,63 +245,6 @@
             return true;
         }
 
-        /// <summary>
-        /// Checks if <paramref name="number1"/> is lesser than <paramref name="number2"/>.
-        /// </summary>
-        /// <param name="number1">The first number.</param>
-        /// <param name="number2">The second number.</param>
-        public static bool operator <(CanonicalNumber number1, CanonicalNumber number2)
-        {
-            bool IsNegative1 = number1.SignificandSign == OptionalSign.Negative;
-            bool IsNegative2 = number2.SignificandSign == OptionalSign.Negative;
-
-            // Compare positive and negative numbers.
-            if (IsNegative1 != IsNegative2)
-                return IsNegative1;
-
-            bool IsExponentNegative1 = number1.ExponentSign == OptionalSign.Negative;
-            bool IsExponentNegative2 = number2.ExponentSign == OptionalSign.Negative;
-
-            // If both positive or negative, compare positive and negative exponents.
-            if (IsExponentNegative1 && !IsExponentNegative2)
-                return !IsNegative1;
-
-            else if (!IsExponentNegative1 && IsExponentNegative2)
-                return IsNegative1;
-
-            // If signs of significands and signs of exponents are identical.
-            else
-            {
-                int ComparedExponent = string.Compare(number1.ExponentText, number2.ExponentText);
-
-                if (ComparedExponent < 0)
-                    return IsNegative1 == IsExponentNegative1;
-                else if (ComparedExponent > 0)
-                    return IsNegative1 != IsExponentNegative1;
-
-                // If exponents are identical, compare significands.
-                else
-                {
-                    int ComparedSignificand = string.Compare(number1.SignificandText, number2.SignificandText);
-
-                    // If they are equal, return not lesser than.
-                    if (ComparedSignificand == 0)
-                        return false;
-                    else
-                        return (ComparedSignificand < 0) == IsNegative1;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Checks if <paramref name="number1"/> is greater than <paramref name="number2"/>.
-        /// </summary>
-        /// <param name="number1">The first number.</param>
-        /// <param name="number2">The second number.</param>
-        public static bool operator >(CanonicalNumber number1, CanonicalNumber number2)
-        {
-            return number2 < number1;
-        }
         #endregion
 
         #region Arithmetic
@@ -411,6 +338,87 @@
 
             CanonicalNumber Result = FromEFloat(OperationResult);
             return Result;
+        }
+
+        /// <summary>
+        /// Returns the negation of a number: -x.
+        /// </summary>
+        /// <param name="x">The number.</param>
+        public static CanonicalNumber operator -(CanonicalNumber x)
+        {
+            return x.Negate();
+        }
+
+        /// <summary>
+        /// Returns the negation of the number.
+        /// </summary>
+        public CanonicalNumber Negate()
+        {
+            EFloat OperationResult = NumberFloat.Negate(LastContext);
+            UpdateFlags();
+
+            CanonicalNumber Result = FromEFloat(OperationResult);
+            return Result;
+        }
+        #endregion
+
+        #region Operators
+        /// <summary>
+        /// Checks if <paramref name="number1"/> is lesser than <paramref name="number2"/>.
+        /// </summary>
+        /// <param name="number1">The first number.</param>
+        /// <param name="number2">The second number.</param>
+        public static bool operator <(CanonicalNumber number1, CanonicalNumber number2)
+        {
+            bool IsNegative1 = number1.SignificandSign == OptionalSign.Negative;
+            bool IsNegative2 = number2.SignificandSign == OptionalSign.Negative;
+
+            // Compare positive and negative numbers.
+            if (IsNegative1 != IsNegative2)
+                return IsNegative1;
+
+            bool IsExponentNegative1 = number1.ExponentSign == OptionalSign.Negative;
+            bool IsExponentNegative2 = number2.ExponentSign == OptionalSign.Negative;
+
+            // If both positive or negative, compare positive and negative exponents.
+            if (IsExponentNegative1 && !IsExponentNegative2)
+                return !IsNegative1;
+
+            else if (!IsExponentNegative1 && IsExponentNegative2)
+                return IsNegative1;
+
+            // If signs of significands and signs of exponents are identical.
+            else
+            {
+                int ComparedExponent = string.Compare(number1.ExponentText, number2.ExponentText);
+
+                if (ComparedExponent < 0)
+                    return IsNegative1 == IsExponentNegative1;
+                else if (ComparedExponent > 0)
+                    return IsNegative1 != IsExponentNegative1;
+
+                // If exponents are identical, compare significands.
+                else
+                {
+                    int ComparedSignificand = string.Compare(number1.SignificandText, number2.SignificandText);
+
+                    // If they are equal, return not lesser than.
+                    if (ComparedSignificand == 0)
+                        return false;
+                    else
+                        return (ComparedSignificand < 0) == IsNegative1;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Checks if <paramref name="number1"/> is greater than <paramref name="number2"/>.
+        /// </summary>
+        /// <param name="number1">The first number.</param>
+        /// <param name="number2">The second number.</param>
+        public static bool operator >(CanonicalNumber number1, CanonicalNumber number2)
+        {
+            return number2 < number1;
         }
         #endregion
 
