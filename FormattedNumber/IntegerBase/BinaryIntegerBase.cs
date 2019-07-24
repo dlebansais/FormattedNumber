@@ -3,9 +3,16 @@
     using System.Diagnostics;
 
     /// <summary>
+    /// Interface describing a binary (base 2) integer.
+    /// </summary>
+    public interface IBinaryIntegerBase : IIntegerBase
+    {
+    }
+
+    /// <summary>
     /// Class describing a binary (base 2) integer.
     /// </summary>
-    public class BinaryIntegerBase : IntegerBase
+    public class BinaryIntegerBase : IntegerBase, IBinaryIntegerBase
     {
         #region Init
         /// <summary>

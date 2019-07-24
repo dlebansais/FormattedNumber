@@ -3,9 +3,16 @@
     using System.Diagnostics;
 
     /// <summary>
-    /// Class to hold information during parsing of an integer in decimal base.
+    /// Hold information during parsing of an integer in decimal base.
     /// </summary>
-    public class DecimalIntegerParsingInfo : ParsingInfo
+    public interface IDecimalIntegerParsingInfo : IParsingInfo
+    {
+    }
+
+    /// <summary>
+    /// Hold information during parsing of an integer in decimal base.
+    /// </summary>
+    public class DecimalIntegerParsingInfo : ParsingInfo, IDecimalIntegerParsingInfo
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DecimalIntegerParsingInfo"/> class.
@@ -24,7 +31,7 @@
         /// </summary>
         /// <param name="parsing">The previous best parser.</param>
         /// <param name="length">The length reached by <paramref name="parsing"/>.</param>
-        public override void UpdateBestParsing(ref ParsingInfo parsing, ref int length)
+        public override void UpdateBestParsing(ref IParsingInfo parsing, ref int length)
         {
             if (StillParsing && LengthSuccessful == 0 && (LeadingZeroCount > 0 || Length > 0))
                 LengthSuccessful = StartOffset + Length;

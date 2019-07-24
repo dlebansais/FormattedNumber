@@ -1,12 +1,18 @@
 ﻿namespace FormattedNumber
 {
     using System.Diagnostics;
-    using System.Globalization;
 
     /// <summary>
-    /// Class to hold information during parsing of an integer in base other than decimal.
+    /// Hold information during parsing of a real number.
     /// </summary>
-    public class RealParsingInfo : ParsingInfo
+    public interface IRealParsingInfo : IParsingInfo
+    {
+    }
+
+    /// <summary>
+    /// Hold information during parsing of a real number.
+    /// </summary>
+    public class RealParsingInfo : ParsingInfo, IRealParsingInfo
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RealParsingInfo"/> class.
@@ -30,7 +36,7 @@
         /// </summary>
         /// <param name="parsing">The previous best parser.</param>
         /// <param name="length">The length reached by <paramref name="parsing"/>.</param>
-        public override void UpdateBestParsing(ref ParsingInfo parsing, ref int length)
+        public override void UpdateBestParsing(ref IParsingInfo parsing, ref int length)
         {
             if (StillParsing && LengthSuccessful == 0 && (IntegerLength > 0 || FractionalLength > 0) && (SeparatorCharacter != Parser.NoSeparator || ExponentLength > 0))
                 if (ExponentLength > 0)

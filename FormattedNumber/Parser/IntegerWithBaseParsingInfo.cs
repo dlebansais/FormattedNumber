@@ -3,9 +3,16 @@
     using System.Diagnostics;
 
     /// <summary>
-    /// Class to hold information during parsing of an integer in base other than decimal.
+    /// Hold information during parsing of an integer in base other than decimal.
     /// </summary>
-    public abstract class IntegerWithBaseParsingInfo : ParsingInfo
+    public interface IIntegerWithBaseParsingInfo : IParsingInfo
+    {
+    }
+
+    /// <summary>
+    /// Hold information during parsing of an integer in base other than decimal.
+    /// </summary>
+    public abstract class IntegerWithBaseParsingInfo : ParsingInfo, IIntegerWithBaseParsingInfo
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="IntegerWithBaseParsingInfo"/> class.
@@ -33,7 +40,7 @@
         /// </summary>
         /// <param name="parsing">The previous best parser.</param>
         /// <param name="length">The length reached by <paramref name="parsing"/>.</param>
-        public override void UpdateBestParsing(ref ParsingInfo parsing, ref int length)
+        public override void UpdateBestParsing(ref IParsingInfo parsing, ref int length)
         {
             if (StillParsing && LengthSuccessful == 0 && SuffixOffset == Base.Suffix.Length)
                 LengthSuccessful = StartOffset + Length + SuffixOffset;

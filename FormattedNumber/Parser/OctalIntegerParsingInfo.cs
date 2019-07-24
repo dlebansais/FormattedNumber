@@ -1,9 +1,16 @@
 ﻿namespace FormattedNumber
 {
     /// <summary>
-    /// Class to hold information during parsing of an integer in octal base.
+    /// Hold information during parsing of an integer in octal base.
     /// </summary>
-    public class OctalIntegerParsingInfo : IntegerWithBaseParsingInfo
+    public interface IOctalIntegerParsingInfo : IIntegerWithBaseParsingInfo
+    {
+    }
+
+    /// <summary>
+    /// Hold information during parsing of an integer in octal base.
+    /// </summary>
+    public class OctalIntegerParsingInfo : IntegerWithBaseParsingInfo, IOctalIntegerParsingInfo
     {
         /// <summary>
         /// The base to use when parsing.

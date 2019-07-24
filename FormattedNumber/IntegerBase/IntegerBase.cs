@@ -118,22 +118,22 @@
         /// <summary>
         /// The hexadecimal base.
         /// </summary>
-        public static readonly IIntegerBase Hexadecimal = new HexadecimalIntegerBase();
+        public static readonly IHexadecimalIntegerBase Hexadecimal = new HexadecimalIntegerBase();
 
         /// <summary>
         /// The decimal base.
         /// </summary>
-        public static readonly IIntegerBase Decimal = new DecimalIntegerBase();
+        public static readonly IDecimalIntegerBase Decimal = new DecimalIntegerBase();
 
         /// <summary>
         /// The octal base.
         /// </summary>
-        public static readonly IIntegerBase Octal = new OctalIntegerBase();
+        public static readonly IOctalIntegerBase Octal = new OctalIntegerBase();
 
         /// <summary>
         /// The binary base.
         /// </summary>
-        public static readonly IIntegerBase Binary = new BinaryIntegerBase();
+        public static readonly IBinaryIntegerBase Binary = new BinaryIntegerBase();
         #endregion
 
         #region Init

@@ -64,7 +64,7 @@
     <Compile Include="FormattedNumber\FormattedNumber.cs" />
     <Compile Include="FormattedNumber\FormattedInteger.cs" />
     <Compile Include="FormattedNumber\FormattedReal.cs" />
-    <Compile Include="FormattedNumber\Parser.cs" />
+    <Compile Include="Parser\Parser.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IntegerBase\BinaryIntegerBase.cs" />
     <Compile Include="IntegerBase\DecimalIntegerBase.cs" />

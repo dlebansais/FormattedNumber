@@ -3,9 +3,16 @@
     using System.Diagnostics;
 
     /// <summary>
+    /// Interface describing an hexadecimal (base 16) integer.
+    /// </summary>
+    public interface IHexadecimalIntegerBase : IIntegerBase
+    {
+    }
+
+    /// <summary>
     /// Class describing an hexadecimal (base 16) integer.
     /// </summary>
-    public class HexadecimalIntegerBase : IntegerBase
+    public class HexadecimalIntegerBase : IntegerBase, IHexadecimalIntegerBase
     {
         #region Init
         /// <summary>

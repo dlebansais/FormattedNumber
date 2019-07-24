@@ -1,9 +1,16 @@
 ﻿namespace FormattedNumber
 {
     /// <summary>
-    /// Class that never parses anything.
+    /// Never parses anything.
     /// </summary>
-    public class InvalidParsingInfo : ParsingInfo
+    public interface IInvalidParsingInfo : IParsingInfo
+    {
+    }
+
+    /// <summary>
+    /// Never parses anything.
+    /// </summary>
+    public class InvalidParsingInfo : ParsingInfo, IInvalidParsingInfo
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="InvalidParsingInfo"/> class.

@@ -1,9 +1,16 @@
 ﻿namespace FormattedNumber
 {
     /// <summary>
-    /// Class to hold information during parsing of an integer in binary base.
+    /// Hold information during parsing of an integer in binary base.
     /// </summary>
-    public class BinaryIntegerParsingInfo : IntegerWithBaseParsingInfo
+    public interface IBinaryIntegerParsingInfo : IIntegerWithBaseParsingInfo
+    {
+    }
+
+    /// <summary>
+    /// Hold information during parsing of an integer in binary base.
+    /// </summary>
+    public class BinaryIntegerParsingInfo : IntegerWithBaseParsingInfo, IBinaryIntegerParsingInfo
     {
         /// <summary>
         /// The base to use when parsing.

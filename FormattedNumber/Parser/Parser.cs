@@ -34,7 +34,9 @@
             Debug.Assert(CurrentCultureSeparator.Length == 1);
             DecimalSeparator = CurrentCultureSeparator[0];
         }
+        #endregion
 
+        #region Client Interface
         /// <summary>
         /// Parse a string as a number.
         /// </summary>
@@ -47,11 +49,11 @@
         /// <exception cref="NullReferenceException"><paramref name="text"/> is null.</exception>
         public static FormattedNumber Parse(string text)
         {
-            BinaryIntegerParsingInfo BinaryIntegerParsing = new BinaryIntegerParsingInfo();
-            OctalIntegerParsingInfo OctalIntegerParsing = new OctalIntegerParsingInfo();
-            DecimalIntegerParsingInfo DecimalIntegerParsing = new DecimalIntegerParsingInfo();
-            HexadecimalIntegerParsingInfo HexadecimalIntegerParsing = new HexadecimalIntegerParsingInfo();
-            RealParsingInfo RealParsing = new RealParsingInfo();
+            IBinaryIntegerParsingInfo BinaryIntegerParsing = new BinaryIntegerParsingInfo();
+            IOctalIntegerParsingInfo OctalIntegerParsing = new OctalIntegerParsingInfo();
+            IDecimalIntegerParsingInfo DecimalIntegerParsing = new DecimalIntegerParsingInfo();
+            IHexadecimalIntegerParsingInfo HexadecimalIntegerParsing = new HexadecimalIntegerParsingInfo();
+            IRealParsingInfo RealParsing = new RealParsingInfo();
 
             foreach (char c in text)
             {
@@ -91,7 +93,7 @@
                     break;
             }
 
-            ParsingInfo Parsing = new InvalidParsingInfo();
+            IParsingInfo Parsing = new InvalidParsingInfo();
             int LengthSuccessful = 0;
 
             BinaryIntegerParsing.UpdateBestParsing(ref Parsing, ref LengthSuccessful);

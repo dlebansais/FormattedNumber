@@ -1,9 +1,16 @@
 ﻿namespace FormattedNumber
 {
     /// <summary>
-    /// Class to hold information during parsing of an integer in hexadecimal base.
+    /// Hold information during parsing of an integer in hexadecimal base.
     /// </summary>
-    public class HexadecimalIntegerParsingInfo : IntegerWithBaseParsingInfo
+    public interface IHexadecimalIntegerParsingInfo : IIntegerWithBaseParsingInfo
+    {
+    }
+
+    /// <summary>
+    /// Hold information during parsing of an integer in hexadecimal base.
+    /// </summary>
+    public class HexadecimalIntegerParsingInfo : IntegerWithBaseParsingInfo, IHexadecimalIntegerParsingInfo
     {
         /// <summary>
         /// The base to use when parsing.

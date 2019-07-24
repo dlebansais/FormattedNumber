@@ -3,9 +3,16 @@
     using System.Diagnostics;
 
     /// <summary>
+    /// Interface describing a decimal (base 10) integer.
+    /// </summary>
+    public interface IDecimalIntegerBase : IIntegerBase
+    {
+    }
+
+    /// <summary>
     /// Class describing a decimal (base 10) integer.
     /// </summary>
-    public class DecimalIntegerBase : IntegerBase
+    public class DecimalIntegerBase : IntegerBase, IDecimalIntegerBase
     {
         #region Init
         /// <summary>

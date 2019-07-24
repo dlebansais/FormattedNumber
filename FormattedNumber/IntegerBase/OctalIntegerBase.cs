@@ -3,9 +3,16 @@
     using System.Diagnostics;
 
     /// <summary>
+    /// Interface describing an octal (base 8) integer.
+    /// </summary>
+    public interface IOctalIntegerBase : IIntegerBase
+    {
+    }
+
+    /// <summary>
     /// Class describing an octal (base 8) integer.
     /// </summary>
-    public class OctalIntegerBase : IntegerBase
+    public class OctalIntegerBase : IntegerBase, IOctalIntegerBase
     {
         #region Init
         /// <summary>

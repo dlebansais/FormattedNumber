@@ -3,9 +3,38 @@
     using System;
 
     /// <summary>
-    /// Class to hold information during parsing of a number.
+    /// Hold information during parsing of a number.
     /// </summary>
-    public abstract class ParsingInfo
+    public interface IParsingInfo
+    {
+        /// <summary>
+        /// True if parsing is still going on.
+        /// </summary>
+        bool StillParsing { get; }
+
+        /// <summary>
+        /// Current handler for parsing.
+        /// </summary>
+        Action<char> Handler { get; }
+
+        /// <summary>
+        /// Checks if the current parser went further than others.
+        /// </summary>
+        /// <param name="parsing">The previous best parser.</param>
+        /// <param name="length">The length reached by <paramref name="parsing"/>.</param>
+        void UpdateBestParsing(ref IParsingInfo parsing, ref int length);
+
+        /// <summary>
+        /// Gets the formatted number that this parser is able to extract.
+        /// </summary>
+        /// <param name="text">The source string.</param>
+        FormattedNumber GetResult(string text);
+    }
+
+    /// <summary>
+    /// Hold information during parsing of a number.
+    /// </summary>
+    public abstract class ParsingInfo : IParsingInfo
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ParsingInfo"/> class.
@@ -36,7 +65,7 @@
         /// </summary>
         /// <param name="parsing">The previous best parser.</param>
         /// <param name="length">The length reached by <paramref name="parsing"/>.</param>
-        public virtual void UpdateBestParsing(ref ParsingInfo parsing, ref int length)
+        public virtual void UpdateBestParsing(ref IParsingInfo parsing, ref int length)
         {
             if (length < LengthSuccessful)
             {
