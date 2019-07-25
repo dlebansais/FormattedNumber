@@ -219,6 +219,28 @@
             FormattedNumber Result = FromCanonical(OperationResult);
             return Result;
         }
+
+        /// <summary>
+        /// Returns the absolute value.
+        /// </summary>
+        public FormattedNumber Abs()
+        {
+            CanonicalNumber OperationResult = Canonical.Abs();
+
+            FormattedNumber Result = FromCanonical(OperationResult);
+            return Result;
+        }
+
+        /// <summary>
+        /// Returns e (the base of natural logarithms) raised to the power of this object's value.
+        /// </summary>
+        public FormattedNumber Exp()
+        {
+            CanonicalNumber OperationResult = Canonical.Exp();
+
+            FormattedNumber Result = FromCanonical(OperationResult);
+            return Result;
+        }
         #endregion
     }
 }

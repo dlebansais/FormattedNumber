@@ -347,6 +347,30 @@
             CanonicalNumber Result = FromEFloat(OperationResult);
             return Result;
         }
+
+        /// <summary>
+        /// Returns the absolute value.
+        /// </summary>
+        public CanonicalNumber Abs()
+        {
+            EFloat OperationResult = NumberFloat.Abs(LastContext);
+            UpdateFlags();
+
+            CanonicalNumber Result = FromEFloat(OperationResult);
+            return Result;
+        }
+
+        /// <summary>
+        /// Returns e (the base of natural logarithms) raised to the power of this object's value.
+        /// </summary>
+        public CanonicalNumber Exp()
+        {
+            EFloat OperationResult = NumberFloat.Exp(LastContext);
+            UpdateFlags();
+
+            CanonicalNumber Result = FromEFloat(OperationResult);
+            return Result;
+        }
         #endregion
 
         #region Operators

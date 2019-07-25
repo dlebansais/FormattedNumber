@@ -38,10 +38,10 @@
         {
             Debug.Assert(context.HasFlags);
 
-            if ((context.Flags | EContext.FlagDivideByZero) != 0)
+            if ((context.Flags & EContext.FlagDivideByZero) != 0)
                 DivideByZero = true;
 
-            if ((context.Flags | EContext.FlagInexact) != 0)
+            if ((context.Flags & EContext.FlagInexact) != 0)
                 Inexact = true;
 
             context.Flags = 0;
