@@ -13,21 +13,22 @@
         /// </summary>
         /// <param name="integerBase">The base.</param>
         /// <param name="sign">The optional sign.</param>
-        /// <param name="leadingZeroesCount">The number of leading zeroes.</param>
+        /// <param name="leadingZeroCount">The number of leading zeroes.</param>
         /// <param name="integerText">The integer text..</param>
         /// <param name="invalidText">The trailing invalid text, if any.</param>
         /// <param name="canonical">The canonical form of the number.</param>
         /// <exception cref="NullReferenceException"><paramref name="invalidText"/> or <paramref name="canonical"/> is null.</exception>
-        public FormattedInteger(IIntegerBase integerBase, OptionalSign sign, int leadingZeroesCount, string integerText, string invalidText, CanonicalNumber canonical)
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="leadingZeroCount"/> is lesser than zero.</exception>
+        public FormattedInteger(IIntegerBase integerBase, OptionalSign sign, int leadingZeroCount, string integerText, string invalidText, CanonicalNumber canonical)
             : base(invalidText, canonical)
         {
             IntegerBase = integerBase;
             Sign = sign;
-            LeadingZeroCount = leadingZeroesCount;
-            IntegerText = integerText ?? throw new NullReferenceException(nameof(integerText));
+            LeadingZeroCount = leadingZeroCount;
+            IntegerText = integerText ?? throw new ArgumentNullException(nameof(integerText), "Value cannot be null.");
 
-            if (leadingZeroesCount < 0)
-                throw new ArgumentOutOfRangeException(nameof(leadingZeroesCount));
+            if (leadingZeroCount < 0)
+                throw new ArgumentOutOfRangeException(nameof(leadingZeroCount));
         }
         #endregion
 

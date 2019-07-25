@@ -15,6 +15,8 @@ if exist ..\Misc-Beta-Test\Test-FormattedNumber\obj\x64\Release\Coverage-Formatt
 
 :upload
 if exist ..\Misc-Beta-Test\Test-FormattedNumber\obj\x64\Debug\Coverage-FormattedNumber-Debug_coverage.xml ..\Misc-Beta-Test\packages\Codecov.1.1.1\tools\codecov -v -f "..\Misc-Beta-Test\Test-FormattedNumber\obj\x64\Debug\Coverage-FormattedNumber-Debug_coverage.xml" -t "e34a62fe-de27-408f-98db-a2700117d634"
+ECHO Waiting 30 seconds
+PING -n 30 -w 1000 127.1 > NUL
 if exist ..\Misc-Beta-Test\Test-FormattedNumber\obj\x64\Release\Coverage-FormattedNumber-Release_coverage.xml ..\Misc-Beta-Test\packages\Codecov.1.1.1\tools\codecov -v -f "..\Misc-Beta-Test\Test-FormattedNumber\obj\x64\Release\Coverage-FormattedNumber-Release_coverage.xml" -t "e34a62fe-de27-408f-98db-a2700117d634"
 goto end
 

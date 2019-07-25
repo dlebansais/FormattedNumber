@@ -12,7 +12,7 @@
         /// Initializes a new instance of the <see cref="FormattedReal"/> class.
         /// </summary>
         /// <param name="sign">The optional sign.</param>
-        /// <param name="leadingZeroesCount">The number of leading zeroes.</param>
+        /// <param name="leadingZeroCount">The number of leading zeroes.</param>
         /// <param name="integerText">The text before the decimal separator character. Can be empty.</param>
         /// <param name="separatorCharacter">The decimal separator character. Can be <see cref="Parser.NoSeparator"/>.</param>
         /// <param name="fractionalText">The text after the decimal separator character and before the exponent. Can be empty.</param>
@@ -22,20 +22,20 @@
         /// <param name="invalidText">The trailing invalid text, if any.</param>
         /// <param name="canonical">The canonical form of the number.</param>
         /// <exception cref="NullReferenceException"><paramref name="invalidText"/> or <paramref name="canonical"/> is null.</exception>
-        public FormattedReal(OptionalSign sign, int leadingZeroesCount, string integerText, char separatorCharacter, string fractionalText, char exponentCharacter, OptionalSign exponentSign, string exponentText, string invalidText, CanonicalNumber canonical)
+        public FormattedReal(OptionalSign sign, int leadingZeroCount, string integerText, char separatorCharacter, string fractionalText, char exponentCharacter, OptionalSign exponentSign, string exponentText, string invalidText, CanonicalNumber canonical)
             : base(invalidText, canonical)
         {
             Sign = sign;
-            LeadingZeroCount = leadingZeroesCount;
-            IntegerText = integerText ?? throw new NullReferenceException(nameof(integerText));
+            LeadingZeroCount = leadingZeroCount;
+            IntegerText = integerText ?? throw new ArgumentNullException(nameof(integerText), "Value cannot be null.");
             SeparatorCharacter = separatorCharacter;
-            FractionalText = fractionalText ?? throw new NullReferenceException(nameof(fractionalText));
+            FractionalText = fractionalText ?? throw new ArgumentNullException(nameof(fractionalText), "Value cannot be null.");
             ExponentCharacter = exponentCharacter;
             ExponentSign = exponentSign;
-            ExponentText = exponentText ?? throw new NullReferenceException(nameof(exponentText));
+            ExponentText = exponentText ?? throw new ArgumentNullException(nameof(exponentText), "Value cannot be null.");
 
-            if (leadingZeroesCount < 0)
-                throw new ArgumentOutOfRangeException(nameof(leadingZeroesCount));
+            if (leadingZeroCount < 0)
+                throw new ArgumentOutOfRangeException(nameof(leadingZeroCount));
 
             if (SeparatorCharacter != Parser.NoSeparator)
             {

@@ -34,6 +34,9 @@
         /// <exception cref="NullReferenceException"><paramref name="canonical"/> is null.</exception>
         public static FormattedNumber FromCanonical(CanonicalNumber canonical)
         {
+            if (canonical == null)
+                throw new ArgumentNullException(nameof(canonical), "Value cannot be null.");
+
             if (canonical == CanonicalNumber.NaN)
                 return NaN;
 
@@ -74,8 +77,8 @@
         /// <exception cref="NullReferenceException"><paramref name="invalidText"/> or <paramref name="canonical"/> is null.</exception>
         protected FormattedNumber(string invalidText, CanonicalNumber canonical)
         {
-            InvalidText = invalidText ?? throw new NullReferenceException(nameof(invalidText));
-            Canonical = canonical ?? throw new NullReferenceException(nameof(canonical));
+            InvalidText = invalidText ?? throw new ArgumentNullException(nameof(invalidText), "Value cannot be null.");
+            Canonical = canonical ?? throw new ArgumentNullException(nameof(canonical), "Value cannot be null.");
         }
         #endregion
 
@@ -141,11 +144,11 @@
         }
 
         /// <summary></summary>
-        protected string GetLeadingZeroesText(int leadingZeroesCount)
+        protected string GetLeadingZeroesText(int leadingZeroCount)
         {
             string Result = string.Empty;
 
-            for (int i = 0; i < leadingZeroesCount; i++)
+            for (int i = 0; i < leadingZeroCount; i++)
                 Result += IntegerBase.Zero;
 
             return Result;
