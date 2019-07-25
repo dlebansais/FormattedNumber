@@ -371,6 +371,55 @@
             CanonicalNumber Result = FromEFloat(OperationResult);
             return Result;
         }
+
+        /// <summary>
+        /// Returns the natural logarithms of this object's value.
+        /// </summary>
+        public CanonicalNumber Log()
+        {
+            EFloat OperationResult = NumberFloat.Log(LastContext);
+            UpdateFlags();
+
+            CanonicalNumber Result = FromEFloat(OperationResult);
+            return Result;
+        }
+
+        /// <summary>
+        /// Returns the base-10 logarithms of this object's value.
+        /// </summary>
+        public CanonicalNumber Log10()
+        {
+            EFloat OperationResult = NumberFloat.Log10(LastContext);
+            UpdateFlags();
+
+            CanonicalNumber Result = FromEFloat(OperationResult);
+            return Result;
+        }
+
+        /// <summary>
+        /// Returns this object's value raised to the power x.
+        /// </summary>
+        /// <param name="x">The number.</param>
+        public CanonicalNumber Pow(CanonicalNumber x)
+        {
+            EFloat OperationResult = NumberFloat.Pow(x.NumberFloat, LastContext);
+            UpdateFlags();
+
+            CanonicalNumber Result = FromEFloat(OperationResult);
+            return Result;
+        }
+
+        /// <summary>
+        /// Returns the square root of this object's value.
+        /// </summary>
+        public CanonicalNumber Sqrt()
+        {
+            EFloat OperationResult = NumberFloat.Sqrt(LastContext);
+            UpdateFlags();
+
+            CanonicalNumber Result = FromEFloat(OperationResult);
+            return Result;
+        }
         #endregion
 
         #region Operators

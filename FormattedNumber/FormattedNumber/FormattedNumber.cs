@@ -241,6 +241,51 @@
             FormattedNumber Result = FromCanonical(OperationResult);
             return Result;
         }
+
+        /// <summary>
+        /// Returns the natural logarithms of this object's value.
+        /// </summary>
+        public FormattedNumber Log()
+        {
+            CanonicalNumber OperationResult = Canonical.Log();
+
+            FormattedNumber Result = FromCanonical(OperationResult);
+            return Result;
+        }
+
+        /// <summary>
+        /// Returns the base-10 logarithms of this object's value.
+        /// </summary>
+        public FormattedNumber Log10()
+        {
+            CanonicalNumber OperationResult = Canonical.Log10();
+
+            FormattedNumber Result = FromCanonical(OperationResult);
+            return Result;
+        }
+
+        /// <summary>
+        /// Returns this object's value raised to the power x.
+        /// </summary>
+        /// <param name="x">The number.</param>
+        public FormattedNumber Pow(FormattedNumber x)
+        {
+            CanonicalNumber OperationResult = Canonical.Pow(x.Canonical);
+
+            FormattedNumber Result = FromCanonical(OperationResult);
+            return Result;
+        }
+
+        /// <summary>
+        /// Returns the square root of this object's value.
+        /// </summary>
+        public FormattedNumber Sqrt()
+        {
+            CanonicalNumber OperationResult = Canonical.Sqrt();
+
+            FormattedNumber Result = FromCanonical(OperationResult);
+            return Result;
+        }
         #endregion
     }
 }
