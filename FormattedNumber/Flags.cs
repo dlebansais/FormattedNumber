@@ -12,6 +12,11 @@
         /// Signals a division of a nonzero number by zero.
         /// </summary>
         public bool DivideByZero { get; private set; }
+
+        /// <summary>
+        /// Signals that the result was rounded to a different mathematical value, but as close as possible to the original.
+        /// </summary>
+        public bool Inexact { get; private set; }
         #endregion
 
         #region Client Interface
@@ -20,6 +25,8 @@
         /// </summary>
         public void Clear()
         {
+            DivideByZero = false;
+            Inexact = false;
         }
 
         /// <summary>
@@ -33,6 +40,9 @@
 
             if ((context.Flags | EContext.FlagDivideByZero) != 0)
                 DivideByZero = true;
+
+            if ((context.Flags | EContext.FlagInexact) != 0)
+                Inexact = true;
 
             context.Flags = 0;
         }
