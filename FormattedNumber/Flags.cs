@@ -1,7 +1,7 @@
 ﻿namespace FormattedNumber
 {
-    using PeterO.Numbers;
     using System.Diagnostics;
+    using PeterO.Numbers;
 
     /// <summary>
     /// Flag containing information about the result of operations.

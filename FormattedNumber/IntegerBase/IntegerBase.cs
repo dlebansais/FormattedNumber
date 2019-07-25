@@ -32,7 +32,7 @@
         /// <param name="text">The number to check.</param>
         /// <param name="supportLeadingZeroes">True if <paramref name="text"/> might have leading zeroes.</param>
         /// <returns>True if <paramref name="text"/> is a valid number; Otherwise, false.</returns>
-        bool IsValidNumber(string text, bool supportLeadingZeroes);
+        bool IsValidNumber(string text, bool supportLeadingZeroes = true);
 
         /// <summary>
         /// Checks if a number is made of digits in this base.

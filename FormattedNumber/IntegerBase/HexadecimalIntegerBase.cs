@@ -85,7 +85,11 @@
         /// <param name="digit">The digit.</param>
         public override int ToValue(char digit)
         {
-            Debug.Assert((digit >= '0' && digit <= '9') || (digit >= 'a' && digit <= 'f') || (digit >= 'A' && digit <= 'F'));
+            bool IsDecimalDigit = digit >= '0' && digit <= '9';
+            bool IsHexadecimalDigitLower = digit >= 'a' && digit <= 'f';
+            bool IsHexadecimalDigitUpper = digit >= 'A' && digit <= 'F';
+
+            Debug.Assert(IsDecimalDigit || IsHexadecimalDigitLower || IsHexadecimalDigitUpper);
 
             if (digit >= '0' && digit <= '9')
                 return digit - '0';
