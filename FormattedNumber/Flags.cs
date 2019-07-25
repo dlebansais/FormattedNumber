@@ -1,6 +1,7 @@
 ﻿namespace FormattedNumber
 {
     using PeterO.Numbers;
+    using System.Diagnostics;
 
     /// <summary>
     /// Flag containing information about the result of operations.
@@ -35,8 +36,7 @@
         /// <param name="context">The context used to perform the operation.</param>
         internal void Update(EContext context)
         {
-            if (!context.HasFlags)
-                return;
+            Debug.Assert(context.HasFlags);
 
             if ((context.Flags | EContext.FlagDivideByZero) != 0)
                 DivideByZero = true;

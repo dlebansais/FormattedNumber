@@ -26,7 +26,7 @@
             set
             {
                 if (value <= 0)
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(value));
 
                 ValidPrecision = value;
             }
