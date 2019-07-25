@@ -225,6 +225,7 @@
             if (SignificandText.Length > 10 || ExponentText.Length > 1)
                 return false;
 
+
             int Significand;
             int Exponent;
             if (!int.TryParse(SignificandText, out Significand) || !int.TryParse(ExponentText, out Exponent))
