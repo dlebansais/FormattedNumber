@@ -420,6 +420,108 @@
             CanonicalNumber Result = FromEFloat(OperationResult);
             return Result;
         }
+
+        /// <summary>
+        /// Returns this object's value multiplied by a specified power of two.
+        /// </summary>
+        /// <param name="other">The other number.</param>
+        public CanonicalNumber ShiftLeft(CanonicalNumber other)
+        {
+            bool IsFractionalPartDiscarded = false;
+            EInteger x = NumberFloat.ToEIntegerWithStatus(ref IsFractionalPartDiscarded);
+            EInteger y = other.NumberFloat.ToEIntegerWithStatus(ref IsFractionalPartDiscarded);
+
+            EFloat OperationResult = x.ShiftLeft(y);
+            UpdateInexact(IsFractionalPartDiscarded);
+
+            CanonicalNumber Result = FromEFloat(OperationResult);
+            return Result;
+        }
+
+        /// <summary>
+        /// Returns this object's value divided by a specified power of two.
+        /// </summary>
+        /// <param name="other">The other number.</param>
+        public CanonicalNumber ShiftRight(CanonicalNumber other)
+        {
+            bool IsFractionalPartDiscarded = false;
+            EInteger x = NumberFloat.ToEIntegerWithStatus(ref IsFractionalPartDiscarded);
+            EInteger y = other.NumberFloat.ToEIntegerWithStatus(ref IsFractionalPartDiscarded);
+
+            EFloat OperationResult = x.ShiftRight(y);
+            UpdateInexact(IsFractionalPartDiscarded);
+
+            CanonicalNumber Result = FromEFloat(OperationResult);
+            return Result;
+        }
+
+        /// <summary>
+        /// Returns the remainder when this object's value is divided by another.
+        /// </summary>
+        /// <param name="other">The other number.</param>
+        public CanonicalNumber Remainder(CanonicalNumber other)
+        {
+            bool IsFractionalPartDiscarded = false;
+            EInteger x = NumberFloat.ToEIntegerWithStatus(ref IsFractionalPartDiscarded);
+            EInteger y = other.NumberFloat.ToEIntegerWithStatus(ref IsFractionalPartDiscarded);
+
+            EFloat OperationResult = x.Remainder(y);
+            UpdateInexact(IsFractionalPartDiscarded);
+
+            CanonicalNumber Result = FromEFloat(OperationResult);
+            return Result;
+        }
+
+        /// <summary>
+        /// Returns the bitwise AND of this object's value and another.
+        /// </summary>
+        /// <param name="other">The other number.</param>
+        public CanonicalNumber BitwiseAnd(CanonicalNumber other)
+        {
+            bool IsFractionalPartDiscarded = false;
+            EInteger x = NumberFloat.ToEIntegerWithStatus(ref IsFractionalPartDiscarded);
+            EInteger y = other.NumberFloat.ToEIntegerWithStatus(ref IsFractionalPartDiscarded);
+
+            EFloat OperationResult = x.And(y);
+            UpdateInexact(IsFractionalPartDiscarded);
+
+            CanonicalNumber Result = FromEFloat(OperationResult);
+            return Result;
+        }
+
+        /// <summary>
+        /// Returns the bitwise OR of this object's value and another.
+        /// </summary>
+        /// <param name="other">The other number.</param>
+        public CanonicalNumber BitwiseOr(CanonicalNumber other)
+        {
+            bool IsFractionalPartDiscarded = false;
+            EInteger x = NumberFloat.ToEIntegerWithStatus(ref IsFractionalPartDiscarded);
+            EInteger y = other.NumberFloat.ToEIntegerWithStatus(ref IsFractionalPartDiscarded);
+
+            EFloat OperationResult = x.Or(y);
+            UpdateInexact(IsFractionalPartDiscarded);
+
+            CanonicalNumber Result = FromEFloat(OperationResult);
+            return Result;
+        }
+
+        /// <summary>
+        /// Returns the bitwise OR of this object's value and another.
+        /// </summary>
+        /// <param name="other">The other number.</param>
+        public CanonicalNumber BitwiseXor(CanonicalNumber other)
+        {
+            bool IsFractionalPartDiscarded = false;
+            EInteger x = NumberFloat.ToEIntegerWithStatus(ref IsFractionalPartDiscarded);
+            EInteger y = other.NumberFloat.ToEIntegerWithStatus(ref IsFractionalPartDiscarded);
+
+            EFloat OperationResult = x.Xor(y);
+            UpdateInexact(IsFractionalPartDiscarded);
+
+            CanonicalNumber Result = FromEFloat(OperationResult);
+            return Result;
+        }
         #endregion
 
         #region Operators

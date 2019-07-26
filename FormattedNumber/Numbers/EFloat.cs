@@ -2707,17 +2707,30 @@ namespace PeterO.Numbers {
     /// <returns>An arbitrary-precision integer.</returns>
     /// <exception cref='System.OverflowException'>This object's value is infinity or not-a-number (NaN).</exception>
     public EInteger ToEInteger() {
-      return this.ToEIntegerInternal(false);
+            bool IsFractionalPartDiscarded = false;
+            return this.ToEIntegerInternal(false, ref IsFractionalPartDiscarded);
     }
 
-    /// <summary>
-    /// Converts this value to an arbitrary-precision integer, checking whether the value contains a fractional part.
-    /// </summary>
-    /// <returns>An arbitrary-precision integer.</returns>
-    /// <exception cref='System.OverflowException'>This object's value is infinity or not-a-number (NaN).</exception>
-    [Obsolete("Renamed to ToEIntegerIfExact.")]
+        /// <summary>
+        /// Converts this value to an arbitrary-precision integer. Any fractional part of this value will be discarded when converting to an arbitrary-precision integer.
+        /// </summary>
+        /// <param name="isFractionalPartDiscarded">True upon return if discarded.</param>
+        /// <returns>An arbitrary-precision integer.</returns>
+        /// <exception cref='System.OverflowException'>This object's value is infinity or not-a-number (NaN).</exception>
+        public EInteger ToEIntegerWithStatus(ref bool isFractionalPartDiscarded)
+        {
+            return this.ToEIntegerInternal(false, ref isFractionalPartDiscarded);
+        }
+
+        /// <summary>
+        /// Converts this value to an arbitrary-precision integer, checking whether the value contains a fractional part.
+        /// </summary>
+        /// <returns>An arbitrary-precision integer.</returns>
+        /// <exception cref='System.OverflowException'>This object's value is infinity or not-a-number (NaN).</exception>
+        [Obsolete("Renamed to ToEIntegerIfExact.")]
     public EInteger ToEIntegerExact() {
-      return this.ToEIntegerInternal(true);
+            bool IsFractionalPartDiscarded = false;
+      return this.ToEIntegerInternal(true, ref IsFractionalPartDiscarded);
     }
 
     /// <summary>
@@ -2726,7 +2739,8 @@ namespace PeterO.Numbers {
     /// <returns>An arbitrary-precision integer.</returns>
     /// <exception cref='System.OverflowException'>This object's value is infinity or not-a-number (NaN).</exception>
     public EInteger ToEIntegerIfExact() {
-      return this.ToEIntegerInternal(true);
+            bool IsFractionalPartDiscarded = false;
+            return this.ToEIntegerInternal(true, ref IsFractionalPartDiscarded);
     }
 
     /// <summary>
@@ -2948,7 +2962,7 @@ namespace PeterO.Numbers {
         flags);
     }
 
-    private EInteger ToEIntegerInternal(bool exact) {
+    private EInteger ToEIntegerInternal(bool exact, ref bool isFractionalPartDiscarded) {
       if (!this.IsFinite) {
         throw new OverflowException("Value is infinity or NaN");
       }
@@ -2977,7 +2991,9 @@ namespace PeterO.Numbers {
         }
         return bigmantissa;
       } else {
-        if (exact && !this.unsignedMantissa.IsEven) {
+                isFractionalPartDiscarded |= !this.unsignedMantissa.IsEven;
+
+        if (exact && isFractionalPartDiscarded) {
           // Mantissa is odd and will have to shift a nonzero
           // number of bits, so can't be an exact integer
           throw new ArithmeticException("Not an exact integer");
@@ -2986,8 +3002,8 @@ namespace PeterO.Numbers {
         EInteger bigmantissa = this.unsignedMantissa;
         var acc = new BitShiftAccumulator(bigmantissa, 0, 0);
         acc.ShiftRight(bigexponent);
-        if (exact && (acc.LastDiscardedDigit != 0 || acc.OlderDiscardedDigits !=
-                    0)) {
+                isFractionalPartDiscarded |= acc.LastDiscardedDigit != 0 || acc.OlderDiscardedDigits != 0;
+        if (exact && isFractionalPartDiscarded) {
           // Some digits were discarded
           throw new ArithmeticException("Not an exact integer");
         }

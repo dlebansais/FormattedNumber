@@ -286,6 +286,78 @@
             FormattedNumber Result = FromCanonical(OperationResult);
             return Result;
         }
+
+        /// <summary>
+        /// Returns this object's value multiplied by a specified power of two.
+        /// </summary>
+        /// <param name="x">The number.</param>
+        public FormattedNumber ShiftLeft(FormattedNumber x)
+        {
+            CanonicalNumber OperationResult = Canonical.ShiftLeft(x.Canonical);
+
+            FormattedNumber Result = FromCanonical(OperationResult);
+            return Result;
+        }
+
+        /// <summary>
+        /// Returns this object's value divided by a specified power of two.
+        /// </summary>
+        /// <param name="x">The number.</param>
+        public FormattedNumber ShiftRight(FormattedNumber x)
+        {
+            CanonicalNumber OperationResult = Canonical.ShiftRight(x.Canonical);
+
+            FormattedNumber Result = FromCanonical(OperationResult);
+            return Result;
+        }
+
+        /// <summary>
+        /// Returns the remainder when this object's value is divided by x.
+        /// </summary>
+        /// <param name="x">The divisor.</param>
+        public FormattedNumber Remainder(FormattedNumber x)
+        {
+            CanonicalNumber OperationResult = Canonical.Remainder(x.Canonical);
+
+            FormattedNumber Result = FromCanonical(OperationResult);
+            return Result;
+        }
+
+        /// <summary>
+        /// Returns the bitwise AND of this object's value and x.
+        /// </summary>
+        /// <param name="x">The number.</param>
+        public FormattedNumber BitwiseAnd(FormattedNumber x)
+        {
+            CanonicalNumber OperationResult = Canonical.BitwiseAnd(x.Canonical);
+
+            FormattedNumber Result = FromCanonical(OperationResult);
+            return Result;
+        }
+
+        /// <summary>
+        /// Returns the bitwise OR of this object's value and x.
+        /// </summary>
+        /// <param name="x">The number.</param>
+        public FormattedNumber BitwiseOr(FormattedNumber x)
+        {
+            CanonicalNumber OperationResult = Canonical.BitwiseOr(x.Canonical);
+
+            FormattedNumber Result = FromCanonical(OperationResult);
+            return Result;
+        }
+
+        /// <summary>
+        /// Returns the bitwise XOR of this object's value and x.
+        /// </summary>
+        /// <param name="x">The number.</param>
+        public FormattedNumber BitwiseXor(FormattedNumber x)
+        {
+            CanonicalNumber OperationResult = Canonical.BitwiseXor(x.Canonical);
+
+            FormattedNumber Result = FromCanonical(OperationResult);
+            return Result;
+        }
         #endregion
     }
 }

@@ -46,6 +46,14 @@
 
             context.Flags = 0;
         }
+
+        /// <summary>
+        /// Forces the inexact flag to true.
+        /// </summary>
+        internal void SetInexact()
+        {
+            Inexact = true;
+        }
         #endregion
     }
 }

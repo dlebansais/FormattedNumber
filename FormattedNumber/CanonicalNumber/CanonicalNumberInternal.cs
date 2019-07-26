@@ -34,6 +34,15 @@
             Flags Flags = Arithmetic.Flags;
             Flags.Update(LastContext);
         }
+
+        private protected static void UpdateInexact(bool isInexact)
+        {
+            if (isInexact)
+            {
+                Flags Flags = Arithmetic.Flags;
+                Flags.SetInexact();
+            }
+        }
         #endregion
     }
 }
