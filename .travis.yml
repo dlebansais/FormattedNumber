@@ -20,7 +20,7 @@ script:
 - msbuild FormattedNumber.sln /p:Configuration=Travis
 - cp ./testrunner/NUnit.3.12.0/lib/net45/nunit.framework.dll ./FormattedNumber/bin/x64/Travis/
 #- mono ./testrunner/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe --trace=Debug --labels=All "--where=cat!=Coverage" ./FormattedNumber/bin/x64/Travis/Test-FormattedNumber.dll
-- mono ./testrunner/OpenCover.4.6.519/tools/OpenCover.Console.exe -register:user -target:"./testrunner/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe " -targetargs:"./FormattedNumber/bin/x64/Travis/Test-FormattedNumber.dll --trace=Debug --labels=All --where=cat==Coverage" -filter:"+[FormattedNumber*]* -[Test-FormattedNumber*]*" -output:"./FormattedNumber/bin/x64/Travis/Coverage-FormattedNumber-Travis_coverage.xml"
+- mono ./testrunner/OpenCover.4.7.922/tools/OpenCover.Console.exe -register:user -target:"./testrunner/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe " -targetargs:"./FormattedNumber/bin/x64/Travis/Test-FormattedNumber.dll --trace=Debug --labels=All --where=cat==Coverage" -filter:"+[FormattedNumber*]* -[Test-FormattedNumber*]*" -output:"./FormattedNumber/bin/x64/Travis/Coverage-FormattedNumber-Travis_coverage.xml"
 - bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
 
 deploy:
