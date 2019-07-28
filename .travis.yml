@@ -10,14 +10,18 @@ install:
 - nuget restore FormattedNumber.sln
 - nuget install NUnit -Version 3.12.0 -OutputDirectory testrunner
 - nuget install NUnit.ConsoleRunner -Version 3.10.0 -OutputDirectory testrunner
+- nuget install OpenCover -Version 4.7.922 -OutputDirectory testrunner
 
 script:
+# TODO: remove the rm below for NUNIT version > 3.12
 - rm ./testrunner/NUnit.3.12.0/CHANGES.md
 - ./link-verifier > link-verifier-output.txt
 - grep -B 1 FAILED link-verifier-output.txt
 - msbuild FormattedNumber.sln /p:Configuration=Travis
 - cp ./testrunner/NUnit.3.12.0/lib/net45/nunit.framework.dll ./FormattedNumber/bin/x64/Travis/
-- mono ./testrunner/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe --trace=Debug --labels=All "--where=cat!=Coverage" ./FormattedNumber/bin/x64/Travis/Test-FormattedNumber.dll
+#- mono ./testrunner/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe --trace=Debug --labels=All "--where=cat!=Coverage" ./FormattedNumber/bin/x64/Travis/Test-FormattedNumber.dll
+- mono ./testrunner/OpenCover.4.6.519/tools/OpenCover.Console.exe" -register:user -target:"./testrunner/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe " -targetargs:"./FormattedNumber/bin/x64/Travis/Test-FormattedNumber.dll --trace=Debug --labels=All --where=cat==Coverage" -filter:"+[FormattedNumber*]* -[Test-FormattedNumber*]*" -output:"./FormattedNumber/bin/x64/Travis/Coverage-FormattedNumber-Travis_coverage.xml"
+- bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
 
 deploy:
   provider: pages
