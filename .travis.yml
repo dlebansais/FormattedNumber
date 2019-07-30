@@ -13,6 +13,7 @@ before_script:
 
 install:
 - sudo apt-get install -y nuget
+- nuget sources add -Source https://www.nuget.org/
 #- nuget restore FormattedNumber.sln
 - nuget install NUnit
 - nuget install NUnit.ConsoleRunner -Version 3.10.0
