@@ -1,4 +1,6 @@
 language: csharp
+mono: none
+dotnet: 2.2.200
 solution: FormattedNumber.sln
 
 before_script:
@@ -12,6 +14,7 @@ install:
 - nuget install NUnit.ConsoleRunner -Version 3.10.0 -OutputDirectory testrunner
 
 script:
+ - dotnet restore
 # TODO: remove the rm below for NUNIT version > 3.12
 - rm ./testrunner/NUnit.3.12.0/CHANGES.md
 - ./link-verifier > link-verifier-output.txt
