@@ -1,6 +1,7 @@
 language: csharp
 mono: none
 dotnet: 2.1.502
+os: windows
 solution: FormattedNumber.sln
 
 before_script:
