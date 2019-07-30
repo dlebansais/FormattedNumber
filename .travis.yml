@@ -1,7 +1,7 @@
 language: csharp
 mono: none
-dotnet: 2.1.502
-solution: FormattedNumber.sln
+dotnet: 2.2.108
+solution: FormattedNumber.Core.sln
 
 before_script:
 #  - wget https://github.com/bmuschko/link-verifier/releases/download/v0.7/link-verifier-0.7-linux-amd64.tar.gz -O /tmp/link-verifier.tar.gz

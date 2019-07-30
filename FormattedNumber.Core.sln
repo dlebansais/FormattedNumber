@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.705
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormattedNumber", "FormattedNumber\FormattedNumber.Core.csproj", "{0F897EE4-0CE0-4DFB-A338-19BDDE0AE58E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Travis|x64 = Travis|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0F897EE4-0CE0-4DFB-A338-19BDDE0AE58E}.Travis|x64.ActiveCfg = Travis|x64
+		{0F897EE4-0CE0-4DFB-A338-19BDDE0AE58E}.Travis|x64.Build.0 = Travis|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {199891BA-2CCB-44E9-A45D-83BDFE387613}
+	EndGlobalSection
+EndGlobal
