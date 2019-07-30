@@ -1,7 +1,6 @@
 language: csharp
 mono: none
 dotnet: 2.1.502
-os: windows
 solution: FormattedNumber.sln
 
 before_script:
@@ -10,7 +9,7 @@ before_script:
   - export PATH=$PATH:$PWD/link-verifier/
 
 install:
-#- nuget restore FormattedNumber.sln
+- nuget restore FormattedNumber.sln
 - choco install NUnit --Version 3.12.0
 - choco install NUnit.ConsoleRunner --Version 3.10.0
 - choco install OpenCover --Version 4.7.922
