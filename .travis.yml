@@ -16,7 +16,7 @@ install:
 - sudo apt-get update
 - sudo apt-get install -y nuget
 - sudo apt list --installed
-- nuget sources add -n NUnit -Source nuget.org
+- nuget sources add -name NUnit -Source nuget.org
 #- nuget restore FormattedNumber.sln
 - nuget install NUnit
 - nuget install NUnit.ConsoleRunner -Version 3.10.0
