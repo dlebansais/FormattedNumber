@@ -12,7 +12,10 @@ before_script:
 #  - export PATH=$PATH:$PWD/link-verifier/
 
 install:
+- sudo apt list --installed
+- sudo apt-get update
 - sudo apt-get install -y nuget
+- sudo apt list --installed
 - nuget sources add -Source https://www.nuget.org/
 #- nuget restore FormattedNumber.sln
 - nuget install NUnit
