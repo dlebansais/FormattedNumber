@@ -1,35 +1,24 @@
 language: csharp
-mono: none
-dotnet: 2.2.108
-
-before install:
-- sudo apt-get install -y nuget
+solution: FormattedNumber.sln
 
 before_script:
-- sudo apt-get install -y nuget
-#  - wget https://github.com/bmuschko/link-verifier/releases/download/v0.7/link-verifier-0.7-linux-amd64.tar.gz -O /tmp/link-verifier.tar.gz
-#  - tar -xvf /tmp/link-verifier.tar.gz
-#  - export PATH=$PATH:$PWD/link-verifier/
+  - wget https://github.com/bmuschko/link-verifier/releases/download/v0.7/link-verifier-0.7-linux-amd64.tar.gz -O /tmp/link-verifier.tar.gz
+  - tar -xvf /tmp/link-verifier.tar.gz
+  - export PATH=$PATH:$PWD/link-verifier/
 
 install:
-- sudo apt-get update
-- sudo apt-get install nunit nunit-console
-- nunit-Console
-- nunit
-- sudo apt-get install nunit nunit-console
-- sudo apt-get install OpenCover
+- nuget restore FormattedNumber.sln
+- nuget install NUnit -Version 3.12.0 -OutputDirectory testrunner
+- nuget install NUnit.ConsoleRunner -Version 3.10.0 -OutputDirectory testrunner
 
 script:
-- mkdir testrunner
-- dotnet build FormattedNumber.Core.sln
 # TODO: remove the rm below for NUNIT version > 3.12
-#- rm ./testrunner/NUnit.3.12.0/CHANGES.md
-#- ./link-verifier > link-verifier-output.txt
-#- grep -B 1 FAILED link-verifier-output.txt
-#- cp ./NUnit.3.12.0/lib/net45/nunit.framework.dll ./FormattedNumber/bin/x64/Travis/
-#- mono ./testrunner/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe --trace=Debug --labels=All ./FormattedNumber/bin/x64/Travis/Test-FormattedNumber.dll
-#- ./OpenCover.4.7.922/tools/OpenCover.Console.exe -register:user -target:"./NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe " -targetargs:"./FormattedNumber/bin/x64/Travis/Test-FormattedNumber.dll --trace=Debug --labels=All \"--where=cat==Coverage\"" -filter:"+[FormattedNumber*]* -[Test-FormattedNumber*]*" -output:"./FormattedNumber/bin/x64/Travis/Coverage-FormattedNumber-Travis_coverage.xml"
-- bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
+- rm ./testrunner/NUnit.3.12.0/CHANGES.md
+- ./link-verifier > link-verifier-output.txt
+- grep -B 1 FAILED link-verifier-output.txt
+- msbuild FormattedNumber.sln /p:Configuration=Travis
+- cp ./testrunner/NUnit.3.12.0/lib/net45/nunit.framework.dll ./FormattedNumber/bin/x64/Travis/
+- mono ./testrunner/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe --trace=Debug --labels=All ./FormattedNumber/bin/x64/Travis/Test-FormattedNumber.dll
 
 deploy:
   provider: pages
