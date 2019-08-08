@@ -9,9 +9,6 @@ addons:
   coverity_scan:
     project:
       name: dlebansais/FormattedNumber
-      version: 1.0
-      description: My Project
-    notification_email: scan_notifications@example.com
     build_command_prepend: ./configure
     build_command: msbuild
     branch_pattern: coverity-scan
