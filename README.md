@@ -2,7 +2,7 @@
 
 Handle numbers obtained from any string, and combine them with arbitrary precision arithmetic.
 
-[![Build Status](https://travis-ci.com/dlebansais/FormattedNumber.svg?branch=master)](https://travis-ci.com/dlebansais/FormattedNumber) [![CodeFactor](https://www.codefactor.io/repository/github/dlebansais/formattednumber/badge)](https://www.codefactor.io/repository/github/dlebansais/formattednumber) [![codecov](https://codecov.io/gh/dlebansais/FormattedNumber/branch/master/graph/badge.svg)](https://codecov.io/gh/dlebansais/FormattedNumber)
+[![Build Status](https://travis-ci.com/dlebansais/FormattedNumber.svg?branch=master)](https://travis-ci.com/dlebansais/FormattedNumber) [![CodeFactor](https://www.codefactor.io/repository/github/dlebansais/formattednumber/badge)](https://www.codefactor.io/repository/github/dlebansais/formattednumber) [![codecov](https://codecov.io/gh/dlebansais/FormattedNumber/branch/master/graph/badge.svg)](https://codecov.io/gh/dlebansais/FormattedNumber) [![coverity](https://scan.coverity.com/projects/18877/badge.svg)](https://scan.coverity.com/projects/dlebansais-formattednumber)
 
 This project can be used for the following purposes:
 
