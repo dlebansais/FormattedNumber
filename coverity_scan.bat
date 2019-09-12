@@ -5,6 +5,7 @@ cov-build --dir cov-int "C:\Program Files (x86)\Microsoft Visual Studio\2017\Com
 
 C:\Applications\7-Zip\7z a cov-int cov-int -tzip
 
-curl --form token=RQ9mFrizWJLx9aApHCKqPQ --form email=dlebansais@gmail.com --form file=@/Projects/FormattedNumber/cov-int.zip "https://scan.coverity.com/builds?project=dlebansais/FormattedNumber"
+call ..\Certification\coverity_scan_FormattedNumber.bat
 
+rd /S /Q cov-int
 del cov-int.zip
