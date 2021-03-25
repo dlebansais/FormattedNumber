@@ -6,7 +6,7 @@
     /// <summary>
     /// Interface to manipulate integer or real numbers of any size.
     /// </summary>
-    internal class CanonicalNumber : CanonicalNumberInternal
+    internal class CanonicalNumber
     {
         #region Constants
         /// <summary>
