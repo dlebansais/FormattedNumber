@@ -23,6 +23,8 @@ bld/
 [Ll]og/
 cov-int/
 cov-int*.*
+/nuget
+/nuget-debug
 
 # Visual Studio 2015 cache/options directory
 .vs/
