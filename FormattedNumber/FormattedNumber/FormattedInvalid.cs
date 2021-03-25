@@ -28,25 +28,25 @@
 
         #region Properties
         /// <summary>
-        /// The significand part. Can be empty.
+        /// Gets the significand part. Can be empty.
         /// This includes all characters up to and including the exponent character.
         /// </summary>
         public override string SignificandPart { get { return string.Empty; } }
 
         /// <summary>
-        /// The exponent part. Can be empty.
+        /// Gets the exponent part. Can be empty.
         /// This includes all characters after the exponent character and before the invalid text.
         /// </summary>
         public override string ExponentPart { get { return string.Empty; } }
 
         /// <summary>
-        /// True if the number is valid.
+        /// Gets a value indicating whether the number is valid.
         /// A valid number is finite in the sense of arithmetic (not NaN, not infinite), and has no trailing invalid text.
         /// </summary>
         public override bool IsValid { get { return false; } }
 
         /// <summary>
-        /// A diagnostic string for debug purpose.
+        /// Gets a diagnostic string for debug purpose.
         /// </summary>
         public override string Diagnostic { get { return $"{Canonical}/{InvalidText}"; } }
         #endregion

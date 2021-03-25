@@ -3,13 +3,6 @@
     /// <summary>
     /// Never parses anything.
     /// </summary>
-    internal interface IInvalidParsingInfo : IParsingInfo
-    {
-    }
-
-    /// <summary>
-    /// Never parses anything.
-    /// </summary>
     internal class InvalidParsingInfo : ParsingInfo, IInvalidParsingInfo
     {
         /// <summary>

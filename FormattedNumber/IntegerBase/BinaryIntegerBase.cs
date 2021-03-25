@@ -3,13 +3,6 @@
     using System.Diagnostics;
 
     /// <summary>
-    /// Interface describing a binary (base 2) integer.
-    /// </summary>
-    public interface IBinaryIntegerBase : IIntegerBase
-    {
-    }
-
-    /// <summary>
     /// Class describing a binary (base 2) integer.
     /// </summary>
     public class BinaryIntegerBase : IntegerBase, IBinaryIntegerBase
@@ -25,12 +18,12 @@
 
         #region Properties
         /// <summary>
-        /// The suffix for binary integers.
+        /// Gets the suffix for binary integers.
         /// </summary>
         public override string Suffix { get { return BinarySuffix; } }
 
         /// <summary>
-        /// The number of digits for binary integers.
+        /// Gets the number of digits for binary integers.
         /// </summary>
         public override int Radix { get { return BinaryRadix; } }
         #endregion

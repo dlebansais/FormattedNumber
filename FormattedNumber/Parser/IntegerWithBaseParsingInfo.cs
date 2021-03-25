@@ -5,13 +5,6 @@
     /// <summary>
     /// Hold information during parsing of an integer in base other than decimal.
     /// </summary>
-    internal interface IIntegerWithBaseParsingInfo : IParsingInfo
-    {
-    }
-
-    /// <summary>
-    /// Hold information during parsing of an integer in base other than decimal.
-    /// </summary>
     internal abstract class IntegerWithBaseParsingInfo : ParsingInfo, IIntegerWithBaseParsingInfo
     {
         /// <summary>
@@ -31,7 +24,7 @@
         }
 
         /// <summary>
-        /// The base to use when parsing.
+        /// Gets the base to use when parsing.
         /// </summary>
         protected abstract IIntegerBase Base { get; }
 

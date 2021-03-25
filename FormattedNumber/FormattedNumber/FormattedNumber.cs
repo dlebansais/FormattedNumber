@@ -84,40 +84,40 @@
 
         #region Properties
         /// <summary>
-        /// The significand part. Can be empty.
+        /// Gets the significand part. Can be empty.
         /// This includes all characters up to and including the exponent character.
         /// </summary>
         public abstract string SignificandPart { get; }
 
         /// <summary>
-        /// The exponent part. Can be empty.
+        /// Gets the exponent part. Can be empty.
         /// This includes all characters after the exponent character and before the invalid text.
         /// </summary>
         public abstract string ExponentPart { get; }
 
         /// <summary>
-        /// The trailing invalid text, if any.
+        /// Gets the trailing invalid text, if any.
         /// </summary>
         public string InvalidText { get; }
 
         /// <summary>
-        /// True if the number is valid.
+        /// Gets a value indicating whether the number is valid.
         /// A valid number is finite in the sense of arithmetic (not NaN, not infinite), and has no trailing invalid text.
         /// </summary>
         public abstract bool IsValid { get; }
 
         /// <summary>
-        /// The canonical form of the parsed number.
+        /// Gets the canonical form of the parsed number.
         /// </summary>
         internal CanonicalNumber Canonical { get; }
 
         /// <summary>
-        /// The the parsed number.
+        /// Gets the parsed number.
         /// </summary>
         public Number Value { get { return Canonical.NumberFloat; } }
 
         /// <summary>
-        /// A diagnostic string for debug purpose.
+        /// Gets a diagnostic string for debug purpose.
         /// </summary>
         public abstract string Diagnostic { get; }
         #endregion
@@ -139,7 +139,10 @@
         #endregion
 
         #region Implementation
-        /// <summary></summary>
+        /// <summary>
+        /// Gets the text for an optional sign.
+        /// </summary>
+        /// <param name="sign">The sign.</param>
         protected string GetSignText(OptionalSign sign)
         {
             string Result = null;
@@ -164,7 +167,10 @@
             return Result;
         }
 
-        /// <summary></summary>
+        /// <summary>
+        /// Gets the text representing leading zeroes.
+        /// </summary>
+        /// <param name="leadingZeroCount">The number of zeroes.</param>
         protected string GetLeadingZeroesText(int leadingZeroCount)
         {
             string Result = string.Empty;

@@ -171,32 +171,32 @@
 
         #region Properties
         /// <summary>
-        /// The sign of the significand.
+        /// Gets the sign of the significand.
         /// </summary>
         public OptionalSign SignificandSign { get; private set; }
 
         /// <summary>
-        /// The significand.
+        /// Gets the significand.
         /// </summary>
         public string SignificandText { get; private set; }
 
         /// <summary>
-        /// The sign of the exponent.
+        /// Gets the sign of the exponent.
         /// </summary>
         public OptionalSign ExponentSign { get; private set; }
 
         /// <summary>
-        /// The exponent.
+        /// Gets the exponent.
         /// </summary>
         public string ExponentText { get; private set; }
 
         /// <summary>
-        /// The canonic representation.
+        /// Gets the canonic representation.
         /// </summary>
         public string CanonicRepresentation { get; private set; }
 
         /// <summary>
-        /// The float.
+        /// Gets the float.
         /// </summary>
         public Number NumberFloat { get; private set; }
         #endregion

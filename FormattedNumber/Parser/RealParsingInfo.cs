@@ -5,13 +5,6 @@
     /// <summary>
     /// Hold information during parsing of a real number.
     /// </summary>
-    internal interface IRealParsingInfo : IParsingInfo
-    {
-    }
-
-    /// <summary>
-    /// Hold information during parsing of a real number.
-    /// </summary>
     internal class RealParsingInfo : ParsingInfo, IRealParsingInfo
     {
         /// <summary>

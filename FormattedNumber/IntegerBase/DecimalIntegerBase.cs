@@ -3,13 +3,6 @@
     using System.Diagnostics;
 
     /// <summary>
-    /// Interface describing a decimal (base 10) integer.
-    /// </summary>
-    public interface IDecimalIntegerBase : IIntegerBase
-    {
-    }
-
-    /// <summary>
     /// Class describing a decimal (base 10) integer.
     /// </summary>
     public class DecimalIntegerBase : IntegerBase, IDecimalIntegerBase
@@ -25,12 +18,12 @@
 
         #region Properties
         /// <summary>
-        /// The suffix for decimal integers.
+        /// Gets the suffix for decimal integers.
         /// </summary>
         public override string Suffix { get { return string.Empty; } }
 
         /// <summary>
-        /// The number of digits for decimal integers.
+        /// Gets the number of digits for decimal integers.
         /// </summary>
         public override int Radix { get { return DecimalRadix; } }
         #endregion

@@ -26,6 +26,14 @@
     </PackageReference>
     <PackageReference Include="Easly-Number-Debug" Version="1.1.1" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
     <PackageReference Include="Easly-Number" Version="1.1.1" Condition="'$(Configuration)|$(Platform)'!='Debug|x64'" />
+    <PackageReference Include="StyleCop.Analyzers.Unstable" Version="1.2.0.333">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
 
   <Target Name="_ResolveCopyLocalNuGetPackagePdbsAndXml" Condition="$(CopyLocalLockFileAssemblies) == true" AfterTargets="ResolveReferences">

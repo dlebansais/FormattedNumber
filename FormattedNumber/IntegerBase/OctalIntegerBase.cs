@@ -3,13 +3,6 @@
     using System.Diagnostics;
 
     /// <summary>
-    /// Interface describing an octal (base 8) integer.
-    /// </summary>
-    public interface IOctalIntegerBase : IIntegerBase
-    {
-    }
-
-    /// <summary>
     /// Class describing an octal (base 8) integer.
     /// </summary>
     public class OctalIntegerBase : IntegerBase, IOctalIntegerBase
@@ -25,12 +18,12 @@
 
         #region Properties
         /// <summary>
-        /// The suffix for octal integers.
+        /// Gets the suffix for octal integers.
         /// </summary>
         public override string Suffix { get { return OctalSuffix; } }
 
         /// <summary>
-        /// The number of digits for octal integers.
+        /// Gets the number of digits for octal integers.
         /// </summary>
         public override int Radix { get { return OctalRadix; } }
         #endregion

@@ -3,13 +3,6 @@
     using System.Diagnostics;
 
     /// <summary>
-    /// Interface describing an hexadecimal (base 16) integer.
-    /// </summary>
-    public interface IHexadecimalIntegerBase : IIntegerBase
-    {
-    }
-
-    /// <summary>
     /// Class describing an hexadecimal (base 16) integer.
     /// </summary>
     public class HexadecimalIntegerBase : IntegerBase, IHexadecimalIntegerBase
@@ -25,12 +18,12 @@
 
         #region Properties
         /// <summary>
-        /// The suffix for hexadecimal integers.
+        /// Gets the suffix for hexadecimal integers.
         /// </summary>
         public override string Suffix { get { return HexadecimalSuffix; } }
 
         /// <summary>
-        /// The number of digits for hexadecimal integers.
+        /// Gets the number of digits for hexadecimal integers.
         /// </summary>
         public override int Radix { get { return HexadecimalRadix; } }
         #endregion
@@ -52,13 +45,11 @@
                 value = digit - '0';
                 IsParsed = true;
             }
-
             else if (digit >= 'a' && digit <= 'f')
             {
                 value = digit - 'a' + 10;
                 IsParsed = true;
             }
-
             else if (digit >= 'A' && digit <= 'F')
             {
                 value = digit - 'A' + 10;
@@ -93,10 +84,8 @@
 
             if (digit >= '0' && digit <= '9')
                 return digit - '0';
-
             else if (digit >= 'a' && digit <= 'f')
                 return digit - 'a' + 10;
-
             else
                 return digit - 'A' + 10;
         }
