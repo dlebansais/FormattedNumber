@@ -11,7 +11,7 @@
         public InvalidParsingInfo()
         {
             StillParsing = false;
-            Handler = null;
+            Handler = (char c) => { };
         }
 
         /// <summary>

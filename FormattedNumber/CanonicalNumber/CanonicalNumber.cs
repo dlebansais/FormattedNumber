@@ -154,9 +154,9 @@
             Debug.Assert(f.IsNaN || f.IsInfinite);
 
             SignificandSign = OptionalSign.None;
-            SignificandText = null;
+            SignificandText = string.Empty;
             ExponentSign = OptionalSign.None;
-            ExponentText = null;
+            ExponentText = string.Empty;
 
             NumberFloat = f;
 
@@ -193,7 +193,7 @@
         /// <summary>
         /// Gets the canonic representation.
         /// </summary>
-        public string CanonicRepresentation { get; private set; }
+        public string CanonicRepresentation { get; private set; } = string.Empty;
 
         /// <summary>
         /// Gets the float.

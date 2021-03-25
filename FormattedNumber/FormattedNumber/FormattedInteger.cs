@@ -17,7 +17,6 @@
         /// <param name="integerText">The integer text..</param>
         /// <param name="invalidText">The trailing invalid text, if any.</param>
         /// <param name="canonical">The canonical form of the number.</param>
-        /// <exception cref="NullReferenceException"><paramref name="invalidText"/> or <paramref name="canonical"/> is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="leadingZeroCount"/> is lesser than zero.</exception>
         internal FormattedInteger(IIntegerBase integerBase, OptionalSign sign, int leadingZeroCount, string integerText, string invalidText, CanonicalNumber canonical)
             : base(invalidText, canonical)
@@ -25,7 +24,7 @@
             IntegerBase = integerBase;
             Sign = sign;
             LeadingZeroCount = leadingZeroCount;
-            IntegerText = integerText ?? throw new ArgumentNullException(nameof(integerText), "Value cannot be null.");
+            IntegerText = integerText;
 
             if (leadingZeroCount < 0)
                 throw new ArgumentOutOfRangeException(nameof(leadingZeroCount));

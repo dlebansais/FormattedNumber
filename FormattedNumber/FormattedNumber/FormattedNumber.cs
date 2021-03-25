@@ -31,12 +31,8 @@
         /// Initializes a new instance of the <see cref="FormattedNumber"/> class.
         /// </summary>
         /// <param name="canonical">The canonical form of the number.</param>
-        /// <exception cref="NullReferenceException"><paramref name="canonical"/> is null.</exception>
         internal static FormattedNumber FromCanonical(CanonicalNumber canonical)
         {
-            if (canonical == null)
-                throw new ArgumentNullException(nameof(canonical), "Value cannot be null.");
-
             if (canonical == CanonicalNumber.NaN)
                 return NaN;
 
@@ -74,11 +70,10 @@
         /// </summary>
         /// <param name="invalidText">The trailing invalid text, if any.</param>
         /// <param name="canonical">The canonical form of the number.</param>
-        /// <exception cref="NullReferenceException"><paramref name="invalidText"/> or <paramref name="canonical"/> is null.</exception>
         internal FormattedNumber(string invalidText, CanonicalNumber canonical)
         {
-            InvalidText = invalidText ?? throw new ArgumentNullException(nameof(invalidText), "Value cannot be null.");
-            Canonical = canonical ?? throw new ArgumentNullException(nameof(canonical), "Value cannot be null.");
+            InvalidText = invalidText;
+            Canonical = canonical;
         }
         #endregion
 
@@ -145,24 +140,27 @@
         /// <param name="sign">The sign.</param>
         protected string GetSignText(OptionalSign sign)
         {
-            string Result = null;
+            string Result = string.Empty;
+            bool IsParsed = false;
 
             switch (sign)
             {
                 case OptionalSign.None:
-                    Result = string.Empty;
+                    IsParsed = true;
                     break;
 
                 case OptionalSign.Positive:
                     Result = "+";
+                    IsParsed = true;
                     break;
 
                 case OptionalSign.Negative:
                     Result = "-";
+                    IsParsed = true;
                     break;
             }
 
-            Debug.Assert(Result != null);
+            Debug.Assert(IsParsed);
 
             return Result;
         }

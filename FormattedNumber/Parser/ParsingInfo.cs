@@ -24,7 +24,7 @@
         /// <summary>
         /// Gets or sets the current handler for parsing.
         /// </summary>
-        public Action<char> Handler { get; protected set; }
+        public Action<char> Handler { get; protected set; } = (char c) => { };
 
         /// <summary>
         /// Gets or sets the Number of characters successfully parsed.
