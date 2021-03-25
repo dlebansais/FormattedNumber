@@ -5,14 +5,14 @@
     /// <summary>
     /// Hold information during parsing of an integer in decimal base.
     /// </summary>
-    public interface IDecimalIntegerParsingInfo : IParsingInfo
+    internal interface IDecimalIntegerParsingInfo : IParsingInfo
     {
     }
 
     /// <summary>
     /// Hold information during parsing of an integer in decimal base.
     /// </summary>
-    public class DecimalIntegerParsingInfo : ParsingInfo, IDecimalIntegerParsingInfo
+    internal class DecimalIntegerParsingInfo : ParsingInfo, IDecimalIntegerParsingInfo
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DecimalIntegerParsingInfo"/> class.

@@ -5,7 +5,7 @@
     /// <summary>
     /// Hold information during parsing of a number.
     /// </summary>
-    public interface IParsingInfo
+    internal interface IParsingInfo
     {
         /// <summary>
         /// True if parsing is still going on.
@@ -34,7 +34,7 @@
     /// <summary>
     /// Hold information during parsing of a number.
     /// </summary>
-    public abstract class ParsingInfo : IParsingInfo
+    internal abstract class ParsingInfo : IParsingInfo
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ParsingInfo"/> class.

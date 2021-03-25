@@ -1,5 +1,6 @@
 ﻿namespace FormattedNumber
 {
+#if NONE
     using System;
     using System.Threading;
 
@@ -8,15 +9,15 @@
     /// </summary>
     public static class Arithmetic
     {
-        #region Init
+    #region Init
         static Arithmetic()
         {
             Precision = 50;
             ThreadLocalFlags = new ThreadLocal<Flags>();
         }
-        #endregion
+    #endregion
 
-        #region Properties
+    #region Properties
         /// <summary>
         /// The precision.
         /// </summary>
@@ -47,6 +48,7 @@
             }
         }
         private static ThreadLocal<Flags> ThreadLocalFlags;
-        #endregion
+    #endregion
     }
+#endif
 }

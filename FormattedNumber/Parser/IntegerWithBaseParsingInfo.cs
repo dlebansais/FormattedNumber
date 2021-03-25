@@ -5,14 +5,14 @@
     /// <summary>
     /// Hold information during parsing of an integer in base other than decimal.
     /// </summary>
-    public interface IIntegerWithBaseParsingInfo : IParsingInfo
+    internal interface IIntegerWithBaseParsingInfo : IParsingInfo
     {
     }
 
     /// <summary>
     /// Hold information during parsing of an integer in base other than decimal.
     /// </summary>
-    public abstract class IntegerWithBaseParsingInfo : ParsingInfo, IIntegerWithBaseParsingInfo
+    internal abstract class IntegerWithBaseParsingInfo : ParsingInfo, IIntegerWithBaseParsingInfo
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="IntegerWithBaseParsingInfo"/> class.

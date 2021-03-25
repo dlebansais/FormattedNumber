@@ -32,7 +32,7 @@
         /// </summary>
         /// <param name="canonical">The canonical form of the number.</param>
         /// <exception cref="NullReferenceException"><paramref name="canonical"/> is null.</exception>
-        public static FormattedNumber FromCanonical(CanonicalNumber canonical)
+        internal static FormattedNumber FromCanonical(CanonicalNumber canonical)
         {
             if (canonical == null)
                 throw new ArgumentNullException(nameof(canonical), "Value cannot be null.");
@@ -75,7 +75,7 @@
         /// <param name="invalidText">The trailing invalid text, if any.</param>
         /// <param name="canonical">The canonical form of the number.</param>
         /// <exception cref="NullReferenceException"><paramref name="invalidText"/> or <paramref name="canonical"/> is null.</exception>
-        protected FormattedNumber(string invalidText, CanonicalNumber canonical)
+        internal FormattedNumber(string invalidText, CanonicalNumber canonical)
         {
             InvalidText = invalidText ?? throw new ArgumentNullException(nameof(invalidText), "Value cannot be null.");
             Canonical = canonical ?? throw new ArgumentNullException(nameof(canonical), "Value cannot be null.");
@@ -109,12 +109,33 @@
         /// <summary>
         /// The canonical form of the parsed number.
         /// </summary>
-        public CanonicalNumber Canonical { get; }
+        internal CanonicalNumber Canonical { get; }
+
+        /// <summary>
+        /// The the parsed number.
+        /// </summary>
+        public Number Value { get { return Canonical.NumberFloat; } }
 
         /// <summary>
         /// A diagnostic string for debug purpose.
         /// </summary>
         public abstract string Diagnostic { get; }
+        #endregion
+
+        #region Client Interface
+        /// <summary>
+        /// Parse a string as a number.
+        /// </summary>
+        /// <param name="text">The string to parse.</param>
+        /// <returns>
+        /// An instance of <see cref="FormattedInvalid"/> if <paramref name="text"/> cannot be parsed as a number.
+        /// An instance of <see cref="FormattedInteger"/> if the valid part of the parsed number is an integer.
+        /// An instance of <see cref="FormattedReal"/> if <paramref name="text"/> can be parsed, but not as an integer.
+        /// </returns>
+        public static FormattedNumber Parse(string text)
+        {
+            return Parser.Parse(text);
+        }
         #endregion
 
         #region Implementation

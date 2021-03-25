@@ -22,7 +22,7 @@
         /// <param name="invalidText">The trailing invalid text, if any.</param>
         /// <param name="canonical">The canonical form of the number.</param>
         /// <exception cref="NullReferenceException"><paramref name="invalidText"/> or <paramref name="canonical"/> is null.</exception>
-        public FormattedReal(OptionalSign sign, int leadingZeroCount, string integerText, char separatorCharacter, string fractionalText, char exponentCharacter, OptionalSign exponentSign, string exponentText, string invalidText, CanonicalNumber canonical)
+        internal FormattedReal(OptionalSign sign, int leadingZeroCount, string integerText, char separatorCharacter, string fractionalText, char exponentCharacter, OptionalSign exponentSign, string exponentText, string invalidText, CanonicalNumber canonical)
             : base(invalidText, canonical)
         {
             Sign = sign;

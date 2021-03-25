@@ -3,14 +3,14 @@
     /// <summary>
     /// Hold information during parsing of an integer in hexadecimal base.
     /// </summary>
-    public interface IHexadecimalIntegerParsingInfo : IIntegerWithBaseParsingInfo
+    internal interface IHexadecimalIntegerParsingInfo : IIntegerWithBaseParsingInfo
     {
     }
 
     /// <summary>
     /// Hold information during parsing of an integer in hexadecimal base.
     /// </summary>
-    public class HexadecimalIntegerParsingInfo : IntegerWithBaseParsingInfo, IHexadecimalIntegerParsingInfo
+    internal class HexadecimalIntegerParsingInfo : IntegerWithBaseParsingInfo, IHexadecimalIntegerParsingInfo
     {
         /// <summary>
         /// The base to use when parsing.

@@ -7,7 +7,7 @@
     /// <summary>
     /// Parser to extract a formatted number from any string.
     /// </summary>
-    public class Parser
+    internal class Parser
     {
         #region Constants
         /// <summary>

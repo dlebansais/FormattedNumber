@@ -5,14 +5,14 @@
     /// <summary>
     /// Hold information during parsing of a real number.
     /// </summary>
-    public interface IRealParsingInfo : IParsingInfo
+    internal interface IRealParsingInfo : IParsingInfo
     {
     }
 
     /// <summary>
     /// Hold information during parsing of a real number.
     /// </summary>
-    public class RealParsingInfo : ParsingInfo, IRealParsingInfo
+    internal class RealParsingInfo : ParsingInfo, IRealParsingInfo
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RealParsingInfo"/> class.

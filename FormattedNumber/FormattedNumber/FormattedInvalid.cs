@@ -20,7 +20,7 @@
         /// </summary>
         /// <param name="invalidText">The invalid text.</param>
         /// <param name="canonical">The canonical form of the number.</param>
-        public FormattedInvalid(string invalidText, CanonicalNumber canonical)
+        internal FormattedInvalid(string invalidText, CanonicalNumber canonical)
             : base(invalidText, canonical)
         {
         }

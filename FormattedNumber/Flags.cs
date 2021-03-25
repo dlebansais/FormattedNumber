@@ -1,5 +1,6 @@
 ﻿namespace FormattedNumber
 {
+#if NONE
     using System.Diagnostics;
     using EaslyNumber;
 
@@ -8,7 +9,7 @@
     /// </summary>
     public class Flags
     {
-        #region Properties
+#region Properties
         /// <summary>
         /// Signals a division of a nonzero number by zero.
         /// </summary>
@@ -18,9 +19,9 @@
         /// Signals that the result was rounded to a different mathematical value, but as close as possible to the original.
         /// </summary>
         public bool Inexact { get; private set; }
-        #endregion
+#endregion
 
-        #region Client Interface
+#region Client Interface
         /// <summary>
         /// Clear flags.
         /// </summary>
@@ -56,6 +57,7 @@
         {
             Inexact = true;
         }
-        #endregion
+#endregion
     }
+#endif
 }

@@ -19,7 +19,7 @@
         /// <param name="canonical">The canonical form of the number.</param>
         /// <exception cref="NullReferenceException"><paramref name="invalidText"/> or <paramref name="canonical"/> is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="leadingZeroCount"/> is lesser than zero.</exception>
-        public FormattedInteger(IIntegerBase integerBase, OptionalSign sign, int leadingZeroCount, string integerText, string invalidText, CanonicalNumber canonical)
+        internal FormattedInteger(IIntegerBase integerBase, OptionalSign sign, int leadingZeroCount, string integerText, string invalidText, CanonicalNumber canonical)
             : base(invalidText, canonical)
         {
             IntegerBase = integerBase;

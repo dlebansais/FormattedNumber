@@ -6,7 +6,7 @@
     /// <summary>
     /// Interface to manipulate integer or real numbers of any size.
     /// </summary>
-    public class CanonicalNumber : CanonicalNumberInternal
+    internal class CanonicalNumber : CanonicalNumberInternal
     {
         #region Constants
         /// <summary>
@@ -48,7 +48,7 @@
 
             FormatCanonicString();
 
-            NumberFloat = CreateEFloat();
+            NumberFloat = CreateFloat();
         }
 
         /// <summary>
@@ -70,10 +70,10 @@
 
             FormatCanonicString();
 
-            NumberFloat = CreateEFloat();
+            NumberFloat = CreateFloat();
         }
 
-        private Number CreateEFloat()
+        private Number CreateFloat()
         {
             return new Number(CanonicRepresentation);
         }
@@ -98,7 +98,7 @@
 
             FormatCanonicString();
 
-            NumberFloat = CreateEFloat();
+            NumberFloat = CreateFloat();
         }
 
         /// <summary>

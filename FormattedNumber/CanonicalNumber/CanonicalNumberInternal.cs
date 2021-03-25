@@ -5,9 +5,10 @@
     /// <summary>
     /// Interface to manipulate integer or real numbers of any size.
     /// </summary>
-    public class CanonicalNumberInternal
+    internal class CanonicalNumberInternal
     {
-        #region Context
+#if NONE
+#region Context
         /// <summary>
         /// The last context used for an operation.
         /// </summary>
@@ -39,6 +40,7 @@
                 Flags.SetInexact();
             }
         }
-        #endregion
+#endregion
+#endif
     }
 }

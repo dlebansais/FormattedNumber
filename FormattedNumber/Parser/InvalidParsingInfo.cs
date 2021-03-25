@@ -3,14 +3,14 @@
     /// <summary>
     /// Never parses anything.
     /// </summary>
-    public interface IInvalidParsingInfo : IParsingInfo
+    internal interface IInvalidParsingInfo : IParsingInfo
     {
     }
 
     /// <summary>
     /// Never parses anything.
     /// </summary>
-    public class InvalidParsingInfo : ParsingInfo, IInvalidParsingInfo
+    internal class InvalidParsingInfo : ParsingInfo, IInvalidParsingInfo
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="InvalidParsingInfo"/> class.
