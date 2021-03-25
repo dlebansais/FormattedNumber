@@ -1,7 +1,7 @@
 ﻿namespace FormattedNumber
 {
     using System.Diagnostics;
-    using PeterO.Numbers;
+    using EaslyNumber;
 
     /// <summary>
     /// Flag containing information about the result of operations.
@@ -34,8 +34,9 @@
         /// Update flags after an operation.
         /// </summary>
         /// <param name="context">The context used to perform the operation.</param>
-        internal void Update(EContext context)
+        internal void Update(string context)
         {
+            /*
             Debug.Assert(context.HasFlags);
 
             if ((context.Flags & EContext.FlagDivideByZero) != 0)
@@ -45,6 +46,7 @@
                 Inexact = true;
 
             context.Flags = 0;
+            */
         }
 
         /// <summary>

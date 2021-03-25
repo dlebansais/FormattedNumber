@@ -1,7 +1,7 @@
 ﻿namespace FormattedNumber
 {
     using System.Diagnostics;
-    using PeterO.Numbers;
+    using EaslyNumber;
 
     /// <summary>
     /// Interface to manipulate integer or real numbers of any size.
@@ -17,17 +17,17 @@
         /// <summary>
         /// The canonical number for NaN.
         /// </summary>
-        public static readonly CanonicalNumber NaN = new CanonicalNumber(EFloat.NaN);
+        public static readonly CanonicalNumber NaN = new CanonicalNumber(Number.NaN);
 
         /// <summary>
         /// The canonical number for positive infinity.
         /// </summary>
-        public static readonly CanonicalNumber PositiveInfinity = new CanonicalNumber(EFloat.PositiveInfinity);
+        public static readonly CanonicalNumber PositiveInfinity = new CanonicalNumber(Number.PositiveInfinity);
 
         /// <summary>
         /// The canonical number for negative infinity.
         /// </summary>
-        public static readonly CanonicalNumber NegativeInfinity = new CanonicalNumber(EFloat.NegativeInfinity);
+        public static readonly CanonicalNumber NegativeInfinity = new CanonicalNumber(Number.NegativeInfinity);
         #endregion
 
         #region Init
@@ -73,9 +73,9 @@
             NumberFloat = CreateEFloat();
         }
 
-        private EFloat CreateEFloat()
+        private Number CreateEFloat()
         {
-            return EFloat.FromString(CanonicRepresentation);
+            return new Number(CanonicRepresentation);
         }
 
         /// <summary>
@@ -105,18 +105,18 @@
         /// Initializes a new instance of the <see cref="CanonicalNumber"/> class.
         /// </summary>
         /// <param name="f">An EFloat.</param>
-        public static CanonicalNumber FromEFloat(EFloat f)
+        public static CanonicalNumber FromEFloat(Number f)
         {
-            if (f.IsNaN())
+            if (f.IsNaN)
                 return NaN;
 
-            if (f.IsPositiveInfinity())
+            if (f.IsPositiveInfinity)
                 return PositiveInfinity;
 
-            if (f.IsNegativeInfinity())
+            if (f.IsNegativeInfinity)
                 return NegativeInfinity;
 
-            Debug.Assert(f.IsFinite);
+            Debug.Assert(!f.IsInfinite);
 
             OptionalSign SignificandSign;
             string SignificandText;
@@ -149,9 +149,9 @@
         /// Initializes a new instance of the <see cref="CanonicalNumber"/> class.
         /// </summary>
         /// <param name="f">An EFloat.</param>
-        private CanonicalNumber(EFloat f)
+        private CanonicalNumber(Number f)
         {
-            Debug.Assert(f.IsNaN() || f.IsInfinity());
+            Debug.Assert(f.IsNaN || f.IsInfinite);
 
             SignificandSign = OptionalSign.None;
             SignificandText = null;
@@ -160,9 +160,9 @@
 
             NumberFloat = f;
 
-            if (f.IsPositiveInfinity())
+            if (f.IsPositiveInfinity)
                 CanonicRepresentation = double.PositiveInfinity.ToString();
-            else if (f.IsNegativeInfinity())
+            else if (f.IsNegativeInfinity)
                 CanonicRepresentation = double.NegativeInfinity.ToString();
             else
                 CanonicRepresentation = double.NaN.ToString();
@@ -198,7 +198,7 @@
         /// <summary>
         /// The float.
         /// </summary>
-        public EFloat NumberFloat { get; private set; }
+        public Number NumberFloat { get; private set; }
         #endregion
 
         #region Client Interface
@@ -217,19 +217,7 @@
         /// <param name="value">The value upon return.</param>
         public bool TryParseInt(out int value)
         {
-            value = 0;
-
-            EInteger eInteger = NumberFloat.ToEInteger();
-            EFloat eFloat = EFloat.FromEInteger(eInteger);
-
-            if (!eFloat.Equals(NumberFloat))
-                return false;
-
-            if (!eInteger.CanFitInInt32())
-                return false;
-
-            value = eInteger.ToInt32Unchecked();
-            return true;
+            return NumberFloat.TryParseInt(out value);
         }
 
         #endregion
@@ -251,10 +239,7 @@
         /// <param name="other">The other number.</param>
         public CanonicalNumber Add(CanonicalNumber other)
         {
-            EFloat OperationResult = NumberFloat.Add(other.NumberFloat, LastContext);
-            UpdateFlags();
-
-            CanonicalNumber Result = FromEFloat(OperationResult);
+            CanonicalNumber Result = FromEFloat(NumberFloat + other.NumberFloat);
             return Result;
         }
 
@@ -274,11 +259,7 @@
         /// <param name="other">The other number.</param>
         public CanonicalNumber Subtract(CanonicalNumber other)
         {
-            EFloat OperationResult = NumberFloat.Subtract(other.NumberFloat, LastContext);
-            UpdateFlags();
-
-            CanonicalNumber Result = FromEFloat(OperationResult);
-            return Result;
+            return FromEFloat(NumberFloat - other.NumberFloat);
         }
 
         /// <summary>
@@ -297,11 +278,7 @@
         /// <param name="other">The other number.</param>
         public CanonicalNumber Multiply(CanonicalNumber other)
         {
-            EFloat OperationResult = NumberFloat.Multiply(other.NumberFloat, LastContext);
-            UpdateFlags();
-
-            CanonicalNumber Result = FromEFloat(OperationResult);
-            return Result;
+            return FromEFloat(NumberFloat * other.NumberFloat);
         }
 
         /// <summary>
@@ -320,11 +297,7 @@
         /// <param name="other">The other number.</param>
         public CanonicalNumber Divide(CanonicalNumber other)
         {
-            EFloat OperationResult = NumberFloat.Divide(other.NumberFloat, LastContext);
-            UpdateFlags();
-
-            CanonicalNumber Result = FromEFloat(OperationResult);
-            return Result;
+            return FromEFloat(NumberFloat / other.NumberFloat);
         }
 
         /// <summary>
@@ -341,11 +314,7 @@
         /// </summary>
         public CanonicalNumber Negate()
         {
-            EFloat OperationResult = NumberFloat.Negate(LastContext);
-            UpdateFlags();
-
-            CanonicalNumber Result = FromEFloat(OperationResult);
-            return Result;
+            return FromEFloat(-NumberFloat);
         }
 
         /// <summary>
@@ -353,11 +322,7 @@
         /// </summary>
         public CanonicalNumber Abs()
         {
-            EFloat OperationResult = NumberFloat.Abs(LastContext);
-            UpdateFlags();
-
-            CanonicalNumber Result = FromEFloat(OperationResult);
-            return Result;
+            return FromEFloat(NumberFloat.Abs());
         }
 
         /// <summary>
@@ -365,11 +330,7 @@
         /// </summary>
         public CanonicalNumber Exp()
         {
-            EFloat OperationResult = NumberFloat.Exp(LastContext);
-            UpdateFlags();
-
-            CanonicalNumber Result = FromEFloat(OperationResult);
-            return Result;
+            return FromEFloat(NumberFloat.Exp());
         }
 
         /// <summary>
@@ -377,11 +338,7 @@
         /// </summary>
         public CanonicalNumber Log()
         {
-            EFloat OperationResult = NumberFloat.Log(LastContext);
-            UpdateFlags();
-
-            CanonicalNumber Result = FromEFloat(OperationResult);
-            return Result;
+            return FromEFloat(NumberFloat.Log());
         }
 
         /// <summary>
@@ -389,11 +346,7 @@
         /// </summary>
         public CanonicalNumber Log10()
         {
-            EFloat OperationResult = NumberFloat.Log10(LastContext);
-            UpdateFlags();
-
-            CanonicalNumber Result = FromEFloat(OperationResult);
-            return Result;
+            return FromEFloat(NumberFloat.Log10());
         }
 
         /// <summary>
@@ -402,11 +355,7 @@
         /// <param name="x">The number.</param>
         public CanonicalNumber Pow(CanonicalNumber x)
         {
-            EFloat OperationResult = NumberFloat.Pow(x.NumberFloat, LastContext);
-            UpdateFlags();
-
-            CanonicalNumber Result = FromEFloat(OperationResult);
-            return Result;
+            return FromEFloat(NumberFloat.Pow(x.NumberFloat));
         }
 
         /// <summary>
@@ -414,11 +363,7 @@
         /// </summary>
         public CanonicalNumber Sqrt()
         {
-            EFloat OperationResult = NumberFloat.Sqrt(LastContext);
-            UpdateFlags();
-
-            CanonicalNumber Result = FromEFloat(OperationResult);
-            return Result;
+            return FromEFloat(NumberFloat.Sqrt());
         }
 
         /// <summary>
@@ -427,15 +372,10 @@
         /// <param name="other">The other number.</param>
         public CanonicalNumber ShiftLeft(CanonicalNumber other)
         {
-            bool IsFractionalPartDiscarded = false;
-            EInteger x = NumberFloat.ToEIntegerWithStatus(ref IsFractionalPartDiscarded);
-            EInteger y = other.NumberFloat.ToEIntegerWithStatus(ref IsFractionalPartDiscarded);
-
-            EFloat OperationResult = x.ShiftLeft(y);
-            UpdateInexact(IsFractionalPartDiscarded);
-
-            CanonicalNumber Result = FromEFloat(OperationResult);
-            return Result;
+            if (other.TryParseInt(out int Shift))
+                return FromEFloat(NumberFloat << Shift);
+            else
+                return NaN;
         }
 
         /// <summary>
@@ -444,15 +384,10 @@
         /// <param name="other">The other number.</param>
         public CanonicalNumber ShiftRight(CanonicalNumber other)
         {
-            bool IsFractionalPartDiscarded = false;
-            EInteger x = NumberFloat.ToEIntegerWithStatus(ref IsFractionalPartDiscarded);
-            EInteger y = other.NumberFloat.ToEIntegerWithStatus(ref IsFractionalPartDiscarded);
-
-            EFloat OperationResult = x.ShiftRight(y);
-            UpdateInexact(IsFractionalPartDiscarded);
-
-            CanonicalNumber Result = FromEFloat(OperationResult);
-            return Result;
+            if (other.TryParseInt(out int Shift))
+                return FromEFloat(NumberFloat >> Shift);
+            else
+                return NaN;
         }
 
         /// <summary>
@@ -461,15 +396,7 @@
         /// <param name="other">The other number.</param>
         public CanonicalNumber Remainder(CanonicalNumber other)
         {
-            bool IsFractionalPartDiscarded = false;
-            EInteger x = NumberFloat.ToEIntegerWithStatus(ref IsFractionalPartDiscarded);
-            EInteger y = other.NumberFloat.ToEIntegerWithStatus(ref IsFractionalPartDiscarded);
-
-            EFloat OperationResult = x.Remainder(y);
-            UpdateInexact(IsFractionalPartDiscarded);
-
-            CanonicalNumber Result = FromEFloat(OperationResult);
-            return Result;
+            return FromEFloat(NumberFloat.Remainder(other.NumberFloat));
         }
 
         /// <summary>
@@ -478,15 +405,7 @@
         /// <param name="other">The other number.</param>
         public CanonicalNumber BitwiseAnd(CanonicalNumber other)
         {
-            bool IsFractionalPartDiscarded = false;
-            EInteger x = NumberFloat.ToEIntegerWithStatus(ref IsFractionalPartDiscarded);
-            EInteger y = other.NumberFloat.ToEIntegerWithStatus(ref IsFractionalPartDiscarded);
-
-            EFloat OperationResult = x.And(y);
-            UpdateInexact(IsFractionalPartDiscarded);
-
-            CanonicalNumber Result = FromEFloat(OperationResult);
-            return Result;
+            return FromEFloat(NumberFloat & other.NumberFloat);
         }
 
         /// <summary>
@@ -495,15 +414,7 @@
         /// <param name="other">The other number.</param>
         public CanonicalNumber BitwiseOr(CanonicalNumber other)
         {
-            bool IsFractionalPartDiscarded = false;
-            EInteger x = NumberFloat.ToEIntegerWithStatus(ref IsFractionalPartDiscarded);
-            EInteger y = other.NumberFloat.ToEIntegerWithStatus(ref IsFractionalPartDiscarded);
-
-            EFloat OperationResult = x.Or(y);
-            UpdateInexact(IsFractionalPartDiscarded);
-
-            CanonicalNumber Result = FromEFloat(OperationResult);
-            return Result;
+            return FromEFloat(NumberFloat | other.NumberFloat);
         }
 
         /// <summary>
@@ -512,15 +423,7 @@
         /// <param name="other">The other number.</param>
         public CanonicalNumber BitwiseXor(CanonicalNumber other)
         {
-            bool IsFractionalPartDiscarded = false;
-            EInteger x = NumberFloat.ToEIntegerWithStatus(ref IsFractionalPartDiscarded);
-            EInteger y = other.NumberFloat.ToEIntegerWithStatus(ref IsFractionalPartDiscarded);
-
-            EFloat OperationResult = x.Xor(y);
-            UpdateInexact(IsFractionalPartDiscarded);
-
-            CanonicalNumber Result = FromEFloat(OperationResult);
-            return Result;
+            return FromEFloat(NumberFloat ^ other.NumberFloat);
         }
         #endregion
 
@@ -532,8 +435,7 @@
         /// <param name="y">The second number.</param>
         public static bool operator <(CanonicalNumber x, CanonicalNumber y)
         {
-            bool Result = x.NumberFloat.CompareToTotal(y.NumberFloat, LastContext) < 0;
-            return Result;
+            return x.NumberFloat < y.NumberFloat;
         }
 
         /// <summary>
@@ -543,7 +445,7 @@
         /// <param name="y">The second number.</param>
         public static bool operator >(CanonicalNumber x, CanonicalNumber y)
         {
-            return y < x;
+            return x.NumberFloat > y.NumberFloat;
         }
         #endregion
 

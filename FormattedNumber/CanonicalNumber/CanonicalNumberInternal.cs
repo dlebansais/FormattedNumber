@@ -1,6 +1,6 @@
 ﻿namespace FormattedNumber
 {
-    using PeterO.Numbers;
+    using EaslyNumber;
 
     /// <summary>
     /// Interface to manipulate integer or real numbers of any size.
@@ -11,23 +11,19 @@
         /// <summary>
         /// The last context used for an operation.
         /// </summary>
-        private protected static EContext LastContext
+        private protected static string LastContext
         {
             get
             {
                 if (Context == null)
                 {
-                    EInteger BigPrecision = EInteger.FromInt64(Arithmetic.Precision);
-                    EInteger BigExponentMin = EInteger.FromInt64(-128);
-                    EInteger BigExponentMax = EInteger.FromInt64(+128);
-                    Context = new EContext(BigPrecision, ERounding.HalfEven, BigExponentMin, BigExponentMax, true);
-                    Context = Context.WithBlankFlags();
+                    Context = string.Empty;
                 }
 
                 return Context;
             }
         }
-        private static EContext Context;
+        private static string Context;
 
         private protected static void UpdateFlags()
         {

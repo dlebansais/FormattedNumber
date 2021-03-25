@@ -2,7 +2,7 @@
 {
     using System;
     using System.Diagnostics;
-    using PeterO.Numbers;
+    using EaslyNumber;
 
     /// <summary>
     /// Base class for a number format that can parse any string.
