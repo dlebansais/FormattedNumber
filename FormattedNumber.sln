@@ -4,18 +4,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.31025.194
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FormattedNumber", "FormattedNumber\FormattedNumber.csproj", "{0F897EE4-0CE0-4DFB-A338-19BDDE0AE58E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D4806EE6-CBE4-4DDD-88EB-D2402D447446} = {D4806EE6-CBE4-4DDD-88EB-D2402D447446}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test-FormattedNumber", "Test\Test-FormattedNumber\Test-FormattedNumber.csproj", "{E3752F12-65DE-4E47-9A9A-962F09B3074E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test-FormattedNumber", "Test\Test-FormattedNumber\Test-FormattedNumber.csproj", "{E3752F12-65DE-4E47-9A9A-962F09B3074E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{47D00EA5-35BB-4FB1-BF8D-82088984BE26} = {47D00EA5-35BB-4FB1-BF8D-82088984BE26}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test-Debug", "Test\Test-Debug\Test-Debug.csproj", "{47D00EA5-35BB-4FB1-BF8D-82088984BE26}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test-Debug", "Test\Test-Debug\Test-Debug.csproj", "{47D00EA5-35BB-4FB1-BF8D-82088984BE26}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E54DCC77-BACC-4750-A1EB-49334E788436}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PreBuild", "PreBuild\PreBuild.csproj", "{D4806EE6-CBE4-4DDD-88EB-D2402D447446}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +38,10 @@ Global
 		{47D00EA5-35BB-4FB1-BF8D-82088984BE26}.Debug|x64.ActiveCfg = Debug|x64
 		{47D00EA5-35BB-4FB1-BF8D-82088984BE26}.Debug|x64.Build.0 = Debug|x64
 		{47D00EA5-35BB-4FB1-BF8D-82088984BE26}.Release|x64.ActiveCfg = Release|x64
+		{D4806EE6-CBE4-4DDD-88EB-D2402D447446}.Debug|x64.ActiveCfg = Debug|x64
+		{D4806EE6-CBE4-4DDD-88EB-D2402D447446}.Debug|x64.Build.0 = Debug|x64
+		{D4806EE6-CBE4-4DDD-88EB-D2402D447446}.Release|x64.ActiveCfg = Release|x64
+		{D4806EE6-CBE4-4DDD-88EB-D2402D447446}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
