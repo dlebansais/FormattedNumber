@@ -29,12 +29,11 @@
     <ProjectReference Include="..\..\FormattedNumber\FormattedNumber.csproj" />
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy /Y $(SolutionDir)nuget-debug\runtimes\win-x64\native\mpir.dll $(TargetDir)" Condition="'$(SolutionDir)'!='*Undefined*'" />
-    <Exec Command="copy /Y $(SolutionDir)nuget-debug\runtimes\win-x64\native\mpfr.dll $(TargetDir)" Condition="'$(SolutionDir)'!='*Undefined*'" />
-    <Exec Command="if not exist .\bin\$(Platform)\$(Configuration)\publish\NUL mkdir .\bin\$(Platform)\$(Configuration)\publish" Condition="'$(SolutionDir)'=='*Undefined*'" />
-    <Exec Command="copy /Y ..\..\nuget-debug\runtimes\win-x64\native\mpir.dll $(TargetDir)..\publish\" Condition="'$(SolutionDir)'=='*Undefined*'" />
-    <Exec Command="copy /Y ..\..\nuget-debug\runtimes\win-x64\native\mpfr.dll $(TargetDir)..\publish\" Condition="'$(SolutionDir)'=='*Undefined*'" />
+  <Target Name="_ResolveCopyLocalNuGetPackagePdbsAndXml" Condition="$(CopyLocalLockFileAssemblies) == true" AfterTargets="ResolveReferences">
+    <ItemGroup>
+      <ReferenceCopyLocalPaths Include="@(ReferenceCopyLocalPaths->'%(RootDir)%(Directory)%(Filename).pdb')" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' != ''&#xD;&#xA;                    and Exists('%(RootDir)%(Directory)%(Filename).pdb')" />
+      <ReferenceCopyLocalPaths Include="@(ReferenceCopyLocalPaths->'%(RootDir)%(Directory)%(Filename).xml')" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' != ''&#xD;&#xA;                    and Exists('%(RootDir)%(Directory)%(Filename).xml')" />
+    </ItemGroup>
   </Target>
 
 </Project>
